@@ -44,9 +44,13 @@ class GameEngine {
 
   tick() {
     // Compute everyone
-    this.render();
-    
+    this.player.heading = this.input.movement;
 
+    // Check for player-wall collisions
+    this.player.move();
+
+    // Render
+    this.render();
     // console.log(this)
   }
 
@@ -57,7 +61,7 @@ class GameEngine {
 
     this.context.fillRect(0, 0, this.width, this.height);
 
-    this.context.translate(this.player.position.x + this.width/2, this.player.position.y + this.height/2);
+    this.context.translate(this.width/2 - this.player.position.x, this.height/2 - this.player.position.y);
 
     this.entities.walls.forEach(wall => wall.render(this.context));
 

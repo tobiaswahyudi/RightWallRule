@@ -1,4 +1,9 @@
 class Player extends GameObject {
+  constructor() {
+    super();
+
+    this.velocity = 3;
+  }
   tick() {}
 
   render(context) {

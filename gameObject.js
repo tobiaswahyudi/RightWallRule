@@ -4,10 +4,15 @@ class GameObject {
       x: 0,
       y: 0
     };
-    this.velocity = {
+    this.heading = {
       x: 0,
       y: 0
     };
-    this.rotation = 0;
+    this.velocity = 0;
+  }
+
+  move() {
+    this.position.x += this.heading.x * this.velocity;
+    this.position.y += this.heading.y * this.velocity;
   }
 }
