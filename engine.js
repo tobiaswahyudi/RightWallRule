@@ -1,5 +1,45 @@
+class PerfCounter {
+  constructor() {
+    this.ticksPerSecond = [];
+    this.secondIndex = 0;
+    this.lastTickSecond = 0;
+    this.ticksThisSecond = 0;
+
+    // The window width, in seconds.
+    this.windowWidth = 10;
+  }
+
+  firstTick() {
+    this.lastTickSecond = new Date().getSeconds();
+  }
+
+  logTick() {
+    const thisSecond = new Date().getSeconds();
+    if(this.lastTickSecond != thisSecond) {
+      if(this.ticksPerSecond.length == this.windowWidth) {
+        this.secondIndex %= this.windowWidth;
+        this.ticksPerSecond[this.secondIndex] = this.ticksThisSecond;
+      } else {
+        this.ticksPerSecond.push(this.ticksThisSecond);
+      }
+      this.ticksThisSecond = 0;
+      this.secondIndex++;
+    }
+    this.ticksThisSecond++;
+    this.lastTickSecond = thisSecond;
+  }
+
+  get fps() {
+    if(this.ticksPerSecond.length == 0) return 0;
+    const total = this.ticksPerSecond.reduce((a,b) => a+b);
+    return total/this.ticksPerSecond.length;
+  }
+}
+
 class GameEngine {
   constructor() {
+    this.perf = new PerfCounter();
+
     this.canvas = null;
     this.context = null;
 
@@ -16,6 +56,7 @@ class GameEngine {
     };
     this.player = null;
     this.input = null;
+    this.ticks = 0;
   }
 
   start(canvas, window) {
@@ -39,10 +80,13 @@ class GameEngine {
       requestAnimationFrame(runTick);
     }
 
+    this.perf.firstTick();
     requestAnimationFrame(runTick);
   }
 
   tick() {
+    this.perf.logTick();
+    this.ticks++;
     // Compute everyone
     this.player.heading = this.input.movement;
 
@@ -50,7 +94,7 @@ class GameEngine {
     this.player.move();
 
     // Render
-    this.render();
+    this.render(this.ticks);
     // console.log(this)
   }
 
@@ -66,6 +110,12 @@ class GameEngine {
     this.entities.walls.forEach(wall => wall.render(this.context));
 
     this.player.render(this.context);
+
+    this.context.font = "15px Arial";
+    this.context.fillStyle = "#00FF00";
+    this.context.textAlign = "right";
+    this.context.resetTransform();
+    this.context.fillText(this.perf.fps, this.width - 5, 20);
   }
 }
 
