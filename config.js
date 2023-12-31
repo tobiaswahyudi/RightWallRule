@@ -1,9 +1,9 @@
 const COLORS = {
   wall: "#564256",
-  floor: "#B0A1BA",
+  floor: "#CDC4D4",
   enemy: "#5C1A1B",
-  player: "#055864",
-  playerBullet: "#026C7C",
+  player: "#1CB0A7",
+  playerBullet: "#FEFCEB",
   towerBase: "#157F1F",
   towerBullet: "#4CB963"
 };
@@ -13,6 +13,7 @@ const SIZES = {
   wallWidth: 35,
   playerRadius: 20,
   enemyRadius: 10,
+  bulletRadius: 3,
 };
 
 const CONFIG = {

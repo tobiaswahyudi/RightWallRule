@@ -6,7 +6,8 @@ class RawInputManager {
     this.pressedKeys = new Set();
     // A list of sets of keys; if 
     this.exclusions = [
-      ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
+      ["ArrowUp", "ArrowDown"],
+      ["ArrowLeft", "ArrowRight"],
       ["KeyW", "KeyS"],
       ["KeyA", "KeyD"],
     ]
@@ -48,23 +49,36 @@ class GameInputManager {
 
   get movement() {
     const mvmt = new Vector2(0,0);
-    if(this.rawInput.pressedKeys.has("KeyW")) {
-      mvmt.y = -1;
-    }
-    if(this.rawInput.pressedKeys.has("KeyS")) {
-      mvmt.y = 1;
-    }
-    if(this.rawInput.pressedKeys.has("KeyA")) {
-      mvmt.x = -1;
-    }
-    if(this.rawInput.pressedKeys.has("KeyD")) {
-      mvmt.x = 1;
-    }
+    if(this.rawInput.pressedKeys.has("KeyW")) mvmt.y = -1;
+    if(this.rawInput.pressedKeys.has("KeyS")) mvmt.y = 1;
+    if(this.rawInput.pressedKeys.has("KeyA")) mvmt.x = -1;
+    if(this.rawInput.pressedKeys.has("KeyD")) mvmt.x = 1;
 
     if(mvmt.x != 0 && mvmt.y != 0) {
       mvmt.scale(1/Math.sqrt(2));
     }
 
     return mvmt;
+  }
+
+  get shooting() {
+    return this.rawInput.pressedKeys.has("ArrowUp") ||
+      this.rawInput.pressedKeys.has("ArrowDown") ||
+      this.rawInput.pressedKeys.has("ArrowLeft") ||
+      this.rawInput.pressedKeys.has("ArrowRight");
+  }
+
+  get shootDir() {
+    const dir = new Vector2(0,0);
+    if(this.rawInput.pressedKeys.has("ArrowUp")) dir.y = -1;
+    if(this.rawInput.pressedKeys.has("ArrowDown")) dir.y = 1;
+    if(this.rawInput.pressedKeys.has("ArrowLeft")) dir.x = -1;
+    if(this.rawInput.pressedKeys.has("ArrowRight")) dir.x = 1;
+
+    if(dir.x != 0 && dir.y != 0) {
+      dir.scale(1/Math.sqrt(2));
+    }
+
+    return dir;
   }
 }

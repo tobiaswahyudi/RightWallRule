@@ -95,10 +95,13 @@ class GameEngine {
     // Bullet Movement
     this.entities.bullets.forEach(bullet => bullet.tick(this.ticks))
 
+    if(this.input.shooting) {
+      const maybeBullet = this.player.shoot(this.input);
+      if(maybeBullet) this.entities.bullets.push(maybeBullet);
+    }
+
     // Player Movement
-    this.player.heading = this.input.movement;
-    // Check for player-wall collisions here
-    this.player.move();
+    this.player.tick(this.ticks, this.input);
 
     // Render
     this.render(this.ticks);

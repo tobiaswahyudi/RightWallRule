@@ -3,10 +3,17 @@ class BulletEmitter {
     this.color = color;
     this.anchorPosition = anchorPosition;
     this.bulletVelocity = 10;
+    this.fireRate = 300;
+    this.lastShoot = 0;
   }
 
   shoot(heading) {
-    return new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, heading, this.bulletVelocity);
+    const timeNow = new Date().getTime();
+    if(timeNow - this.lastShoot >= this.fireRate) {
+      this.lastShoot = timeNow;
+      return new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, heading, this.bulletVelocity);
+    }
+    return null;
   }
 }
 

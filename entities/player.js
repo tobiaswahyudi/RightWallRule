@@ -3,8 +3,18 @@ class Player extends Entity {
     super(0, 0);
 
     this.velocity = 3;
+
+    this.shooty = new BulletEmitter(this.position, COLORS.playerBullet);
   }
-  tick() {}
+
+  tick(ticks, input) {
+    this.heading = input.movement;
+    this.move();
+  }
+
+  shoot(input) {
+    return this.shooty.shoot(input.shootDir);
+  }
 
   render(context) {
     context.fillStyle = COLORS.player;

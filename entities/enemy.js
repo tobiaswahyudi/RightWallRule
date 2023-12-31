@@ -24,8 +24,6 @@ class CrawlerEnemy extends Enemy {
 
     this.crawlFrequency = 1.2;
     this.crawlTickOffset = Math.random();
-
-    console.log(this.crawlTickOffset)
   }
 
   tick(ticks, player, towers) {
