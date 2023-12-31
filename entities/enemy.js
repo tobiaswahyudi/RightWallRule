@@ -23,18 +23,14 @@ class CrawlerEnemy extends Enemy {
     super(x, y, 20);
 
     this.crawlFrequency = 1.2;
-    this.crawlTickOffset = Math.random() * CONFIG.FPS / this.crawlFrequency / Math.PI;
+    this.crawlTickOffset = Math.random();
 
     console.log(this.crawlTickOffset)
   }
 
   tick(ticks, player, towers) {
     this.heading = player.position.delta(this.position).normalize();
-    // Velocity = sin^2( (ticks+offset)  / period)
-    // period = FPS / frequency / PI
-    this.velocity = Math.sin((ticks+this.crawlTickOffset) * this.crawlFrequency * Math.PI / CONFIG.FPS);
-    console.log((ticks+this.crawlTickOffset) * this.crawlFrequency * Math.PI / CONFIG.FPS)
-    console.log(this.velocity)
+    this.velocity = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
     this.velocity *= this.velocity;
 
     this.move();
