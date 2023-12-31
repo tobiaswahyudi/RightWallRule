@@ -15,6 +15,7 @@ class GameEngine {
       chests: [],
     };
     this.player = null;
+    this.input = null;
   }
 
   start(canvas, window) {
@@ -28,6 +29,8 @@ class GameEngine {
 
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+
+    this.input.setupListeners(window);
 
     const boundTick = this.tick.bind(this);
 
