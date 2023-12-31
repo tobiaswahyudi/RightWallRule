@@ -1,4 +1,4 @@
-class Player extends GameObject {
+class Player extends Entity {
   constructor() {
     super();
 

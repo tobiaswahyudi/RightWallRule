@@ -1,4 +1,4 @@
-class Wall extends GameObject {
+class Wall extends Entity {
   constructor(xStart, xEnd, yStart, yEnd) {
     super();
 

@@ -47,7 +47,7 @@ class GameInputManager {
   }
 
   get movement() {
-    const mvmt = {x: 0, y: 0};
+    const mvmt = new Vector2(0,0);
     if(this.rawInput.pressedKeys.has("KeyW")) {
       mvmt.y = -1;
     }
@@ -62,8 +62,7 @@ class GameInputManager {
     }
 
     if(mvmt.x != 0 && mvmt.y != 0) {
-      mvmt.x /= Math.sqrt(2);
-      mvmt.y /= Math.sqrt(2);
+      mvmt.scale(1/Math.sqrt(2));
     }
 
     return mvmt;
