@@ -9,4 +9,6 @@ gameEngine.entities.walls.push(new Wall(-250, 250, -250, -250));
 for(let i = 0; i < 20; i++)
   gameEngine.entities.enemies.push(new CrawlerEnemy((Math.random()-0.5) * 2 * 200, (Math.random()-0.5) * 2 * 200));
 
+gameEngine.entities.bullets.push(new Bullet(0, 0, COLORS.playerBullet, new Vector2(0.2, 0.8).normalize(), 12));
+
 gameEngine.start(document.getElementById('the-canvas'), window);

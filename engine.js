@@ -92,6 +92,9 @@ class GameEngine {
     // Enemy Movement
     this.entities.enemies.forEach(enemy => enemy.tick(this.ticks, this.player, this.entities.towers))
 
+    // Bullet Movement
+    this.entities.bullets.forEach(bullet => bullet.tick(this.ticks))
+
     // Player Movement
     this.player.heading = this.input.movement;
     // Check for player-wall collisions here
@@ -118,6 +121,9 @@ class GameEngine {
 
     // Enemies
     this.entities.enemies.forEach(enemy => enemy.render(this.context));
+
+    // Bullets
+    this.entities.bullets.forEach(bullet => bullet.render(this.context));
 
     // Player
     this.player.render(this.context);
