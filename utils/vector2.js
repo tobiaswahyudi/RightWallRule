@@ -13,7 +13,7 @@ class Vector2 {
   }
 
   normalize() {
-    const magnitude = this.magnitude;
+    const magnitude = this.magnitude || 1;
     this.x /= magnitude;
     this.y /= magnitude;
 

@@ -1,6 +1,6 @@
 class Entity {
-  constructor() {
-    this.position = new Vector2(0,0);
+  constructor(x, y) {
+    this.position = new Vector2(x, y);
     this.heading = new Vector2(0,0);
     this.velocity = 0;
   }

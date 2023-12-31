@@ -88,9 +88,13 @@ class GameEngine {
     this.perf.logTick();
     this.ticks++;
     // Compute everyone
-    this.player.heading = this.input.movement;
 
-    // Check for player-wall collisions
+    // Enemy Movement
+    this.entities.enemies.forEach(enemy => enemy.tick(this.ticks, this.player, this.entities.towers))
+
+    // Player Movement
+    this.player.heading = this.input.movement;
+    // Check for player-wall collisions here
     this.player.move();
 
     // Render
@@ -101,16 +105,24 @@ class GameEngine {
   render() {
     // Render everyone
     this.context.resetTransform();
+
+    // Floor
     this.context.fillStyle = COLORS.floor;
 
+    // Set up transform
     this.context.fillRect(0, 0, this.width, this.height);
-
     this.context.translate(this.width/2 - this.player.position.x, this.height/2 - this.player.position.y);
 
+    // Walls
     this.entities.walls.forEach(wall => wall.render(this.context));
 
+    // Enemies
+    this.entities.enemies.forEach(enemy => enemy.render(this.context));
+
+    // Player
     this.player.render(this.context);
 
+    // FPS Counter
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";

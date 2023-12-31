@@ -12,4 +12,9 @@ const SIZES = {
   cell: 100,
   wallWidth: 35,
   playerRadius: 20,
+  enemyRadius: 10,
+};
+
+const CONFIG = {
+  FPS: 60,
 };
