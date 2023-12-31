@@ -2,7 +2,7 @@ class BulletEmitter {
   constructor(anchorPosition, color = COLORS.towerBullet) {
     this.color = color;
     this.anchorPosition = anchorPosition;
-    this.bulletVelocity = 10;
+    this.bulletVelocity = 12;
     this.fireRate = 300;
     this.lastShoot = 0;
   }

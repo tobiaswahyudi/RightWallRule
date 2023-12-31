@@ -1,9 +1,9 @@
 const COLORS = {
-  wall: "#564256",
-  floor: "#CDC4D4",
-  enemy: "#5C1A1B",
-  player: "#1CB0A7",
-  playerBullet: "#FEFCEB",
+  wall: "#1D3427",
+  floor: "#335B43",
+  enemy: "#9C528B",
+  player: "#0582CA",
+  playerBullet: "#F18F01",
   towerBase: "#157F1F",
   towerBullet: "#4CB963"
 };
