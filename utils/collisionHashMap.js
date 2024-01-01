@@ -28,6 +28,7 @@ class CollisionHashMap {
   chunkDeleteEntity(chunk, entity) {
     const theChunk = this.getChunk(chunk);
     theChunk.delete(entity);
+    if(theChunk.size == 0) this.map.delete(`${chunk.row},${chunk.col}`);
   }
 
   registerEntity(entity) {
@@ -39,20 +40,24 @@ class CollisionHashMap {
       entity.shape.collisionCellCorners[idx] = cornerChunk;
       this.chunkAddEntity(cornerChunk, entity);
     })
+
+    const ulChunk = entity.shape.collisionCellCorners[0];
+    const drChunk = entity.shape.collisionCellCorners[2];
+
+    for(let row = ulChunk.row; row <= drChunk.row; row++) {
+      for(let col = ulChunk.col; col <= drChunk.col; col++) {
+        this.chunkAddEntity({row, col}, entity);
+      }
+    }
   }
 
   updateEntity(entity) {
-    const corners = entity.shape.boundingBoxCorners();
+    const cornerChunks = entity.shape.boundingBoxCorners().map(this.coordsToChunk);
+    const oldChunks = entity.shape.collisionCellCorners;
+    oldChunks.forEach(chunk => this.chunkDeleteEntity(chunk, entity));
+    cornerChunks.forEach(chunk => this.chunkAddEntity(chunk, entity));
 
-    corners.forEach((corner, idx) => {
-      const cornerChunk = this.coordsToChunk(corner);
-      const oldChunk = entity.shape.collisionCellCorners[idx];
-      entity.shape.collisionCellCorners[idx] = cornerChunk;
-      if(cornerChunk.row != oldChunk.row || cornerChunk.col != oldChunk.col) {
-        this.chunkDeleteEntity(oldChunk, entity);
-        this.chunkAddEntity(cornerChunk, entity);
-      }
-    })
+    entity.shape.collisionCellCorners = cornerChunks;
   }
 
   *candidatePairs() {

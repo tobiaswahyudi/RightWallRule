@@ -39,4 +39,8 @@ class Vector2 {
   delta(rhs) {
     return new Vector2(this.x - rhs.x, this.y - rhs.y);
   }
+
+  hypot() {
+    return Math.hypot(this.x, this.y);
+  }
 }

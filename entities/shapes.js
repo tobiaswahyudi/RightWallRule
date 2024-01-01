@@ -35,6 +35,64 @@ class CircleShapedSprite {
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y + this.radius)
     ];
   }
+
+  collisionCheck(other) {
+    if(other instanceof CircleShapedSprite) {
+      // Circle-to-circle collision check
+      const distance = other.anchorPosition.delta(this.anchorPosition).hypot();
+      return distance < (this.radius + other.radius);
+    } else if(other instanceof RectShapedSprite) {
+      // Annoying!
+      // Circle-to-rectangle collision check. There are two cases here.
+      if(other.xStart < this.anchorPosition.x && this.anchorPosition.x < other.xEnd) {
+        // Case 1a: The circle's center is within the rectangle's x-bounds.
+        if(other.yStart < this.anchorPosition.y && this.anchorPosition.y < other.yEnd) {
+          // The damn thing's inside the damn square
+          return true;
+        } else if(this.anchorPosition.y <= other.yStart) {
+          // Above the square (lower y)
+          return other.yStart - this.anchorPosition.y < this.radius;
+        } else {
+          // Below the square (higher y)
+          return this.anchorPosition.y - other.yEnd < this.radius;
+        }
+      } else if(other.yStart < this.anchorPosition.y && this.anchorPosition.y < other.yEnd) {
+        // Case 1b: The circle's center is within the rectangle's y-bounds.
+        if(this.anchorPosition.x <= other.xStart) {
+          // Left of the square
+          return other.xStart - this.anchorPosition.x < this.radius;
+        } else {
+          // Right of the square
+          return this.anchorPosition.x - other.xEnd < this.radius;
+        }
+      } else {
+        // Case 2: Check the circle's distance to the nearest corner.
+        let nearestCorner;
+        if(this.anchorPosition.x < other.xStart) {
+          // On left
+          if(this.anchorPosition.y < other.yStart) {
+            // Above
+            nearestCorner = new Vector2(this.xStart, this.yStart);
+          } else {
+            // Below
+            nearestCorner = new Vector2(this.xStart, this.yEnd);
+          }
+        } else {
+          // On right
+          if(this.anchorPosition.y < other.yStart) {
+            // Above
+            nearestCorner = new Vector2(this.xEnd, this.yStart);
+          } else {
+            // Below
+            nearestCorner = new Vector2(this.xEnd, this.yEnd);
+          }
+        }
+        return this.anchorPosition.delta(nearestCorner).hypot() < this.radius;
+      }
+    } else {
+      console.error("I don't know what kind of hitbox this is:", other);
+    }
+  }
 }
 
 // A sprite with a rectangle shaped hitbox.
@@ -62,10 +120,27 @@ class RectShapedSprite {
 
   boundingBoxCorners() {
     return [
-      new Vector2(this.xStart, yStart),
-      new Vector2(this.xEnd, yStart),
-      new Vector2(this.xEnd, yEnd),
-      new Vector2(this.xStart, yEnd)
+      new Vector2(this.xStart, this.yStart),
+      new Vector2(this.xEnd, this.yStart),
+      new Vector2(this.xEnd, this.yEnd),
+      new Vector2(this.xStart, this.yEnd)
     ];
+  }
+
+  collisionCheck(other) {
+    if(other instanceof CircleShapedSprite) {
+      // Rect-to-circle collision check
+      return other.collisionCheck(this);
+    } else if(other instanceof RectShapedSprite) {
+      // Rectangle-to-rectangle collision check.
+      if(other.xEnd < this.xStart) return false; // On left
+      if(this.xEnd < other.xStart) return false; // On right
+      if(other.yEnd < this.yStart) return false; // Above
+      if(this.yEnd < other.yStart) return false; // Below
+      // Must overlap
+      return true;
+    } else {
+      console.error("I don't know what kind of hitbox this is:", other);
+    }
   }
 }

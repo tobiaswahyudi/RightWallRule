@@ -148,6 +148,7 @@ class GameEngine {
     for(const [entity1, entity2] of this.collisionMap.candidatePairs()) {
       if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) {
       } else {
+        if(!entity1.shape.collisionCheck(entity2.shape)) continue;
         entity1.heading.x = 0;
         entity1.heading.y = 0;
   
@@ -201,8 +202,25 @@ class GameEngine {
     // Player
     this.player.render(this.context);
 
-    
+
+    // Grid
+    // upper-left corner of screen
+    const upperLeft = new Vector2(-this.width/2, -this.height/2).add(this.player.position);
+    const bottomRight = new Vector2(this.width, this.height).add(upperLeft);
+
+    const ulChunk = this.collisionMap.coordsToChunk(upperLeft);
+    const drChunk = this.collisionMap.coordsToChunk(bottomRight);
+
+    this.context.strokeStyle = "#000000";
+
+    for(let row = ulChunk.row; row <= drChunk.row; row++) {
+      for(let col = ulChunk.col; col <= drChunk.col; col++) {
+        this.context.strokeRect(col * CONFIG.collisionMapChunkSize, row * CONFIG.collisionMapChunkSize, CONFIG.collisionMapChunkSize, CONFIG.collisionMapChunkSize);
+      }
+    }
+
     this.context.resetTransform();
+
     // FPS Counter
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
