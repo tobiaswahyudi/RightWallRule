@@ -18,4 +18,5 @@ const SIZES = {
 
 const CONFIG = {
   FPS: 60,
+  collisionMapChunkSize: 50,
 };

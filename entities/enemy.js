@@ -24,25 +24,17 @@ class CrawlerEnemy extends Enemy {
 
     this.crawlFrequency = 1.2;
     this.crawlTickOffset = Math.random();
+
+    this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, COLORS.enemy);
   }
 
   tick(ticks, player, towers) {
     this.heading = player.position.delta(this.position).normalize();
     this.velocity = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
     this.velocity *= this.velocity;
-
-    this.move();
   }
 
   render(context) {
-    context.fillStyle = COLORS.enemy;
-
-    context.beginPath();
-    context.ellipse(
-      this.position.x, this.position.y,
-      SIZES.enemyRadius, SIZES.enemyRadius,
-      0, 0, 360
-    );
-    context.fill();
+    this.shape.render(context);
   }
 }

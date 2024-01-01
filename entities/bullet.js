@@ -24,21 +24,16 @@ class Bullet extends Entity {
     this.velocity = velocity;
 
     this.color = color;
+    this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius, color);
   }
 
-  tick(ticks) {
-    this.move();
-  }
+  tick(ticks) {}
 
   render(context) {
-    context.fillStyle = this.color;
+    this.shape.render(context);
+  }
 
-    context.beginPath();
-    context.ellipse(
-      this.position.x, this.position.y,
-      SIZES.bulletRadius, SIZES.bulletRadius,
-      0, 0, 360
-    );
-    context.fill();
+  collide(other) {
+
   }
 }

@@ -5,11 +5,11 @@ class Player extends Entity {
     this.velocity = 3;
 
     this.shooty = new BulletEmitter(this.position, COLORS.playerBullet);
+    this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
   }
 
   tick(ticks, input) {
     this.heading = input.movement;
-    this.move();
   }
 
   shoot(input) {
@@ -17,15 +17,7 @@ class Player extends Entity {
   }
 
   render(context) {
-    context.fillStyle = COLORS.player;
-
-    context.beginPath();
-    context.ellipse(
-      this.position.x, this.position.y,
-      SIZES.playerRadius, SIZES.playerRadius,
-      0, 0, 360
-    );
-    context.fill();
+    this.shape.render(context);
   }
 }
 

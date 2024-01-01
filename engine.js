@@ -1,3 +1,8 @@
+/**************************************
+ * Performance Counter
+ * 
+ * Logs frames per second.
+ **************************************/
 class PerfCounter {
   constructor() {
     this.ticksPerSecond = [];
@@ -36,6 +41,9 @@ class PerfCounter {
   }
 }
 
+/**************************************
+ * Game Engine Class
+ **************************************/
 class GameEngine {
   constructor() {
     this.perf = new PerfCounter();
@@ -48,17 +56,37 @@ class GameEngine {
 
     this.options = {};
     this.entities = {
-      walls: [],
-      enemies: [],
-      bullets: [],
-      towers: [],
-      chests: [],
+      wall: [],
+      enemy: [],
+      bullet: [],
+      tower: [],
+      chest: [],
     };
     this.player = null;
+
+    this.collisionMap = new CollisionHashMap();
+
     this.input = null;
     this.ticks = 0;
   }
+  
+  /**************************************
+   * Utilities
+   **************************************/
 
+  // Spawns a new entity.
+  spawnEntity(type, entity) {
+    entity._id = `${type}-${crypto.randomUUID()}`;
+    this.entities[type].push(entity);
+
+    this.collisionMap.registerEntity(entity);
+  }
+
+
+  /**************************************
+   * Starts the game engine.
+   * Sets up canvas and stuff, then kicks off the tick loop.
+   **************************************/
   start(canvas, window) {
     console.log(this)
 
@@ -84,30 +112,72 @@ class GameEngine {
     requestAnimationFrame(runTick);
   }
 
+  /**************************************
+   * Game engine tick.
+   * Calls tick() for all entities, then calls this.render().
+   **************************************/
   tick() {
     this.perf.logTick();
     this.ticks++;
     // Compute everyone
 
-    // Enemy Movement
-    this.entities.enemies.forEach(enemy => enemy.tick(this.ticks, this.player, this.entities.towers))
+    ////////////// Headings: want to move
+    // Enemy Headings
+    this.entities.enemy.forEach(enemy => {
+      enemy.tick(this.ticks, this.player, this.entities.tower);
+      this.collisionMap.updateEntity(enemy);
+    })
 
-    // Bullet Movement
-    this.entities.bullets.forEach(bullet => bullet.tick(this.ticks))
+    // Bullet Headings
+    this.entities.bullet.forEach(bullet => {
+      bullet.tick(this.ticks);
+      this.collisionMap.updateEntity(bullet);
+    })
 
+    // Spawn new bullets
     if(this.input.shooting) {
       const maybeBullet = this.player.shoot(this.input);
-      if(maybeBullet) this.entities.bullets.push(maybeBullet);
+      if(maybeBullet) this.spawnEntity("bullet", maybeBullet);
     }
 
-    // Player Movement
+    // Player Headings
     this.player.tick(this.ticks, this.input);
+    this.collisionMap.updateEntity(player);
 
-    // Render
+    ////////////// Collisions
+    for(const [entity1, entity2] of this.collisionMap.candidatePairs()) {
+      if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) {
+      } else {
+        entity1.heading.x = 0;
+        entity1.heading.y = 0;
+  
+        entity2.heading.x = 0;
+        entity2.heading.y = 0;
+      }
+    }
+
+    
+    ////////////// Movement
+    // Move Enemies
+    this.entities.enemy.forEach(enemy => enemy.move())
+
+    // Move Bullets
+    this.entities.bullet.forEach(bullet => bullet.move())
+
+    // Move Players
+    this.player.move();
+
+
+    ////////////// Render
     this.render(this.ticks);
     // console.log(this)
   }
 
+  /**************************************
+   * Animation tick.
+   * Calls render() for all entities.
+   * Layers on entity type. 
+   **************************************/
   render() {
     // Render everyone
     this.context.resetTransform();
@@ -119,23 +189,24 @@ class GameEngine {
     this.context.fillRect(0, 0, this.width, this.height);
     this.context.translate(this.width/2 - this.player.position.x, this.height/2 - this.player.position.y);
 
-    // Walls
-    this.entities.walls.forEach(wall => wall.render(this.context));
+    // Wall
+    this.entities.wall.forEach(wall => wall.render(this.context));
 
-    // Enemies
-    this.entities.enemies.forEach(enemy => enemy.render(this.context));
+    // Enemy
+    this.entities.enemy.forEach(enemy => enemy.render(this.context));
 
-    // Bullets
-    this.entities.bullets.forEach(bullet => bullet.render(this.context));
+    // Bullet
+    this.entities.bullet.forEach(bullet => bullet.render(this.context));
 
     // Player
     this.player.render(this.context);
 
+    
+    this.context.resetTransform();
     // FPS Counter
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
-    this.context.resetTransform();
     this.context.fillText(this.perf.fps, this.width - 5, 20);
   }
 }
