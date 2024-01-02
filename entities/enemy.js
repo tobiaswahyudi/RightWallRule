@@ -33,6 +33,8 @@ class CrawlerEnemy extends Enemy {
     let sinSq = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
     sinSq *= sinSq;
     this.velocity.scale(sinSq);
+
+    if(this.hp <= 0) gameEngine.requestDeletion("enemy", this);
   }
 
   render(context) {
@@ -40,12 +42,6 @@ class CrawlerEnemy extends Enemy {
   }
 
   collide(other, collisionPoint) {
-    // if(other instanceof Enemy) {
-      // Avoid
-      this.velocity.add(this.position.delta(collisionPoint).normalize().scale(WEIGHTS.enemyCollisionAvoidance));
-    // } else {
-    //   this.hp -= 1;
-    //   if(this.hp == 0) gameEngine.requestDeletion("enemy", this);
-    // }
+    other.repelFrom(collisionPoint, WEIGHTS.repulsion.enemy);
   }
 }

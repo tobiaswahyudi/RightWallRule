@@ -18,8 +18,8 @@ class Player extends Entity {
     this.shape.render(context);
   }
 
-  collide(other) {
-
+  collide(other, collisionPoint) {
+    other.repelFrom(collisionPoint, WEIGHTS.repulsion.player);
   }
 }
 

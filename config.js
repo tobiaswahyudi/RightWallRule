@@ -22,8 +22,10 @@ const CONFIG = {
 };
 
 const WEIGHTS = {
-  enemyCollisionAvoidance: 0.36,
-  wallRepulsionForce: 0.04,
+  repulsion: {
+    enemy: 0.24,
+    player: 0.36,
+  }
 }
 
 const SPEEDS = {

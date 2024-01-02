@@ -18,12 +18,12 @@ class Wall extends Entity {
 
   tick() {}
 
+  // Override. Walls don't move.
+  move() {}
+
   render(context) {
     this.shape.render(context);
   }
 
-  collide(other, collisionPoint) {
-    other.velocity.add(other.position.delta(collisionPoint).scale(other.velocity.hypot() * WEIGHTS.wallRepulsionForce));
-    // Stop!!!
-  }
+  collide(other, collisionPoint) {}
 }

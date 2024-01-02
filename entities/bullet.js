@@ -34,5 +34,8 @@ class Bullet extends Entity {
 
   collide(other, collisionPoint) {
     gameEngine.requestDeletion("bullet", this);
+    if(other instanceof Enemy) {
+      other.hp -= 5;
+    }
   }
 }
