@@ -39,7 +39,7 @@ class CircleShapedSprite {
   collisionCheck(other) {
     if(other instanceof CircleShapedSprite) {
       // Circle-to-circle collision check
-      const distance = other.anchorPosition.delta(this.anchorPosition).hypot();
+      const distance = other.anchorPosition.delta(this.anchorPosition).magnitude;
       if(distance < (this.radius + other.radius))
         return other.anchorPosition.delta(this.anchorPosition)
           .scale(this.radius / (this.radius + other.radius))
@@ -94,7 +94,7 @@ class CircleShapedSprite {
             nearestCorner = new Vector2(this.xEnd, this.yEnd);
           }
         }
-        if(this.anchorPosition.delta(nearestCorner).hypot() < this.radius)
+        if(this.anchorPosition.delta(nearestCorner).magnitude < this.radius)
           return nearestCorner;
       }
     } else {

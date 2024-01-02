@@ -149,16 +149,32 @@ class GameEngine {
     this.collisionMap.updateEntity(player);
 
     ////////////// Collisions
+
+    const wallCollisions = [];
+
     for(const [entity1, entity2] of this.collisionMap.candidatePairs()) {
-      if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) {
-      } else {
-        const collisionPoint = entity1.shape.collisionCheck(entity2.shape);
-        if(!collisionPoint) continue;
-        entity1.collide(entity2, collisionPoint);
-        entity2.collide(entity1, collisionPoint);
+      const collisionPoint = entity1.shape.collisionCheck(entity2.shape);
+      if(!collisionPoint) continue;
+      if (entity1 instanceof Wall && entity2 instanceof Wall) continue;
+      if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) continue;
+
+      // Log all wall collisions
+      if (entity1 instanceof Wall || entity2 instanceof Wall) {
+        const nonWall = entity1 instanceof Wall ? entity2 : entity1;
+        wallCollisions.push([nonWall, collisionPoint]);
       }
+      entity1.collide(entity2, collisionPoint);
+      entity2.collide(entity1, collisionPoint);
     }
 
+    wallCollisions.forEach(([entity, collisionPoint]) => {
+      const collisionDelta = collisionPoint.delta(entity.position);
+      if(entity.velocity.projectionLength(collisionDelta) > 0) {
+        // Velocity moves entity into collision
+        const unitPerp = collisionDelta.perp().normalize();
+        entity.velocity = unitPerp.scale(entity.velocity.projectionLength(unitPerp));
+      }
+    })
     
     ////////////// Movement
     // Move Enemies

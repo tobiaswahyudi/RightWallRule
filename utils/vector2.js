@@ -40,7 +40,12 @@ class Vector2 {
     return new Vector2(this.x - rhs.x, this.y - rhs.y);
   }
 
-  hypot() {
-    return Math.hypot(this.x, this.y);
+  // Returns this vector rotated 90 degrees.
+  perp() {
+    return new Vector2(this.y, -this.x);
+  }
+
+  projectionLength(rhs) {
+    return (this.x * rhs.x + this.y * rhs.y) / (this.magnitude || 1); 
   }
 }
