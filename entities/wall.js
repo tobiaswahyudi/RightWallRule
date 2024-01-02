@@ -1,6 +1,6 @@
 class Wall extends Entity {
   constructor(xStart, xEnd, yStart, yEnd) {
-    super();
+    super((xStart + xEnd)/2, (yStart + yEnd)/2);
 
     this.xStart = xStart;
     this.xEnd = xEnd;
@@ -20,5 +20,10 @@ class Wall extends Entity {
 
   render(context) {
     this.shape.render(context);
+  }
+
+  collide(other, collisionPoint) {
+    other.velocity.add(other.position.delta(collisionPoint).scale(other.velocity.hypot() * WEIGHTS.wallRepulsionForce));
+    // Stop!!!
   }
 }

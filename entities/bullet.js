@@ -2,7 +2,7 @@ class BulletEmitter {
   constructor(anchorPosition, color = COLORS.towerBullet) {
     this.color = color;
     this.anchorPosition = anchorPosition;
-    this.bulletVelocity = 12;
+    this.bulletSpeed = SPEEDS.bullet;
     this.fireRate = 300;
     this.lastShoot = 0;
   }
@@ -11,17 +11,16 @@ class BulletEmitter {
     const timeNow = new Date().getTime();
     if(timeNow - this.lastShoot >= this.fireRate) {
       this.lastShoot = timeNow;
-      return new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, heading, this.bulletVelocity);
+      return new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, heading, this.bulletSpeed);
     }
     return null;
   }
 }
 
 class Bullet extends Entity {
-  constructor(x, y, color, heading, velocity) {
+  constructor(x, y, color, heading, speed) {
     super(x, y);
-    this.heading = heading.copy;
-    this.velocity = velocity;
+    this.velocity = heading.copy.scale(speed);
 
     this.color = color;
     this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius, color);
@@ -33,7 +32,7 @@ class Bullet extends Entity {
     this.shape.render(context);
   }
 
-  collide(other) {
-
+  collide(other, collisionPoint) {
+    gameEngine.requestDeletion("bullet", this);
   }
 }

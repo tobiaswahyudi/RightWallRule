@@ -31,7 +31,7 @@ class CircleShapedSprite {
     return [
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y - this.radius),
       new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y - this.radius),
-      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius),
+      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius), 
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y + this.radius)
     ];
   }
@@ -40,7 +40,10 @@ class CircleShapedSprite {
     if(other instanceof CircleShapedSprite) {
       // Circle-to-circle collision check
       const distance = other.anchorPosition.delta(this.anchorPosition).hypot();
-      return distance < (this.radius + other.radius);
+      if(distance < (this.radius + other.radius))
+        return other.anchorPosition.delta(this.anchorPosition)
+          .scale(this.radius / (this.radius + other.radius))
+          .add(this.anchorPosition);
     } else if(other instanceof RectShapedSprite) {
       // Annoying!
       // Circle-to-rectangle collision check. There are two cases here.
@@ -48,22 +51,26 @@ class CircleShapedSprite {
         // Case 1a: The circle's center is within the rectangle's x-bounds.
         if(other.yStart < this.anchorPosition.y && this.anchorPosition.y < other.yEnd) {
           // The damn thing's inside the damn square
-          return true;
+          return new Vector2(other.xStart + other.xEnd, other.yStart + other.yEnd).scale(0.5);
         } else if(this.anchorPosition.y <= other.yStart) {
           // Above the square (lower y)
-          return other.yStart - this.anchorPosition.y < this.radius;
+          if(other.yStart - this.anchorPosition.y < this.radius)
+            return new Vector2(this.anchorPosition.x, other.yStart);
         } else {
           // Below the square (higher y)
-          return this.anchorPosition.y - other.yEnd < this.radius;
+          if(this.anchorPosition.y - other.yEnd < this.radius)
+            return new Vector2(this.anchorPosition.x, other.yEnd);
         }
       } else if(other.yStart < this.anchorPosition.y && this.anchorPosition.y < other.yEnd) {
         // Case 1b: The circle's center is within the rectangle's y-bounds.
         if(this.anchorPosition.x <= other.xStart) {
           // Left of the square
-          return other.xStart - this.anchorPosition.x < this.radius;
+          if(other.xStart - this.anchorPosition.x < this.radius)
+            return new Vector2(other.xStart, this.anchorPosition.y);
         } else {
           // Right of the square
-          return this.anchorPosition.x - other.xEnd < this.radius;
+          if(this.anchorPosition.x - other.xEnd < this.radius)
+          return new Vector2(other.xEnd, this.anchorPosition.y);
         }
       } else {
         // Case 2: Check the circle's distance to the nearest corner.
@@ -87,11 +94,13 @@ class CircleShapedSprite {
             nearestCorner = new Vector2(this.xEnd, this.yEnd);
           }
         }
-        return this.anchorPosition.delta(nearestCorner).hypot() < this.radius;
+        if(this.anchorPosition.delta(nearestCorner).hypot() < this.radius)
+          return nearestCorner;
       }
     } else {
       console.error("I don't know what kind of hitbox this is:", other);
     }
+    return null;
   }
 }
 

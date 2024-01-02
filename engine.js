@@ -56,11 +56,11 @@ class GameEngine {
 
     this.options = {};
     this.entities = {
-      wall: [],
-      enemy: [],
-      bullet: [],
-      tower: [],
-      chest: [],
+      wall: new Set(),
+      enemy: new Set(),
+      bullet: new Set(),
+      tower: new Set(),
+      chest: new Set(),
     };
     this.player = null;
 
@@ -77,11 +77,15 @@ class GameEngine {
   // Spawns a new entity.
   spawnEntity(type, entity) {
     entity._id = `${type}-${crypto.randomUUID()}`;
-    this.entities[type].push(entity);
+    this.entities[type].add(entity);
 
     this.collisionMap.registerEntity(entity);
   }
 
+  requestDeletion(type, entity) {
+    this.entities[type].delete(entity);
+    this.collisionMap.deleteEntity(entity);
+  }
 
   /**************************************
    * Starts the game engine.
@@ -148,12 +152,10 @@ class GameEngine {
     for(const [entity1, entity2] of this.collisionMap.candidatePairs()) {
       if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) {
       } else {
-        if(!entity1.shape.collisionCheck(entity2.shape)) continue;
-        entity1.heading.x = 0;
-        entity1.heading.y = 0;
-  
-        entity2.heading.x = 0;
-        entity2.heading.y = 0;
+        const collisionPoint = entity1.shape.collisionCheck(entity2.shape);
+        if(!collisionPoint) continue;
+        entity1.collide(entity2, collisionPoint);
+        entity2.collide(entity1, collisionPoint);
       }
     }
 

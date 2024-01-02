@@ -20,3 +20,13 @@ const CONFIG = {
   FPS: 60,
   collisionMapChunkSize: 50,
 };
+
+const WEIGHTS = {
+  enemyCollisionAvoidance: 0.36,
+  wallRepulsionForce: 0.04,
+}
+
+const SPEEDS = {
+  player: 3,
+  bullet: 12,
+}

@@ -60,6 +60,17 @@ class CollisionHashMap {
     entity.shape.collisionCellCorners = cornerChunks;
   }
 
+  deleteEntity(entity) {
+    const ulChunk = entity.shape.collisionCellCorners[0];
+    const drChunk = entity.shape.collisionCellCorners[2];
+
+    for(let row = ulChunk.row; row <= drChunk.row; row++) {
+      for(let col = ulChunk.col; col <= drChunk.col; col++) {
+        this.chunkDeleteEntity({row, col}, entity);
+      }
+    }
+  }
+
   *candidatePairs() {
     // return function* pairsGen() {
       for(const [key, chunkSet] of this.map) {

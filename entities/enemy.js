@@ -29,12 +29,23 @@ class CrawlerEnemy extends Enemy {
   }
 
   tick(ticks, player, towers) {
-    this.heading = player.position.delta(this.position).normalize();
-    this.velocity = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
-    this.velocity *= this.velocity;
+    this.velocity = player.position.delta(this.position).normalize();
+    let sinSq = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
+    sinSq *= sinSq;
+    this.velocity.scale(sinSq);
   }
 
   render(context) {
     this.shape.render(context);
+  }
+
+  collide(other, collisionPoint) {
+    // if(other instanceof Enemy) {
+      // Avoid
+      this.velocity.add(this.position.delta(collisionPoint).normalize().scale(WEIGHTS.enemyCollisionAvoidance));
+    // } else {
+    //   this.hp -= 1;
+    //   if(this.hp == 0) gameEngine.requestDeletion("enemy", this);
+    // }
   }
 }

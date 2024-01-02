@@ -1,16 +1,15 @@
 class Entity {
   constructor(x, y) {
     this.position = new Vector2(x, y);
-    this.heading = new Vector2(0,0);
-    this.velocity = 0;
+    this.velocity = new Vector2(0,0);
   }
 
   move() {
-    this.position.add(this.heading.copy.scale(this.velocity));
+    this.position.add(this.velocity);
   }
 
   get rotation() {
-    if(this.heading.x == 0 && this.heading.y == 0) return 0;
-    return Math.atan(this.heading.y / this.heading.x);
+    if(this.velocity.x == 0 && this.velocity.y == 0) return 0;
+    return Math.atan(this.velocity.y / this.velocity.x);
   }
 }
