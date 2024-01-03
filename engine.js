@@ -128,14 +128,14 @@ class GameEngine {
     ////////////// Headings: want to move
     // Enemy Headings
     this.entities.enemy.forEach(enemy => {
-      enemy.tick(this.ticks, this.player, this.entities.tower);
       this.collisionMap.updateEntity(enemy);
+      enemy.tick(this.ticks, this.player, this.entities.tower);
     })
 
     // Bullet Headings
     this.entities.bullet.forEach(bullet => {
-      bullet.tick(this.ticks);
       this.collisionMap.updateEntity(bullet);
+      bullet.tick(this.ticks);
     })
 
     // Spawn new bullets
@@ -145,8 +145,8 @@ class GameEngine {
     }
 
     // Player Headings
-    this.player.tick(this.ticks, this.input);
     this.collisionMap.updateEntity(player);
+    this.player.tick(this.ticks, this.input);
 
     ////////////// Collisions
 

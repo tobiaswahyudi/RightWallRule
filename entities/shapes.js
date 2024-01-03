@@ -31,7 +31,7 @@ class CircleShapedSprite {
     return [
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y - this.radius),
       new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y - this.radius),
-      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius), 
+      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius),
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y + this.radius)
     ];
   }
