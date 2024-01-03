@@ -12,8 +12,8 @@ const SIZES = {
   cell: 100,
   wallWidth: 35,
   playerRadius: 20,
-  enemyRadius: 10,
-  bulletRadius: 3,
+  enemyRadius: 16,
+  bulletRadius: 7.5,
 };
 
 const CONFIG = {
