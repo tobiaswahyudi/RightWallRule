@@ -22,7 +22,7 @@ class CrawlerEnemy extends Enemy {
   constructor(x, y) {
     super(x, y, 20);
 
-    this.crawlFrequency = 1.2;
+    this.crawlFrequency = 0.8;
     this.crawlTickOffset = Math.random();
 
     this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, COLORS.enemy);
@@ -34,7 +34,7 @@ class CrawlerEnemy extends Enemy {
     sinSq *= sinSq;
     this.velocity.scale(sinSq);
 
-    if(this.hp <= 0) gameEngine.requestDeletion("enemy", this);
+    if(this.hp <= 0) gameEngine.deleteEntity("enemy", this);
   }
 
   render(context) {

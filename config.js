@@ -14,6 +14,10 @@ const SIZES = {
   playerRadius: 20,
   enemyRadius: 16,
   bulletRadius: 7.5,
+  bulletSmokeRadius: {
+    min: 5,
+    max: 10
+  }
 };
 
 const CONFIG = {

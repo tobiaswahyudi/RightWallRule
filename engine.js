@@ -62,6 +62,10 @@ class GameEngine {
       tower: new Set(),
       chest: new Set(),
     };
+    this.effects = {
+      under: new Set(),
+      above: new Set()
+    };
     this.player = null;
 
     this.collisionMap = new CollisionHashMap();
@@ -76,15 +80,28 @@ class GameEngine {
 
   // Spawns a new entity.
   spawnEntity(type, entity) {
+    entity.spawnTick = this.ticks;
     entity._id = `${type}-${crypto.randomUUID()}`;
     this.entities[type].add(entity);
 
     this.collisionMap.registerEntity(entity);
   }
 
-  requestDeletion(type, entity) {
+  deleteEntity(type, entity) {
     this.entities[type].delete(entity);
     this.collisionMap.deleteEntity(entity);
+  }
+
+  // Spawns a new effect.
+  spawnEffect(layer, effect, duration) {
+    effect.spawnTick = this.ticks;
+    effect.endTick = this.ticks + duration;
+    effect._layer = layer;
+    this.effects[layer].add(effect);
+  }
+
+  deleteEffect(effect) {
+    this.effects[effect._layer].delete(effect);
   }
 
   /**************************************
@@ -124,6 +141,10 @@ class GameEngine {
     this.perf.logTick();
     this.ticks++;
     // Compute everyone
+
+    // Effects
+    this.effects.under.forEach(effect => effect.tick(this.ticks));
+    this.effects.above.forEach(effect => effect.tick(this.ticks));
 
     ////////////// Headings: want to move
     // Enemy Headings
@@ -208,6 +229,9 @@ class GameEngine {
     this.context.fillRect(0, 0, this.width, this.height);
     this.context.translate(this.width/2 - this.player.position.x, this.height/2 - this.player.position.y);
 
+    // Under Effects
+    this.effects.under.forEach(effect => effect.render(this.context));
+
     // Wall
     this.entities.wall.forEach(wall => wall.render(this.context));
 
@@ -219,6 +243,9 @@ class GameEngine {
 
     // Player
     this.player.render(this.context);
+
+    // Above Effects
+    this.effects.above.forEach(effect => effect.render(this.context));
 
 
     // Grid
@@ -248,3 +275,5 @@ class GameEngine {
 }
 
 const gameEngine = new GameEngine();
+
+const thunk = () => {};

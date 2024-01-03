@@ -111,8 +111,6 @@ class RectShapedSprite {
     this.xEnd = xEnd;
     this.yStart = yStart;
     this.yEnd = yEnd;
-
-    console.log(xStart,xEnd,yStart,yEnd);
     this.color = color;
   }
 

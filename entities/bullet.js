@@ -26,14 +26,41 @@ class Bullet extends Entity {
     this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius, color);
   }
 
-  tick(ticks) {}
+  _bulletSmokeShrinkAnimation(bulletSmoke, ticks) {
+    bulletSmoke.radius = bulletSmoke.originalRadius * (bulletSmoke.endTick - ticks) / (bulletSmoke.endTick - bulletSmoke.spawnTick);
+  }
+
+  tick(ticks) {
+    gameEngine.spawnEffect(
+      EFFECTS.layer.under,
+      new CircleEffect(
+        this.position.x + (Math.random() - 0.5) * 4,
+        this.position.y + (Math.random() - 0.5) * 4,
+        this._bulletSmokeShrinkAnimation,
+        Math.random() * (SIZES.bulletSmokeRadius.max - SIZES.bulletSmokeRadius.min) + SIZES.bulletSmokeRadius.min,
+        "rgba(252, 240, 199, 0.5)"
+      ),
+      10
+    );
+  }
 
   render(context) {
     this.shape.render(context);
   }
 
   collide(other, collisionPoint) {
-    gameEngine.requestDeletion("bullet", this);
+    gameEngine.deleteEntity("bullet", this);
+    gameEngine.spawnEffect(
+      EFFECTS.layer.above,
+      new CircleEffect(
+        this.position.x,
+        this.position.y,
+        thunk,
+        (Math.random() * (SIZES.bulletSmokeRadius.max - SIZES.bulletSmokeRadius.min) + SIZES.bulletSmokeRadius.min) * 1.2,
+        "rgba(255, 240, 240, 0.8)"
+      ),
+      6
+    );
     if(other instanceof Enemy) {
       other.hp -= 5;
     }
