@@ -11,6 +11,8 @@ class GameEngine {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
+    this.maze = new Maze(16, 0.64);
+
     this.options = {};
     this.entities = {
       wall: new Set(),

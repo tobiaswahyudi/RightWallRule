@@ -10,7 +10,7 @@ const COLORS = {
 
 const SIZES = {
   cell: 100,
-  wallWidth: 35,
+  wallWidth: 30,
   playerRadius: 20,
   enemyRadius: 16,
   bulletRadius: 7.5,
@@ -23,7 +23,9 @@ const SIZES = {
 const CONFIG = {
   FPS: 60,
   pixelation: 4,
-  collisionMapChunkSize: 50,
+  collisionMapChunkSize: 40,
+  mazeCellSize: 240,
+  mazeGridSize: 16
 };
 
 const WEIGHTS = {
