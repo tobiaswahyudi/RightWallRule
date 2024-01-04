@@ -109,16 +109,11 @@ class GameEngine {
    * Sets up canvas and stuff, then kicks off the tick loop.
    **************************************/
   start(canvas, window) {
-    console.log(this)
-
-    this.canvas = canvas;
+    this.canvas = new ScaledCanvas(canvas, CONFIG.pixelation);
     this.context = this.canvas.getContext('2d');
-
+    
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
 
     this.input.setupListeners(window);
 
@@ -248,29 +243,13 @@ class GameEngine {
     this.effects.above.forEach(effect => effect.render(this.context));
 
 
-    // Grid
-    // upper-left corner of screen
-    const upperLeft = new Vector2(-this.width/2, -this.height/2).add(this.player.position);
-    const bottomRight = new Vector2(this.width, this.height).add(upperLeft);
-
-    const ulChunk = this.collisionMap.coordsToChunk(upperLeft);
-    const drChunk = this.collisionMap.coordsToChunk(bottomRight);
-
-    this.context.strokeStyle = "#000000";
-
-    for(let row = ulChunk.row; row <= drChunk.row; row++) {
-      for(let col = ulChunk.col; col <= drChunk.col; col++) {
-        this.context.strokeRect(col * CONFIG.collisionMapChunkSize, row * CONFIG.collisionMapChunkSize, CONFIG.collisionMapChunkSize, CONFIG.collisionMapChunkSize);
-      }
-    }
-
     this.context.resetTransform();
 
     // FPS Counter
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
-    this.context.fillText(this.perf.fps, this.width - 5, 20);
+    this.context.fillText(Math.floor(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
   }
 }
 
