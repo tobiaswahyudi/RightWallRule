@@ -5,38 +5,43 @@
  **************************************/
 class PerfCounter {
   constructor() {
-    this.ticksPerSecond = [];
-    this.secondIndex = 0;
-    this.lastTickSecond = 0;
+    this.ticksPerSecond = new CircularBuffer(10);
+    this.lastSecondLogged = 0;
     this.ticksThisSecond = 0;
 
-    // The window width, in seconds.
-    this.windowWidth = 10;
+    this.tickDurations = new CircularBuffer(CONFIG.FPS * 2);
   }
 
   firstTick() {
-    this.lastTickSecond = new Date().getSeconds();
+    this.lastSecondLogged = new Date().getTime();
   }
 
-  logTick() {
-    const thisSecond = new Date().getSeconds();
-    if(this.lastTickSecond != thisSecond) {
-      if(this.ticksPerSecond.length == this.windowWidth) {
-        this.secondIndex %= this.windowWidth;
-        this.ticksPerSecond[this.secondIndex] = this.ticksThisSecond;
-      } else {
-        this.ticksPerSecond.push(this.ticksThisSecond);
-      }
-      this.ticksThisSecond = 0;
-      this.secondIndex++;
+  logTickStart() {
+    const timeNow = new Date().getTime();
+    if(timeNow - this.lastSecondLogged >= 1000) {
+      this.ticksPerSecond.push(this.ticksThisSecond);
+      this.ticksThisSecond = -1;
+      this.lastSecondLogged = timeNow;
     }
     this.ticksThisSecond++;
-    this.lastTickSecond = thisSecond;
+
+    this.lastTickStart = timeNow;
+  }
+
+  logTickEnd() {
+    const timeNow = new Date().getTime();
+    this.tickDurations.push(timeNow - this.lastTickStart);
   }
 
   get fps() {
     if(this.ticksPerSecond.length == 0) return 0;
     const total = this.ticksPerSecond.reduce((a,b) => a+b);
     return total/this.ticksPerSecond.length;
+  }
+
+  get maxTps() {
+    if(this.tickDurations.length == 0) return 0;
+    const total = this.tickDurations.reduce((a,b) => a+b);
+    return 1000 * this.tickDurations.length/total;
   }
 }

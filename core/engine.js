@@ -90,7 +90,7 @@ class GameEngine {
    * Calls tick() for all entities, then calls this.render().
    **************************************/
   tick() {
-    this.perf.logTick();
+    this.perf.logTickStart();
     this.ticks++;
     // Compute everyone
 
@@ -206,7 +206,10 @@ class GameEngine {
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
-    this.context.fillText(Math.floor(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
+    this.context.fillText(Math.trunc(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
+    this.context.fillText(Math.trunc(this.perf.maxTps), this.width - 15, 35 * CONFIG.pixelation);
+
+    this.perf.logTickEnd();
   }
 }
 
