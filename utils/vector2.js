@@ -46,6 +46,6 @@ class Vector2 {
   }
 
   projectionLength(rhs) {
-    return (this.x * rhs.x + this.y * rhs.y) / (this.magnitude || 1); 
+    return (this.x * rhs.x + this.y * rhs.y) / (rhs.magnitude || 1);
   }
 }
