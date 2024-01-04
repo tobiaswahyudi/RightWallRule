@@ -28,6 +28,7 @@ const CONFIG = {
 const WEIGHTS = {
   repulsion: {
     enemy: 0.24,
+    bullet: 10,
     player: 0.36,
   }
 }

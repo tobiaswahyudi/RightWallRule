@@ -63,6 +63,7 @@ class Bullet extends Entity {
     );
     if(other instanceof Enemy) {
       other.hp -= 5;
+      other.velocity.add(this.velocity.normalize().scale(WEIGHTS.repulsion.bullet));
     }
   }
 }
