@@ -24,7 +24,7 @@ const CONFIG = {
   FPS: 60,
   pixelation: 4,
   collisionMapChunkSize: 40,
-  mazeCellSize: 240,
+  mazeCellSize: 480,
   mazeGridSize: 16
 };
 

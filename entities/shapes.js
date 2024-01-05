@@ -115,7 +115,7 @@ class RectShapedSprite {
   }
 
   render(context) {
-    context.fillStyle = COLORS.wall;
+    context.fillStyle = this.color;
 
     context.fillRect(
       this.xStart,
