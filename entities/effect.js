@@ -14,7 +14,7 @@ class Effect {
 
   tick(ticks) {
     if(this.animation) this.animation(this, ticks);
-    if(this.endTick <= ticks) gameEngine.deleteEffect(this);
+    if(this.endTick == ticks) gameEngine.deleteEffect(this);
   }
 }
 
@@ -58,5 +58,19 @@ class RectEffect extends Effect {
       this.xEnd - this.xStart,
       this.yEnd - this.yStart
     );
+  }
+}
+
+class AbstractEffect extends Effect {
+  constructor(x, y, shapeConstructor, animation, color) {
+    super(x, y, animation);
+    this.color = color;
+    this.shapeConstructor = shapeConstructor;
+  }
+
+  render(context) {
+    context.fillStyle = this.color;
+
+    context.fill(this.shapeConstructor(this));
   }
 }
