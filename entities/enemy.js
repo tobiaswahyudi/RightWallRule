@@ -25,7 +25,16 @@ class CrawlerEnemy extends Enemy {
     this.crawlFrequency = 0.8;
     this.crawlTickOffset = Math.random();
 
-    this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, COLORS.enemy);
+    this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, this.colorRange(0));
+
+    this.lastTickCollisionCount = 0;
+    this.tickCollisionCounts = new CircularBuffer(CONFIG.FPS);
+    this.tickCollisionCounts.push(0);
+
+  }
+
+  colorRange(ratio) {
+    return `hsl(${15 + ratio * 2}, ${60 + ratio * 4}%, ${42 + ratio * 6}%)`;
   }
 
   tick(ticks, player, towers) {
@@ -34,7 +43,15 @@ class CrawlerEnemy extends Enemy {
     sinSq *= sinSq;
     this.velocity.scale(sinSq);
 
-    if(this.hp <= 0) gameEngine.deleteEntity("enemy", this);
+    const n = this.tickCollisionCounts.reduce((a,b) => a + b)/this.tickCollisionCounts.length;
+
+    this.shape.color = this.colorRange((n - 1) / (n + 3));
+
+    if(this.hp <= 0) {
+      gameEngine.deleteEntity("enemy", this);
+    }
+    this.tickCollisionCounts.push(this.lastTickCollisionCount);
+    this.lastTickCollisionCount = 0;
   }
 
   render(context) {
@@ -43,5 +60,6 @@ class CrawlerEnemy extends Enemy {
 
   collide(other, collisionPoint) {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.enemy);
+    if(other instanceof Enemy) this.lastTickCollisionCount++;
   }
 }
