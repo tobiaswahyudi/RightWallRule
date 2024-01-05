@@ -4,6 +4,17 @@ class Player extends Entity {
 
     this.shooty = new BulletEmitter(this.position, COLORS.playerBullet);
     this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
+
+    this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.playerRadius, COLORS.shadowOnFloor);
+
+    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
+  }
+
+  followMe(xOffset, yOffset) {
+    return (effect, ticks) => {
+      effect.position.x = this.position.x + xOffset;
+      effect.position.y = this.position.y + yOffset;
+    }
   }
 
   tick(ticks, input) {

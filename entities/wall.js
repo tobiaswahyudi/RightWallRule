@@ -14,6 +14,16 @@ class Wall extends Entity {
       this.yEnd + SIZES.wallWidth,
       COLORS.wall
     )
+
+    const pathString = `M ${this.xStart - SIZES.wallWidth}, ${this.yEnd + SIZES.wallWidth}
+    l 30, 45
+    h ${this.xEnd - this.xStart + 2 * SIZES.wallWidth}
+    v -${this.yEnd - this.yStart + 2 * SIZES.wallWidth}
+    l -30, -45
+    z`;
+    const shadowPath = new Path2D(pathString);
+    this.shadow = new AbstractEffect(0, 0, () => shadowPath, null, COLORS.shadowOnFloor);
+    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
   }
 
   tick() {}

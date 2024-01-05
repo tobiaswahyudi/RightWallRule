@@ -18,5 +18,7 @@ gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, m
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(mazeTotalSize, mazeTotalSize + window.innerWidth, -window.innerHeight, mazeTotalSize + window.innerHeight, thunk, COLORS.enemy));
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, mazeTotalSize + window.innerWidth, mazeTotalSize, mazeTotalSize + window.innerHeight, thunk, COLORS.enemy));
 
+for(let i = 0; i < 100; i++)
+  gameEngine.spawnEntity("enemy", new CrawlerEnemy(SIZES.wallWidth + Math.random() * CONFIG.mazeCellSize * 2, SIZES.wallWidth + Math.random() * CONFIG.mazeCellSize * 2));
 
 gameEngine.start(document.getElementById('the-canvas'), window);

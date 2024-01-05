@@ -96,10 +96,6 @@ class GameEngine {
     this.ticks++;
     // Compute everyone
 
-    // Effects
-    this.effects.under.forEach(effect => effect.tick(this.ticks));
-    this.effects.above.forEach(effect => effect.tick(this.ticks));
-
     ////////////// Headings: want to move
     // Enemy Headings
     this.entities.enemy.forEach(enemy => {
@@ -161,6 +157,9 @@ class GameEngine {
     // Move Players
     this.player.move();
 
+    // Effects
+    this.effects.under.forEach(effect => effect.tick(this.ticks));
+    this.effects.above.forEach(effect => effect.tick(this.ticks));
 
     ////////////// Render
     this.render(this.ticks);

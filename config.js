@@ -1,6 +1,7 @@
 const COLORS = {
-  wall: "#1D3427",
-  floor: "#335B43",
+  wall: "#3A5025",
+  floor: "#51733A",
+  shadowOnFloor: "#476633",
   enemy: "#9C528B",
   player: "#0582CA",
   playerBullet: "#F18F01",
@@ -10,9 +11,9 @@ const COLORS = {
 
 const SIZES = {
   cell: 100,
-  wallWidth: 30,
-  playerRadius: 20,
-  enemyRadius: 16,
+  wallWidth: 60,
+  playerRadius: 30,
+  enemyRadius: 20,
   bulletRadius: 7.5,
   bulletSmokeRadius: {
     min: 5,
@@ -22,8 +23,8 @@ const SIZES = {
 
 const CONFIG = {
   FPS: 60,
-  pixelation: 4,
-  collisionMapChunkSize: 40,
+  pixelation: 1,
+  collisionMapChunkSize: 60,
   mazeCellSize: 480,
   mazeGridSize: 16
 };

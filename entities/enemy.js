@@ -27,10 +27,19 @@ class CrawlerEnemy extends Enemy {
 
     this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, this.colorRange(0));
 
+    this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.enemyRadius, COLORS.shadowOnFloor);
     this.lastTickCollisionCount = 0;
     this.tickCollisionCounts = new CircularBuffer(CONFIG.FPS);
     this.tickCollisionCounts.push(0);
 
+    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
+  }
+
+  followMe(xOffset, yOffset) {
+    return (effect, ticks) => {
+      effect.position.x = this.position.x + xOffset;
+      effect.position.y = this.position.y + yOffset;
+    }
   }
 
   colorRange(ratio) {
@@ -49,6 +58,7 @@ class CrawlerEnemy extends Enemy {
 
     if(this.hp <= 0) {
       gameEngine.deleteEntity("enemy", this);
+      gameEngine.deleteEffect(this.shadow);
     }
     this.tickCollisionCounts.push(this.lastTickCollisionCount);
     this.lastTickCollisionCount = 0;
