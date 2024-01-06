@@ -40,9 +40,15 @@ class Vector2 {
     return new Vector2(this.x - rhs.x, this.y - rhs.y);
   }
 
+  // Returns a new Vector2; `this` rotated `deg` degrees CW
+  rotate(deg) {
+    const theta = Math.PI * deg / 180;
+    return new Vector2(this.x * Math.cos(theta) + this.y * Math.sin(theta), this.y * Math.cos(theta) - this.x * Math.sin(theta));
+  }
+
   // Returns this vector rotated 90 degrees.
   perp() {
-    return new Vector2(this.y, -this.x);
+    return this.rotate(90);
   }
 
   projectionLength(rhs) {

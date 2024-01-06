@@ -111,8 +111,8 @@ class GameEngine {
 
     // Spawn new bullets
     if(this.input.shooting) {
-      const maybeBullet = this.player.shoot(this.input);
-      if(maybeBullet) this.spawnEntity("bullet", maybeBullet);
+      const bullets = this.player.shoot(this.ticks, this.input.shootDir, true);
+      bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
     }
 
     // Player Headings
@@ -127,6 +127,7 @@ class GameEngine {
       const collisionPoint = entity1.shape.collisionCheck(entity2.shape);
       if(!collisionPoint) continue;
       if (entity1 instanceof Wall && entity2 instanceof Wall) continue;
+      if(entity1 instanceof Bullet && entity2 instanceof Bullet) continue;
       if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) continue;
 
       // Log all wall collisions

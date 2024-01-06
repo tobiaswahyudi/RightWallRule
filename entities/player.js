@@ -2,7 +2,7 @@ class Player extends Entity {
   constructor() {
     super(0, 0);
 
-    this.shooty = new BulletEmitter(this.position, COLORS.playerBullet);
+    this.shooty = new PlayerBulletEmitter(this.position);
     this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
 
     this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.playerRadius, COLORS.shadowOnFloor);
@@ -21,8 +21,8 @@ class Player extends Entity {
     this.velocity = input.movement.scale(SPEEDS.player);
   }
 
-  shoot(input) {
-    return this.shooty.shoot(input.shootDir);
+  shoot(ticks, direction, isShotgun) {
+    return this.shooty.shoot(ticks, direction, isShotgun);
   }
 
   render(context) {

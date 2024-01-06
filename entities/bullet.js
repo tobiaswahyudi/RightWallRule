@@ -3,17 +3,40 @@ class BulletEmitter {
     this.color = color;
     this.anchorPosition = anchorPosition;
     this.bulletSpeed = SPEEDS.bullet;
-    this.fireRate = 300;
-    this.lastShoot = 0;
+    this.fireDelay = CONFIG.FPS * 0.3;
+    this.nextShoot = 0;
   }
 
-  shoot(heading) {
-    const timeNow = new Date().getTime();
-    if(timeNow - this.lastShoot >= this.fireRate) {
-      this.lastShoot = timeNow;
-      return new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, heading, this.bulletSpeed);
+  shoot(ticks, direction) {
+    if(ticks >= this.nextShoot) {
+      this.nextShoot = ticks + this.fireDelay;
+      return [new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction, this.bulletSpeed)];
     }
-    return null;
+    return [];
+  }
+}
+
+class PlayerBulletEmitter extends BulletEmitter {
+  constructor(anchorPosition) {
+    super(anchorPosition, COLORS.playerBullet);
+  }
+
+  shoot(ticks, direction, isShotgun) {
+    if(ticks >= this.nextShoot) {
+      if(isShotgun) {
+        this.nextShoot = ticks + 3 * this.fireDelay;
+        const bullets = [];
+        for(let i = 0; i < 5; i++) {
+          const deltaAngle = (Math.random() * 2 - 1) * 10;
+          bullets.push(new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction.rotate(deltaAngle), this.bulletSpeed));
+        }
+        return bullets;
+      } else {
+        this.nextShoot = ticks + this.fireDelay;
+        return [new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction, this.bulletSpeed)];
+      }
+    }
+    return [];
   }
 }
 
