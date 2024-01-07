@@ -47,7 +47,14 @@ class CrawlerEnemy extends Enemy {
   }
 
   tick(ticks, player, towers) {
-    this.velocity = player.position.delta(this.position).normalize();
+    const myGridRow = Math.floor(this.position.y / CONFIG.mazeCellSize);
+    const myGridCol = Math.floor(this.position.x / CONFIG.mazeCellSize);
+
+    // Choose any point in the square... There's gotta be a better way
+    const target = gameEngine.maze.grid[myGridRow][myGridCol].points[0].prev;
+
+    if(target == null) this.velocity = player.position.delta(this.position).normalize();
+    else this.velocity = target.position.delta(this.position).normalize();
     let sinSq = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
     sinSq *= sinSq;
     this.velocity.scale(sinSq);

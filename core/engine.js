@@ -26,6 +26,7 @@ class GameEngine {
       above: new Set()
     };
     this.player = null;
+    this.playerGridSquareLastTick = null;
 
     this.collisionMap = new CollisionHashMap();
 
@@ -78,6 +79,8 @@ class GameEngine {
 
     const boundTick = this.tick.bind(this);
 
+    computeNavDistancesTo(this.maze.navGridPoints, this.maze.grid[0][0]);
+
     function runTick() {
       boundTick();
       requestAnimationFrame(runTick);
@@ -95,6 +98,17 @@ class GameEngine {
     this.perf.logTickStart();
     this.ticks++;
     // Compute everyone
+
+    // Pathfinding
+    
+    const playerGridRow = Math.floor(this.player.position.y / CONFIG.mazeCellSize);
+    const playerGridCol = Math.floor(this.player.position.x / CONFIG.mazeCellSize);
+    const playerGridSquare = this.maze.grid[playerGridRow][playerGridCol];
+
+    if(playerGridSquare != this.playerGridSquareLastTick) {
+      computeNavDistancesTo(this.maze.navGridPoints, playerGridSquare);
+      this.playerGridSquareLastTick = playerGridSquare;
+    }
 
     ////////////// Headings: want to move
     // Enemy Headings
@@ -206,22 +220,30 @@ class GameEngine {
     this.context.strokeStyle = "#00FF00";
     this.maze.grid.forEach(row => row.forEach(cell => {
       if(!cell.E) {
-        this.context.fillRect(cell.eastPoint.x - 2, cell.eastPoint.y - 2, 4, 4);
+        this.context.fillRect(cell.eastPoint.position.x - 2, cell.eastPoint.position.y - 2, 4, 4);
         cell.eastPoint.neighbors.forEach(neighbor => {
           if(neighbor.idx < cell.eastPoint.idx) {
-            this.context.stroke(new Path2D(`M ${cell.eastPoint.x}, ${cell.eastPoint.y} L ${neighbor.x}, ${neighbor.y}`));
+            this.context.stroke(new Path2D(`M ${cell.eastPoint.position.x}, ${cell.eastPoint.position.y} L ${neighbor.position.x}, ${neighbor.position.y}`));
           }
         });
       }
       if(!cell.S) {
-        this.context.fillRect(cell.southPoint.x - 2, cell.southPoint.y - 2, 4, 4);
+        this.context.fillRect(cell.southPoint.position.x - 2, cell.southPoint.position.y - 2, 4, 4);
         cell.southPoint.neighbors.forEach(neighbor => {
           if(neighbor.idx < cell.southPoint.idx) {
-            this.context.stroke(new Path2D(`M ${cell.southPoint.x}, ${cell.southPoint.y} L ${neighbor.x}, ${neighbor.y}`));
+            this.context.stroke(new Path2D(`M ${cell.southPoint.position.x}, ${cell.southPoint.position.y} L ${neighbor.position.x}, ${neighbor.position.y}`));
           }
         });
       }
     }))
+
+    this.context.strokeStyle = "#FF0000";
+
+    this.maze.navGridPoints.forEach(point => {
+      if(point.prev) {
+        this.context.stroke(new Path2D(`M ${point.position.x}, ${point.position.y} L ${point.prev.position.x + 10}, ${point.prev.position.y + 5}`));
+      }
+    })
     
 
     this.context.resetTransform();

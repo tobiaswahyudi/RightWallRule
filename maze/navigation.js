@@ -10,8 +10,7 @@ class NavigationPoint {
     this.idx = idx;
     this.row = row;
     this.col = col;
-    this.x = (col + rowOffset) * CONFIG.mazeCellSize;
-    this.y = (row + colOffset) * CONFIG.mazeCellSize;
+    this.position = new Vector2(col + rowOffset, row + colOffset).scale(CONFIG.mazeCellSize);
 
     this.neighbors = [];
     this.visited = false;
@@ -28,11 +27,13 @@ function generateNavigationGraph(cells) {
     if(!cell.E) {
       const eastPoint = new NavigationPoint(gridPoints.length, cell.row, cell.col, 1, 0.5);
       gridPoints.push(eastPoint);
+      cell.points.push(eastPoint);
       cell.eastPoint = eastPoint;
     } else cell.eastPoint = null;
     if(!cell.S) {
       const southPoint = new NavigationPoint(gridPoints.length, cell.row, cell.col, 0.5, 1);
       gridPoints.push(southPoint);
+      cell.points.push(southPoint);
       cell.southPoint = southPoint;
     } else cell.southPoint = null;
     if(!cell.S && !cell.E) {
@@ -41,6 +42,7 @@ function generateNavigationGraph(cells) {
     }
     if(rowIdx != 0 && !cells[rowIdx-1][colIdx].S) {
       cell.northPoint = cells[rowIdx-1][colIdx].southPoint;
+      cell.points.push(cell.northPoint);
       if(!cell.S) {
         cell.northPoint.neighbors.push(cell.southPoint);
         cell.southPoint.neighbors.push(cell.northPoint);
@@ -52,6 +54,7 @@ function generateNavigationGraph(cells) {
     } else cell.northPoint = null;
     if(colIdx != 0 && !cells[rowIdx][colIdx-1].E) {
       cell.westPoint = cells[rowIdx][colIdx-1].eastPoint;
+      cell.points.push(cell.westPoint);
       if(!cell.S) {
         cell.westPoint.neighbors.push(cell.southPoint);
         cell.southPoint.neighbors.push(cell.westPoint);
