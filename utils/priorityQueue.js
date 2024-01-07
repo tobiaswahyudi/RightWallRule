@@ -4,11 +4,11 @@ class MinHeap {
     this.insertionIdx = 0;
   }
 
-  empty() { return this.list.length == 0; }
-  parentOf(idx) { return idx / 2; }
+  empty() { return this.insertionIdx == 0; }
+  parentOf(idx) { return Math.floor(idx / 2); }
   leftChild(idx) { return 2 * idx + 1; }
   rightChild(idx) { return 2 * idx + 2; }
-  exists(idx) { return idx < this.list.length; }
+  exists(idx) { return idx < this.insertionIdx; }
 
   heapifyUp(idx) {
     while(idx != 0 && this.list[this.parentOf(idx)].key > this.list[idx].key) {
@@ -33,12 +33,12 @@ class MinHeap {
         this.list[smallerChild] = temp;
 
         idx = smallerChild;
-      }
+      } else break;
     }
   }
 
   push(val) {
-    if(!this.exists(this.insertionIdx)) this.list.push(val);
+    if(this.insertionIdx == this.list.length) this.list.push(val);
     else this.list[this.insertionIdx] = val;
     this.heapifyUp(this.insertionIdx);
     this.insertionIdx++;
@@ -47,9 +47,11 @@ class MinHeap {
   pop() {
     const retVal = this.list[0];
     this.insertionIdx--;
-    if(this.insertionIdx == 0) return;
-    this.list[0] = this.list[this.insertionIdx];
-    this.heapifyDown(0);
+    if(this.insertionIdx != 0) {
+      this.list[0] = this.list[this.insertionIdx];
+      this.heapifyDown(0);
+    }
+    this.list[this.insertionIdx] = null;
 
     return retVal;
   }
