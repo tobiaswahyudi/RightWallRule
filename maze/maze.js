@@ -1,9 +1,11 @@
 class GridCell {
-  constructor() {
+  constructor(row, col) {
     this.N = false;
     this.E = false;
     this.W = false;
     this.S = false;
+    this.row = row;
+    this.col = col;
     this.wallCount = 0;
   }
 }
@@ -11,7 +13,7 @@ class GridCell {
 class Maze {
   constructor(size, wallProbability) {
     this.size = size;
-    this.grid = Array(size).fill(0).map(v => Array(size).fill(0).map(v => new GridCell()));
+    this.grid = Array(size).fill(0).map((v, rowIdx) => Array(size).fill(0).map((v, colIdx) => new GridCell(rowIdx, colIdx)));
 
     this.unionFind = new UnionFind(size * size);
     this.deadEnds = []
@@ -83,11 +85,13 @@ class Maze {
     }
 
     for(let row = 0; row < this.size; row++) {
+      this.grid[row][0].W = true;
       this.grid[row][0].wallCount++;
       this.grid[row][this.size - 1].wallCount++;
       if(this.grid[row][this.size - 1].S) this.grid[row][this.size - 1].wallCount++;
     }
     for(let col = 0; col < this.size; col++) {
+      this.grid[0][col].N = true;
       this.grid[0][col].wallCount++;
       this.grid[this.size - 1][col].wallCount++;
       if(this.grid[this.size - 1][col].S) this.grid[this.size - 1][col].wallCount++;
@@ -97,14 +101,18 @@ class Maze {
         if(this.grid[row][col].S && row != this.size - 1) {
           this.grid[row][col].wallCount += 1;
           this.grid[row+1][col].wallCount += 1;
+          this.grid[row+1][col].N = true;
         }
         if(this.grid[row][col].E && col != this.size - 1) {
           this.grid[row][col].wallCount += 1;
           this.grid[row][col+1].wallCount += 1;
+          this.grid[row][col+1].W = true;
         }
         if(this.grid[row][col].wallCount == 3) this.deadEnds.push([row, col]);
       }
     }
+
+    this.navGridPoints = generateNavigationGraph(this.grid);
   }
 
   generateWalls() {
@@ -119,13 +127,13 @@ class Maze {
     for(let row = 0; row < this.size - 1; row++) {
       for(let col = 0; col < this.size; col++) {
         if(this.grid[row][col].S) {
-          if(!wallStart) wallStart = col;
-        } else if(!!wallStart) {
+          if(wallStart == null) wallStart = col;
+        } else if(wallStart != null) {
           walls.push([wallStart, col, row + 1, row + 1]);
           wallStart = null;
         }
       }
-      if(!!wallStart) {
+      if(wallStart != null) {
         walls.push([wallStart, this.size, row + 1, row + 1]);
         wallStart = null;
       }
@@ -134,13 +142,13 @@ class Maze {
     for(let col = 0; col < this.size - 1; col++) {
       for(let row = 0; row < this.size; row++) {
         if(this.grid[row][col].E) {
-          if(!wallStart) wallStart = row;
-        } else if(!!wallStart) {
+          if(wallStart == null) wallStart = row;
+        } else if(wallStart != null) {
           walls.push([col+1, col+1, wallStart, row]);
           wallStart = null;
         }
       }
-      if(!!wallStart) {
+      if(wallStart != null) {
         walls.push([col+1, col+1, wallStart, this.size]);
         wallStart = null;
       }

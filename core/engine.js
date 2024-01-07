@@ -201,6 +201,28 @@ class GameEngine {
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));
 
+    // NAVIGATION GRID
+    this.context.fillStyle = "#00FF00";
+    this.context.strokeStyle = "#00FF00";
+    this.maze.grid.forEach(row => row.forEach(cell => {
+      if(!cell.E) {
+        this.context.fillRect(cell.eastPoint.x - 2, cell.eastPoint.y - 2, 4, 4);
+        cell.eastPoint.neighbors.forEach(neighbor => {
+          if(neighbor.idx < cell.eastPoint.idx) {
+            this.context.stroke(new Path2D(`M ${cell.eastPoint.x}, ${cell.eastPoint.y} L ${neighbor.x}, ${neighbor.y}`));
+          }
+        });
+      }
+      if(!cell.S) {
+        this.context.fillRect(cell.southPoint.x - 2, cell.southPoint.y - 2, 4, 4);
+        cell.southPoint.neighbors.forEach(neighbor => {
+          if(neighbor.idx < cell.southPoint.idx) {
+            this.context.stroke(new Path2D(`M ${cell.southPoint.x}, ${cell.southPoint.y} L ${neighbor.x}, ${neighbor.y}`));
+          }
+        });
+      }
+    }))
+    
 
     this.context.resetTransform();
 
