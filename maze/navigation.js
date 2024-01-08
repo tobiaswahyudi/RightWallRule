@@ -5,21 +5,7 @@
  * The actual pathfinding is implemented in pathfinding.js
  **************************************/
 
-class NavigationPoint {
-  constructor(idx, row, col, rowOffset, colOffset) {
-    this.idx = idx;
-    this.row = row;
-    this.col = col;
-    this.position = new Vector2(col + rowOffset, row + colOffset).scale(SIZES.mazeCell);
-
-    this.neighbors = [];
-    this.visited = false;
-    this.distanceToPlayer = 0;
-    this.prev = null;
-  }
-}
-
-function generateNavigationGraph(cells) {
+export function generateNavigationGraph(cells) {
   cells.forEach((row, rowIdx) => row.forEach((cell, colIdx) => {
     if(!cell.E) {
       cell.neighbors.push(cells[rowIdx][colIdx + 1]);
@@ -31,3 +17,7 @@ function generateNavigationGraph(cells) {
     }
   }));
 }
+
+export default {
+  generateNavigationGraph,
+};

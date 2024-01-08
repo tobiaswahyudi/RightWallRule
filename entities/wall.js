@@ -1,4 +1,10 @@
-class Wall extends Entity {
+import { Entity } from "./entity.js";
+import { COLORS, SIZES, } from "../config.js";
+import { RectShapedSprite } from "./shapes.js";
+import { AbstractEffect, EFFECT_LAYERS } from "./effect.js";
+import gameEngine from "../core/engine.js";
+
+export class Wall extends Entity {
   constructor(xStart, xEnd, yStart, yEnd) {
     super((xStart + xEnd)/2, (yStart + yEnd)/2);
 
@@ -23,7 +29,7 @@ class Wall extends Entity {
     z`;
     const shadowPath = new Path2D(pathString);
     this.shadow = new AbstractEffect(0, 0, () => shadowPath, null, COLORS.shadowOnFloor);
-    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow, -1);
   }
 
   tick() {}

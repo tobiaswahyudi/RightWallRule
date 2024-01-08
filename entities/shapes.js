@@ -1,3 +1,5 @@
+import { Vector2 } from "../utils/vector2.js";
+
 /**************************************
  * SHAPES
  * 
@@ -7,7 +9,7 @@
  **************************************/
 
 // A sprite with a circle shaped hitbox.
-class CircleShapedSprite {
+export class CircleShapedSprite {
   // Takes a reference to the entity's position, radius, and color.
   constructor(anchorPosition, radius, color) {
     this.anchorPosition = anchorPosition;
@@ -105,7 +107,7 @@ class CircleShapedSprite {
 }
 
 // A sprite with a rectangle shaped hitbox.
-class RectShapedSprite {
+export class RectShapedSprite {
   constructor(xStart, xEnd, yStart, yEnd, color) {
     this.xStart = xStart;
     this.xEnd = xEnd;

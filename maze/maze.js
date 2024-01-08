@@ -1,4 +1,10 @@
-class GridCell {
+import { SIZES, CONFIG } from "../config.js";
+import { Vector2 } from "../utils/vector2.js";
+import { UnionFind } from "../utils/unionFind.js";
+import { coinFlip, randomChoice } from "../utils/random.js";
+import { generateNavigationGraph } from "./navigation.js";
+
+export class GridCell {
   constructor(row, col) {
     this.N = false;
     this.E = false;
@@ -15,7 +21,7 @@ class GridCell {
   }
 }
 
-class Maze {
+export class Maze {
   constructor(size, wallProbability) {
     this.size = size;
     this.grid = Array(size).fill(0).map((v, rowIdx) => Array(size).fill(0).map((v, colIdx) => new GridCell(rowIdx, colIdx)));

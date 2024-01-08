@@ -1,9 +1,11 @@
+import { MinHeap } from "../utils/priorityQueue.js";
+
 /**************************************
  * pathfinding.js
  * 
  * Pathfinds.
  **************************************/
-function computeNavDistancesToPlayer(grid, player, playerGridCell) {
+export function computeNavDistancesToPlayer(grid, player, playerGridCell) {
   const pq = new MinHeap();
   grid.forEach(row => row.forEach(cell => {
     cell.visited = false;

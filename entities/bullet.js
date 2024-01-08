@@ -1,4 +1,12 @@
-class BulletEmitter {
+import { Entity } from "./entity.js";
+import { Enemy } from "./enemies/enemy.js";
+import { CircleShapedSprite } from "./shapes.js";
+import { SIZES, COLORS, WEIGHTS, SPEEDS } from "../config.js";
+import gameEngine from "../core/engine.js";
+import { EFFECT_LAYERS, CircleEffect } from "./effect.js";
+import { thunk } from "../utils/thunk.js";
+
+export class BulletEmitter {
   constructor(anchorPosition, fireDelay, color = COLORS.towerBullet) {
     this.color = color;
     this.anchorPosition = anchorPosition;
@@ -16,7 +24,7 @@ class BulletEmitter {
   }
 }
 
-class PlayerBulletEmitter extends BulletEmitter {
+export class PlayerBulletEmitter extends BulletEmitter {
   constructor(anchorPosition, fireDelay) {
     super(anchorPosition, fireDelay, COLORS.playerBullet);
   }
@@ -40,7 +48,7 @@ class PlayerBulletEmitter extends BulletEmitter {
   }
 }
 
-class Bullet extends Entity {
+export class Bullet extends Entity {
   constructor(x, y, color, heading, speed) {
     super(x, y);
     this.velocity = heading.copy.scale(speed);
@@ -55,7 +63,7 @@ class Bullet extends Entity {
 
   tick(ticks) {
     gameEngine.spawnEffect(
-      EFFECTS.layer.under,
+      EFFECT_LAYERS.under,
       new CircleEffect(
         this.position.x + (Math.random() - 0.5) * 4,
         this.position.y + (Math.random() - 0.5) * 4,
@@ -74,7 +82,7 @@ class Bullet extends Entity {
   collide(other, collisionPoint) {
     gameEngine.deleteEntity(this);
     gameEngine.spawnEffect(
-      EFFECTS.layer.above,
+      EFFECT_LAYERS.above,
       new CircleEffect(
         this.position.x,
         this.position.y,

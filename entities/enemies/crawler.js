@@ -1,4 +1,11 @@
-class CrawlerEnemy extends Enemy {
+import { Enemy } from "./enemy.js";
+import { CONFIG, COLORS, SIZES, WEIGHTS, SPEEDS } from "../../config.js";
+import { CircleShapedSprite } from "../shapes.js";
+import { CircleEffect, EFFECT_LAYERS } from "../effect.js";
+import gameEngine from "../../core/engine.js";
+import { CircularBuffer } from "../../utils/circularBuffer.js";
+
+export class CrawlerEnemy extends Enemy {
   constructor(x, y) {
     super(x, y, 20);
 
@@ -12,7 +19,7 @@ class CrawlerEnemy extends Enemy {
     this.tickCollisionCounts = new CircularBuffer(CONFIG.FPS);
     this.tickCollisionCounts.push(0);
 
-    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow, -1);
   }
 
   followMe(xOffset, yOffset) {
@@ -34,7 +41,7 @@ class CrawlerEnemy extends Enemy {
 
     const target = myCell.pathTarget;
     
-    this.velocity = target.delta(this.position).normalize();
+    this.velocity = target.delta(this.position).normalize().scale(SPEEDS.crawler);
     let sinSq = Math.sin((ticks / CONFIG.FPS * this.crawlFrequency + this.crawlTickOffset) * Math.PI);
     sinSq *= sinSq;
     this.velocity.scale(sinSq);

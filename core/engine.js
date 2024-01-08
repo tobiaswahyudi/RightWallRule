@@ -1,3 +1,13 @@
+import { PerfCounter } from "./perf.js";
+import { Maze } from "../maze/maze.js";
+import { SIZES, CONFIG, COLORS } from "../config.js";
+import { CollisionHashMap } from "../utils/collisionHashMap.js";
+import { ScaledCanvas } from "./canvas.js";
+import { computeNavDistancesToPlayer } from "../maze/pathfinding.js";
+import { Player } from "../entities/player.js";
+import { GameInputManager } from "./input.js";
+import { mutualCollide } from "../entities/collisions.js";
+
 /**************************************
  * Game Engine Class
  **************************************/
@@ -26,12 +36,14 @@ class GameEngine {
       under: new Set(),
       above: new Set()
     };
-    this.player = null;
-    this.playerGridSquareLastTick = null;
-
     this.collisionMap = new CollisionHashMap();
 
-    this.input = null;
+    this.player = new Player(this);
+    this.collisionMap.registerEntity(this.player);
+
+    this.playerGridSquareLastTick = null;
+
+    this.input = new GameInputManager();
     this.ticks = 0;
   }
   
@@ -143,28 +155,14 @@ class GameEngine {
     }
 
     // Player Headings
-    this.collisionMap.updateEntity(player);
+    this.collisionMap.updateEntity(this.player);
     this.player.tick(this.ticks, this.input);
 
     ////////////// Collisions
 
     const wallCollisions = [];
 
-    for(const [entity1, entity2] of this.collisionMap.candidatePairs()) {
-      const collisionPoint = entity1.shape.collisionCheck(entity2.shape);
-      if(!collisionPoint) continue;
-      if (entity1 instanceof Wall && entity2 instanceof Wall) continue;
-      if(entity1 instanceof Bullet && entity2 instanceof Bullet) continue;
-      if((entity1 instanceof Player && entity2 instanceof Bullet) || (entity1 instanceof Bullet && entity2 instanceof Player)) continue;
-
-      // Log all wall collisions
-      if (entity1 instanceof Wall || entity2 instanceof Wall) {
-        const nonWall = entity1 instanceof Wall ? entity2 : entity1;
-        wallCollisions.push([nonWall, collisionPoint]);
-      }
-      entity1.collide(entity2, collisionPoint);
-      entity2.collide(entity1, collisionPoint);
-    }
+    for(const [entity1, entity2] of this.collisionMap.candidatePairs()) mutualCollide(wallCollisions, entity1, entity2);
 
     wallCollisions.forEach(([entity, collisionPoint]) => {
       const collisionDelta = collisionPoint.delta(entity.position);
@@ -266,4 +264,4 @@ class GameEngine {
 
 const gameEngine = new GameEngine();
 
-const thunk = () => {};
+export default gameEngine;

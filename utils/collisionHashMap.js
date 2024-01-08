@@ -1,6 +1,8 @@
+import { CONFIG } from "../config.js";
+
 // Inspired by the Chipmunk library's Collision Hash
 // https://chipmunk-physics.net/release/ChipmunkLatest-Docs/#cpSpace-SpatialHash
-class CollisionHashMap {
+export class CollisionHashMap {
   constructor() {
     this.map = new Map();
   }

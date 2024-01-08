@@ -1,11 +1,12 @@
-const EFFECTS = {
-  layer: {
-    under: "under",
-    above: "above",
-  }
+import { Vector2 } from "../utils/vector2.js";
+import gameEngine from "../core/engine.js";
+
+export const EFFECT_LAYERS = {
+  under: "under",
+  above: "above",
 }
 
-class Effect {
+export class Effect {
   constructor(x, y, animation) {
     this.position = new Vector2(x, y);
     this.animation = animation;
@@ -18,7 +19,7 @@ class Effect {
   }
 }
 
-class CircleEffect extends Effect {
+export class CircleEffect extends Effect {
   constructor(x, y, animation, radius, color) {
     super(x, y, animation);
     this.originalRadius = radius;
@@ -39,7 +40,7 @@ class CircleEffect extends Effect {
   }
 }
 
-class RectEffect extends Effect {
+export class RectEffect extends Effect {
   constructor(xStart, xEnd, yStart, yEnd, animation, color) {
     super((xStart + xEnd)/2, (yStart + yEnd) / 2, animation);
     this.xStart = xStart;
@@ -61,7 +62,7 @@ class RectEffect extends Effect {
   }
 }
 
-class AbstractEffect extends Effect {
+export class AbstractEffect extends Effect {
   constructor(x, y, shapeConstructor, animation, color) {
     super(x, y, animation);
     this.color = color;

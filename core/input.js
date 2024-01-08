@@ -1,3 +1,5 @@
+import { Vector2 } from "../utils/vector2.js";
+
 /**
  * Manages key presses.
  */
@@ -38,7 +40,7 @@ class RawInputManager {
 /**
  * Manages key bindings.
  */
-class GameInputManager {
+export class GameInputManager {
   constructor() {
     this.rawInput = new RawInputManager();
   }

@@ -1,4 +1,4 @@
-class UnionFind {
+export class UnionFind {
   constructor(capacity) {
     this.parent = Array(capacity).fill(0).map((v,i) => i);
     this.size = Array(capacity).fill(1);

@@ -1,4 +1,4 @@
-const COLORS = {
+export const COLORS = {
   wall: "#3A5025",
   floor: "#51733A",
   shadowOnFloor: "#476633",
@@ -9,7 +9,7 @@ const COLORS = {
   towerBullet: "#4CB963"
 };
 
-const SIZES = {
+export const SIZES = {
   wallWidth: 30,
   playerRadius: 15,
   enemyRadius: 10,
@@ -21,14 +21,7 @@ const SIZES = {
   mazeCell: 240,
 };
 
-const CONFIG = {
-  FPS: 60,
-  pixelation: 1,
-  collisionMapChunkSize: 30,
-  mazeGridSize: 16
-};
-
-const WEIGHTS = {
+export const WEIGHTS = {
   repulsion: {
     enemy: 0.24,
     bullet: 10,
@@ -36,7 +29,15 @@ const WEIGHTS = {
   }
 }
 
-const SPEEDS = {
+export const SPEEDS = {
   player: 3,
+  crawler: 1.2,
   bullet: 12,
 }
+
+export const CONFIG = {
+  FPS: 60,
+  pixelation: 1,
+  collisionMapChunkSize: 30,
+  mazeGridSize: 16
+};

@@ -1,4 +1,6 @@
-class Entity {
+import { Vector2 } from "../utils/vector2.js";
+
+export class Entity {
   constructor(x, y) {
     this.position = new Vector2(x, y);
     this.velocity = new Vector2(0,0);

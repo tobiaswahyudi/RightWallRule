@@ -1,4 +1,4 @@
-class CircularBuffer {
+export class CircularBuffer {
   constructor(capacity) {
     this.capacity = capacity;
     this.buffer = [];

@@ -1,5 +1,11 @@
-class Player extends Entity {
-  constructor() {
+import { Entity } from "./entity.js";
+import { PlayerBulletEmitter } from "./bullet.js";
+import { CONFIG, COLORS, SIZES, WEIGHTS, SPEEDS } from "../config.js";
+import { CircleShapedSprite } from "./shapes.js";
+import { CircleEffect, EFFECT_LAYERS } from "./effect.js";
+
+export class Player extends Entity {
+  constructor(gameEngine) {
     super(0, 0);
 
     this.shooty = new PlayerBulletEmitter(this.position, CONFIG.FPS * 0.1);
@@ -7,7 +13,7 @@ class Player extends Entity {
 
     this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.playerRadius, COLORS.shadowOnFloor);
 
-    gameEngine.spawnEffect(EFFECTS.layer.under, this.shadow, -1);
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow, -1);
   }
 
   followMe(xOffset, yOffset) {
@@ -33,5 +39,3 @@ class Player extends Entity {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.player);
   }
 }
-
-const player = new Player();

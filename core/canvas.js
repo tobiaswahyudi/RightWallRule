@@ -1,4 +1,4 @@
-class ScaledCanvas {
+export class ScaledCanvas {
   constructor(canvas, scale) {
     this.canvas = canvas;
     this.scale = scale;

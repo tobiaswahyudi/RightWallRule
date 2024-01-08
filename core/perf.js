@@ -1,9 +1,12 @@
+import { CONFIG } from "../config.js";
+import { CircularBuffer } from "../utils/circularBuffer.js";
+
 /**************************************
  * Performance Counter
  * 
  * Logs frames per second.
  **************************************/
-class PerfCounter {
+export class PerfCounter {
   constructor() {
     this.ticksPerSecond = new CircularBuffer(10);
     this.lastSecondLogged = 0;
