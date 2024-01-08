@@ -1,4 +1,6 @@
-export function SVGRoundedRectangle(xStart, xEnd, yStart, yEnd, cornerRadius) {
+import { UIElement } from "./element.js";
+
+function SVGRoundedRectangle(xStart, xEnd, yStart, yEnd, cornerRadius) {
   return `
     M ${xStart}, ${yStart + cornerRadius}
     A ${cornerRadius} ${cornerRadius} 0 0 1 ${xStart + cornerRadius}, ${yStart}
@@ -13,40 +15,10 @@ export function SVGRoundedRectangle(xStart, xEnd, yStart, yEnd, cornerRadius) {
 }
 
 const HOVER_SIZE_OFFSET = 10;
-const LINE_SPACING = 1.2;
 
-export class UITextBox {
-  constructor(x, y, text, fontSize, color) {
-    this.x = x;
-    this.y = y;
-    this.text = text.split('\n');
-    this.fontSize = fontSize;
-    this.color = color;
-  }
-
-  updateHover() {}
-
-  render(context) {
-    const deltaY = (this.text.length - 1) * (LINE_SPACING * this.fontSize / 2) - (1/3 * this.fontSize);
-
-    context.textAlign = "center";
-    context.font = `${this.fontSize}px Arial`;
-    context.fillStyle = this.color;
-    this.text.forEach((line, rowIdx) => context.fillText(line, this.x, this.y - deltaY + (rowIdx * this.fontSize * LINE_SPACING)));
-  }
-
-  translate(x, y) {
-    this.x += x;
-    this.y += y;
-  }
-
-  get height() {
-    return (this.text.length - 1) * (LINE_SPACING * this.fontSize / 2) + this.fontSize;
-  }
-}
-
-export class UIRoundedRectangle {
+export class UIRoundedRectangle extends UIElement{
   constructor(xStart, xEnd, yStart, yEnd, cornerRadius, fill, stroke, lineWidth, textbox, onClick) {
+    super(0, 0);
     this.xStart = xStart;
     this.xEnd = xEnd;
     this.yStart = yStart;
@@ -70,7 +42,11 @@ export class UIRoundedRectangle {
 
   updateHover(cursorLocation) {
     // TODO: keyboard input selection
-    this.hovered = (this.xStart < cursorLocation.x && cursorLocation.x < this.xEnd) && (this.yStart < cursorLocation.y && cursorLocation.y < this.yEnd);
+    if(this.hovered) {
+      this.hovered = (this.xStart - HOVER_SIZE_OFFSET < cursorLocation.x && cursorLocation.x - HOVER_SIZE_OFFSET < this.xEnd) && (this.yStart - HOVER_SIZE_OFFSET < cursorLocation.y && cursorLocation.y - HOVER_SIZE_OFFSET < this.yEnd);
+    } else {
+      this.hovered = (this.xStart < cursorLocation.x && cursorLocation.x < this.xEnd) && (this.yStart < cursorLocation.y && cursorLocation.y < this.yEnd);
+    }
     return this.hovered;
   }
   

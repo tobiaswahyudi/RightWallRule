@@ -49,6 +49,7 @@ class ScaledCanvasRenderingContext {
   beginPath() { this.context.beginPath() }
   fill(...args) { this.context.fill(...args) }
   stroke(...args) { this.context.stroke(...args) }
+  drawImage(...args) { this.context.drawImage(...args) }
 
   set fillStyle(val) { this.context.fillStyle = val }
   set strokeStyle(val) { this.context.strokeStyle = val }

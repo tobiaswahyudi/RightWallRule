@@ -1,11 +1,11 @@
-import { UIRoundedRectangle } from "../elements.js";
+import { UIRoundedRectangle } from "../elements/roundedrect.js";
 
 const WINDOW_BACKGROUND_COLOR = "#A9E5BB";
 const WINDOW_BORDER_COLOR = "#133F20";
 const WINDOW_BORDER_WIDTH = 8;
-const WINDOW_CORNER_RADIUS = 20;
+const WINDOW_CORNER_RADIUS = 10;
 
-const WINDOW_PADDING = 120;
+const WINDOW_PADDING = 0;
 
 export class UIScreen {
   constructor(width, height, childElements) {
@@ -28,6 +28,7 @@ export class UIScreen {
         accumulatedY += el.height;
       }
     });
+    console.log(accumulatedY - (screenCenterY - height / 2));
     this.elements = childElements.filter(el => (typeof el === 'object'));
   }
 
