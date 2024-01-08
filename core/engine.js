@@ -42,13 +42,14 @@ class GameEngine {
   spawnEntity(type, entity) {
     entity.spawnTick = this.ticks;
     entity._id = `${type}-${crypto.randomUUID()}`;
+    entity._type = type;
     this.entities[type].add(entity);
 
     this.collisionMap.registerEntity(entity);
   }
 
-  deleteEntity(type, entity) {
-    this.entities[type].delete(entity);
+  deleteEntity(entity) {
+    this.entities[entity._type].delete(entity);
     this.collisionMap.deleteEntity(entity);
   }
 

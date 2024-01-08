@@ -72,7 +72,7 @@ class Bullet extends Entity {
   }
 
   collide(other, collisionPoint) {
-    gameEngine.deleteEntity("bullet", this);
+    gameEngine.deleteEntity(this);
     gameEngine.spawnEffect(
       EFFECTS.layer.above,
       new CircleEffect(
