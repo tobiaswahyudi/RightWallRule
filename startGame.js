@@ -5,10 +5,10 @@ gameEngine.input = new GameInputManager();
 
 // Walls
 gameEngine.maze.generateWalls().forEach(([xStart, yStart, xEnd, yEnd]) => {
-  gameEngine.spawnEntity("wall", new Wall(xStart * CONFIG.mazeCellSize, yStart * CONFIG.mazeCellSize, xEnd * CONFIG.mazeCellSize, yEnd  * CONFIG.mazeCellSize));
+  gameEngine.spawnEntity("wall", new Wall(xStart * SIZES.mazeCell, yStart * SIZES.mazeCell, xEnd * SIZES.mazeCell, yEnd  * SIZES.mazeCell));
 })
 
-const mazeTotalSize = CONFIG.mazeGridSize * CONFIG.mazeCellSize;
+const mazeTotalSize = CONFIG.mazeGridSize * SIZES.mazeCell;
 
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, 0, -window.innerHeight, mazeTotalSize + window.innerHeight, thunk, COLORS.enemy));
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, mazeTotalSize + window.innerWidth, -window.innerHeight, 0, thunk, COLORS.enemy));

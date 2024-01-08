@@ -17,14 +17,14 @@ const SIZES = {
   bulletSmokeRadius: {
     min: 2,
     max: 4
-  }
+  },
+  mazeCell: 240,
 };
 
 const CONFIG = {
   FPS: 60,
   pixelation: 1,
   collisionMapChunkSize: 30,
-  mazeCellSize: 240,
   mazeGridSize: 16
 };
 

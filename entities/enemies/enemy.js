@@ -57,8 +57,8 @@ class Spawner extends Entity {
     const quantity = 24 + normalSample() * 8;
     for(let i = 0; i < quantity; i++) {
       gameEngine.spawnEntity("enemy", new CrawlerEnemy(
-        this.position.x + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth) / 3),
-        this.position.y + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth) / 3)
+        this.position.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3),
+        this.position.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3)
       ));
     }
   }

@@ -27,8 +27,8 @@ class CrawlerEnemy extends Enemy {
   }
 
   tick(ticks, player, towers) {
-    const myGridRow = Math.floor(this.position.y / CONFIG.mazeCellSize);
-    const myGridCol = Math.floor(this.position.x / CONFIG.mazeCellSize);
+    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
+    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
 
     const myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 

@@ -7,7 +7,7 @@ class GridCell {
     this.row = row;
     this.col = col;
 
-    this.center = new Vector2(col + 0.5, row + 0.5).scale(CONFIG.mazeCellSize);
+    this.center = new Vector2(col + 0.5, row + 0.5).scale(SIZES.mazeCell);
 
     this.wallCount = 0;
 

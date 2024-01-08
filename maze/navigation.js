@@ -10,7 +10,7 @@ class NavigationPoint {
     this.idx = idx;
     this.row = row;
     this.col = col;
-    this.position = new Vector2(col + rowOffset, row + colOffset).scale(CONFIG.mazeCellSize);
+    this.position = new Vector2(col + rowOffset, row + colOffset).scale(SIZES.mazeCell);
 
     this.neighbors = [];
     this.visited = false;

@@ -109,8 +109,8 @@ class GameEngine {
 
     // Pathfinding
     
-    const playerGridRow = Math.floor(this.player.position.y / CONFIG.mazeCellSize);
-    const playerGridCol = Math.floor(this.player.position.x / CONFIG.mazeCellSize);
+    const playerGridRow = Math.floor(this.player.position.y / SIZES.mazeCell);
+    const playerGridCol = Math.floor(this.player.position.x / SIZES.mazeCell);
     const playerGridSquare = this.maze.grid[playerGridRow][playerGridCol];
 
     if(playerGridSquare != this.playerGridSquareLastTick) {
