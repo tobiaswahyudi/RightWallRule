@@ -131,6 +131,8 @@ class GameEngine {
     } else {
       ////////////// Render UI
       // The game's last render is left in the background
+      this.uiManager.tick(this.input.mousePosition);
+      if(this.input.mouseDown) this.uiManager.click(this.input.mousePosition);
       this.uiManager.render(this.context);
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 100, 0, 100, 50);

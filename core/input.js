@@ -14,6 +14,7 @@ class RawInputManager {
       ["KeyW", "KeyS"],
       ["KeyA", "KeyD"],
     ]
+    this.mousePosition = {x: 0, y: 0};
   }
 
   maintainExclusions(keyCode) {
@@ -35,13 +36,25 @@ class RawInputManager {
     this.pressedKeys.delete(keyCode);
   }
 
+  mouseMove(event) {
+    this.mousePosition.x = event.x;
+    this.mousePosition.y = event.y;
+  }
+
+  mouseDown(event) {
+    this.mouseDown = true;
+  }
+
   setupListeners(window) {
     window.onkeydown = this.keyDown.bind(this);
     window.onkeyup = this.keyUp.bind(this);
+    window.onmousemove = this.mouseMove.bind(this);
+    window.onmousedown = this.mouseDown.bind(this);
   }
 
   tick() {
     this.newlyPressedKeys.clear();
+    this.mouseDown = false;
   }
 }
 
@@ -94,5 +107,13 @@ export class GameInputManager {
 
   tick() {
     this.rawInput.tick();
+  }
+
+  get mousePosition() {
+    return this.rawInput.mousePosition;
+  }
+
+  get mouseDown() {
+    return this.rawInput.mouseDown;
   }
 }

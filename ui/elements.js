@@ -70,7 +70,7 @@ export class UIRoundedRectangle {
 
   updateHover(cursorLocation) {
     // TODO: keyboard input selection
-    this.hovered = (xStart < cursorLocation.x && cursorLocation.x < xEnd) && (yStart < cursorLocation.y && cursorLocation.y < yEnd);
+    this.hovered = (this.xStart < cursorLocation.x && cursorLocation.x < this.xEnd) && (this.yStart < cursorLocation.y && cursorLocation.y < this.yEnd);
     return this.hovered;
   }
   
@@ -79,8 +79,13 @@ export class UIRoundedRectangle {
     context.strokeStyle = this.stroke;
     context.fillStyle = this.fill;
 
-    context.fill(this.path);
-    context.stroke(this.path);
+    if(this.hovered) {
+      context.fill(this.hoverPath);
+      context.stroke(this.hoverPath);
+    } else {
+      context.fill(this.path);
+      context.stroke(this.path);
+    }
 
     if(this.textbox) this.textbox.render(context);
   }

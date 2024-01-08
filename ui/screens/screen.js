@@ -2,7 +2,7 @@ import { UIRoundedRectangle } from "../elements.js";
 
 const WINDOW_BACKGROUND_COLOR = "#A9E5BB";
 const WINDOW_BORDER_COLOR = "#133F20";
-const WINDOW_BORDER_WIDTH = "10";
+const WINDOW_BORDER_WIDTH = 8;
 const WINDOW_CORNER_RADIUS = 20;
 
 const WINDOW_PADDING = 120;

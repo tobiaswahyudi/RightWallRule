@@ -8,4 +8,12 @@ export class UIManager {
   render(context) {
     this.window.render(context);
   }
+
+  tick(mousePosition) {
+    this.window.tick(mousePosition);
+  }
+
+  click(mousePosition) {
+    this.window.click(mousePosition);
+  }
 }
