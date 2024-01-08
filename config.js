@@ -13,10 +13,10 @@ const SIZES = {
   wallWidth: 30,
   playerRadius: 15,
   enemyRadius: 10,
-  bulletRadius: 7.5,
+  bulletRadius: 5,
   bulletSmokeRadius: {
-    min: 5,
-    max: 10
+    min: 2,
+    max: 4
   }
 };
 

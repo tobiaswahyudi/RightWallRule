@@ -18,7 +18,16 @@ gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, m
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(mazeTotalSize, mazeTotalSize + window.innerWidth, -window.innerHeight, mazeTotalSize + window.innerHeight, thunk, COLORS.enemy));
 gameEngine.spawnEffect(EFFECTS.layer.under, new RectEffect(-window.innerWidth, mazeTotalSize + window.innerWidth, mazeTotalSize, mazeTotalSize + window.innerHeight, thunk, COLORS.enemy));
 
-for(let i = 0; i < 100; i++)
-  gameEngine.spawnEntity("enemy", new CrawlerEnemy(SIZES.wallWidth + Math.random() * CONFIG.mazeCellSize * 2, SIZES.wallWidth + Math.random() * CONFIG.mazeCellSize * 2));
+for(let i = 0; i < 50; i++)
+  gameEngine.spawnEntity("enemy", new CrawlerEnemy(
+    (1.5 * CONFIG.mazeCellSize) + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth)),
+    (1.5 * CONFIG.mazeCellSize) + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth))
+  ));
+
+for(let i = 0; i < 50; i++)
+  gameEngine.spawnEntity("enemy", new CrawlerEnemy(
+    (2.5 * CONFIG.mazeCellSize) + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth)),
+    (2.5 * CONFIG.mazeCellSize) + ((Math.random() - 0.5) * (CONFIG.mazeCellSize - 2 * SIZES.wallWidth))
+  ));
 
 gameEngine.start(document.getElementById('the-canvas'), window);
