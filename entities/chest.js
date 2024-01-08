@@ -1,5 +1,5 @@
 import { Entity } from "./entity.js";
-import { CircleShapedSprite, RectShapedSprite } from "./shapes.js";
+import { RectShapedSprite } from "./shapes.js";
 
 import { ChestScreen } from "../ui/screens/chest.js";
 import gameEngine from "../core/engine.js";
@@ -10,6 +10,7 @@ export class Chest extends Entity {
     super(x, y);
     this.innerRadius = 10;
     this.outerRadius = 55;
+    this.opened = false;
     this.shinePath = new Path2D(`
       M ${this.innerRadius * Math.cos(0)}, ${this.innerRadius * Math.sin(0)}
       L ${(this.innerRadius + this.outerRadius) * Math.cos(1/6 * Math.PI)}, ${(this.innerRadius + this.outerRadius) * Math.sin(1/6 * Math.PI)}
@@ -39,12 +40,13 @@ export class Chest extends Entity {
   }
 
   collide(rhs) {
-    if(rhs instanceof Player) {
+    if(rhs instanceof Player && !this.opened) {
       gameEngine.pause();
       gameEngine.uiManager.window = new ChestScreen(() => {
         gameEngine.deleteEntity(this);
         gameEngine.paused = false;
       });
+      this.opened = true;
     }
   }
 }

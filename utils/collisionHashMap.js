@@ -73,6 +73,7 @@ export class CollisionHashMap {
     }
   }
 
+    // In the case where both el1 and el2 are in multiple chunks, they may collide() multiple times.
   *candidatePairs() {
     // return function* pairsGen() {
       for(const [key, chunkSet] of this.map) {
