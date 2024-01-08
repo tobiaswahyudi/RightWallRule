@@ -3,32 +3,32 @@
  * 
  * Pathfinds.
  **************************************/
-function computeNavDistancesTo(navPoints, gridCell) {
+function computeNavDistancesToPlayer(grid, player, playerGridCell) {
   const pq = new MinHeap();
-  navPoints.forEach(point => {
-    point.visited = false;
-    point.distanceToPlayer = 0;
-    point.prev = null;
-  });
+  grid.forEach(row => row.forEach(cell => {
+    cell.visited = false;
+    cell.distanceToPlayer = 0;
+    cell.pathTarget = null;
+  }));
 
-  if(gridCell.northPoint) pq.push({key: 0, point: gridCell.northPoint, prev: null});
-  if(gridCell.southPoint) pq.push({key: 0, point: gridCell.southPoint, prev: null});
-  if(gridCell.eastPoint) pq.push({key: 0, point: gridCell.eastPoint, prev: null});
-  if(gridCell.westPoint) pq.push({key: 0, point: gridCell.westPoint, prev: null});
+  playerGridCell.visited = true;
+  playerGridCell.distanceToPlayer = 0;
+  playerGridCell.pathTarget = player.position;
+
+  playerGridCell.neighbors.forEach(nbor => {
+    pq.push({key: 0, cell: nbor, pathTarget: player.position});
+  })
 
   while(!pq.empty()) {
-  // for(let i = 0; i < 10; i++) {
-    const {key, point, prev} = pq.pop();
-    if(point.visited) continue;
-    console.log(point);
-    point.visited = true;
-    point.distanceToPlayer = key;
-    point.prev = prev;
+    const {key, cell, pathTarget} = pq.pop();
+    if(cell.visited) continue;
+    cell.visited = true;
+    cell.distanceToPlayer = key;
+    cell.pathTarget = pathTarget;
 
-    point.neighbors.forEach(nbor => {
+    cell.neighbors.forEach(nbor => {
       if(nbor.visited) return;
-      pq.push({key: key + point.position.delta(nbor.position).magnitude, point: nbor, prev: point});
+      pq.push({key: key + cell.center.delta(nbor.center).magnitude, cell: nbor, pathTarget: cell.center.copy.add(nbor.center).scale(0.5)});
     })
-    console.log(pq);
   }
 }

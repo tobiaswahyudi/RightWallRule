@@ -79,7 +79,7 @@ class GameEngine {
 
     const boundTick = this.tick.bind(this);
 
-    computeNavDistancesTo(this.maze.navGridPoints, this.maze.grid[0][0]);
+    computeNavDistancesToPlayer(this.maze.grid, this.player, this.maze.grid[0][0]);
 
     function runTick() {
       boundTick();
@@ -106,7 +106,7 @@ class GameEngine {
     const playerGridSquare = this.maze.grid[playerGridRow][playerGridCol];
 
     if(playerGridSquare != this.playerGridSquareLastTick) {
-      computeNavDistancesTo(this.maze.navGridPoints, playerGridSquare);
+      computeNavDistancesToPlayer(this.maze.grid, this.player, playerGridSquare);
       this.playerGridSquareLastTick = playerGridSquare;
     }
 
@@ -219,32 +219,21 @@ class GameEngine {
     this.context.fillStyle = "#00FF00";
     this.context.strokeStyle = "#00FF00";
     this.maze.grid.forEach(row => row.forEach(cell => {
-      if(!cell.E) {
-        this.context.fillRect(cell.eastPoint.position.x - 2, cell.eastPoint.position.y - 2, 4, 4);
-        cell.eastPoint.neighbors.forEach(neighbor => {
-          if(neighbor.idx < cell.eastPoint.idx) {
-            this.context.stroke(new Path2D(`M ${cell.eastPoint.position.x}, ${cell.eastPoint.position.y} L ${neighbor.position.x}, ${neighbor.position.y}`));
-          }
-        });
-      }
-      if(!cell.S) {
-        this.context.fillRect(cell.southPoint.position.x - 2, cell.southPoint.position.y - 2, 4, 4);
-        cell.southPoint.neighbors.forEach(neighbor => {
-          if(neighbor.idx < cell.southPoint.idx) {
-            this.context.stroke(new Path2D(`M ${cell.southPoint.position.x}, ${cell.southPoint.position.y} L ${neighbor.position.x}, ${neighbor.position.y}`));
-          }
-        });
-      }
+      this.context.fillRect(cell.center.x - 2, cell.center.y - 2, 4, 4);
+      cell.neighbors.forEach(neighbor => {
+        if(neighbor.row < cell.row || neighbor.col < cell.col) {
+          this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${neighbor.center.x}, ${neighbor.center.y}`));
+        }
+      });
     }))
 
     this.context.strokeStyle = "#FF0000";
 
-    this.maze.navGridPoints.forEach(point => {
-      if(point.prev) {
-        this.context.stroke(new Path2D(`M ${point.position.x}, ${point.position.y} L ${point.prev.position.x + 10}, ${point.prev.position.y + 5}`));
+    this.maze.grid.forEach(row => row.forEach(cell => {
+      if(cell.pathTarget) {
+        this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${cell.pathTarget.x}, ${cell.pathTarget.y}`));
       }
-    })
-    
+    }));
 
     this.context.resetTransform();
 

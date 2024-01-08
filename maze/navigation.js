@@ -20,55 +20,14 @@ class NavigationPoint {
 }
 
 function generateNavigationGraph(cells) {
-  const gridPoints = [];
-
   cells.forEach((row, rowIdx) => row.forEach((cell, colIdx) => {
-    cell.points = [];
     if(!cell.E) {
-      const eastPoint = new NavigationPoint(gridPoints.length, cell.row, cell.col, 1, 0.5);
-      gridPoints.push(eastPoint);
-      cell.points.push(eastPoint);
-      cell.eastPoint = eastPoint;
-    } else cell.eastPoint = null;
-    if(!cell.S) {
-      const southPoint = new NavigationPoint(gridPoints.length, cell.row, cell.col, 0.5, 1);
-      gridPoints.push(southPoint);
-      cell.points.push(southPoint);
-      cell.southPoint = southPoint;
-    } else cell.southPoint = null;
-    if(!cell.S && !cell.E) {
-      cell.southPoint.neighbors.push(cell.eastPoint);
-      cell.eastPoint.neighbors.push(cell.southPoint);
+      cell.neighbors.push(cells[rowIdx][colIdx + 1]);
+      cells[rowIdx][colIdx + 1].neighbors.push(cell);
     }
-    if(rowIdx != 0 && !cells[rowIdx-1][colIdx].S) {
-      cell.northPoint = cells[rowIdx-1][colIdx].southPoint;
-      cell.points.push(cell.northPoint);
-      if(!cell.S) {
-        cell.northPoint.neighbors.push(cell.southPoint);
-        cell.southPoint.neighbors.push(cell.northPoint);
-      }
-      if(!cell.E) {
-        cell.northPoint.neighbors.push(cell.eastPoint);
-        cell.eastPoint.neighbors.push(cell.northPoint);
-      }
-    } else cell.northPoint = null;
-    if(colIdx != 0 && !cells[rowIdx][colIdx-1].E) {
-      cell.westPoint = cells[rowIdx][colIdx-1].eastPoint;
-      cell.points.push(cell.westPoint);
-      if(!cell.S) {
-        cell.westPoint.neighbors.push(cell.southPoint);
-        cell.southPoint.neighbors.push(cell.westPoint);
-      }
-      if(!cell.E) {
-        cell.westPoint.neighbors.push(cell.eastPoint);
-        cell.eastPoint.neighbors.push(cell.westPoint);
-      }
-      if(!cell.N) {
-        cell.westPoint.neighbors.push(cell.northPoint);
-        cell.northPoint.neighbors.push(cell.westPoint);
-      }
-    } else cell.westPoint = null;
+    if(!cell.S) {
+      cell.neighbors.push(cells[rowIdx + 1][colIdx]);
+      cells[rowIdx + 1][colIdx].neighbors.push(cell);
+    }
   }));
-  
-  return gridPoints;
 }

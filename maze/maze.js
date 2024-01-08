@@ -6,7 +6,12 @@ class GridCell {
     this.S = false;
     this.row = row;
     this.col = col;
+
+    this.center = new Vector2(col + 0.5, row + 0.5).scale(CONFIG.mazeCellSize);
+
     this.wallCount = 0;
+
+    this.neighbors = [];
   }
 }
 
@@ -111,8 +116,7 @@ class Maze {
         if(this.grid[row][col].wallCount == 3) this.deadEnds.push([row, col]);
       }
     }
-
-    this.navGridPoints = generateNavigationGraph(this.grid);
+    generateNavigationGraph(this.grid);
   }
 
   generateWalls() {
