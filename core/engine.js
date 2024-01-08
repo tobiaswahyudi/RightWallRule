@@ -46,6 +46,7 @@ class GameEngine {
     this.collisionMap = new CollisionHashMap();
 
     this.player = new Player(this);
+    this.player._id = "player";
     this.collisionMap.registerEntity(this.player);
 
     this.playerGridSquareLastTick = null;
@@ -122,6 +123,14 @@ class GameEngine {
     requestAnimationFrame(runTick);
   }
 
+  pause() {
+    this.paused = true;
+    // Draw a vignette on the background
+    this.context.resetTransform();
+    this.context.fillStyle = "#00000066";
+    this.context.fillRect(0, 0, this.width, this.height);
+  }
+
   /**************************************
    * Engine tick. Does not call gameTick() if the game is paused.
    * Calls tick() for all entities, then calls this.render().
@@ -133,8 +142,9 @@ class GameEngine {
     if(!this.paused) {
       this.gameTick();
       ////////////// Render game
-      this.render(this.gameTicks);
-    } else {
+      if(!this.paused) this.render(this.gameTicks);
+    }
+    if(this.paused) {
       ////////////// Render UI
       // The game's last render is left in the background
       this.uiManager.tick(this.input.mousePosition);
@@ -142,13 +152,6 @@ class GameEngine {
       this.uiManager.render(this.context);
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 100, 0, 100, 50);
-    }
-    if(this.input.rawInput.newlyPressedKeys.has("KeyE")) {
-      this.paused = !this.paused;
-      // Draw a vignette on the background
-      this.context.resetTransform();
-      this.context.fillStyle = "#00000066";
-      this.context.fillRect(0, 0, this.width, this.height);
     }
     
     this.context.resetTransform();
@@ -215,7 +218,8 @@ class GameEngine {
 
     const wallCollisions = [];
 
-    for(const [entity1, entity2] of this.collisionMap.candidatePairs()) mutualCollide(wallCollisions, entity1, entity2);
+    const candidatePairIterator = this.collisionMap.candidatePairs();
+    for(const [entity1, entity2] of candidatePairIterator) mutualCollide(wallCollisions, entity1, entity2);
 
     wallCollisions.forEach(([entity, collisionPoint]) => {
       const collisionDelta = collisionPoint.delta(entity.position);
@@ -268,6 +272,9 @@ class GameEngine {
     
     // Enemy
     this.entities.enemy.forEach(enemy => enemy.render(this.context));
+
+    // Chest
+    this.entities.chest.forEach(chest => chest.render(this.context, this.gameTicks));
 
     // Bullet
     this.entities.bullet.forEach(bullet => bullet.render(this.context));

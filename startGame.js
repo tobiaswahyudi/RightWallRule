@@ -4,7 +4,7 @@ import { CONFIG, COLORS, SIZES } from "./config.js";
 import { EFFECT_LAYERS, RectEffect } from "./entities/effect.js";
 import { thunk } from "./utils/thunk.js";
 import { coinFlip } from "./utils/random.js";
-import { Spawner } from "./entities/enemies/spawner.js";
+import { Chest } from "./entities/chest.js";
 
 // Walls
 gameEngine.maze.generateWalls().forEach(([xStart, yStart, xEnd, yEnd]) => {
@@ -29,9 +29,9 @@ gameEngine.maze.deadEnds.sort((a,b) => coinFlip(0.5) ? -1 : 1);
 // Take 1 for player location
 gameEngine.player.position.x = gameEngine.maze.deadEnds[0].center.x;
 gameEngine.player.position.y = gameEngine.maze.deadEnds[0].center.y;
-// Take 10 for spawners
+// Take 10 for chests
 gameEngine.maze.deadEnds.slice(1, 11).forEach(cell => {
-  gameEngine.spawnEntity("spawner", new Spawner(cell.center.x, cell.center.y, 8 * CONFIG.FPS));
+  gameEngine.spawnEntity("chest", new Chest(cell.center.x, cell.center.y));
 })
 
 gameEngine.start(document.getElementById('the-canvas'), window);

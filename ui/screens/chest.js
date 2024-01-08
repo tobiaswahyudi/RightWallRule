@@ -16,19 +16,34 @@ const NEW_TURRET_IMAGE = new Image();
 NEW_TURRET_IMAGE.src = "./img/newturret.png";
 
 export class ChestScreen extends UIScreen {
-  constructor() {
+  constructor(resume, uiManager) {
     const children = [
       40,
       72,
       new UITextBox(0, 0, "A box full of\nmagical potting supplies!", 60, TEXT_COLOR),
       40,
-      new UIRoundedRectangle(-380, -140, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Cultivate\nnew gun", 30, TEXT_COLOR), () => alert("gun!")),
+      new UIRoundedRectangle(-380, -140, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Cultivate\nnew gun", 30, TEXT_COLOR),
+        () => {
+          alert("gun!");
+          resume();
+        }
+      ),
       -300,
       new UIImage(-340, 110, NEW_GUN_IMAGE),
-      new UIRoundedRectangle(-120, 120, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Fertilize\ngun or turret", 30, TEXT_COLOR), () => alert("fertilize!")),
+      new UIRoundedRectangle(-120, 120, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Fertilize\ngun or turret", 30, TEXT_COLOR),
+        () => {
+          alert("fertilize!");
+          resume();
+        }
+      ),
       -300,
       new UIImage(-80, 110, UPGRADE_IMAGE),
-      new UIRoundedRectangle(140, 380, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Crossbreed\nnew turret", 30, TEXT_COLOR), () => alert("turret!")),
+      new UIRoundedRectangle(140, 380, 0, 300, 10, BUTTON_BACKGROUND_COLOR, BUTTON_BORDER_COLOR, 6, new UITextBox(0, -100, "Crossbreed\nnew turret", 30, TEXT_COLOR),
+        () => {
+          alert("turret!");
+          resume();
+        }
+      ),
       -300,
       new UIImage(180, 110, NEW_TURRET_IMAGE),
 

@@ -1,8 +1,6 @@
-import { ChestScreen } from "./screens/chest.js";
-
 export class UIManager {
   constructor() {
-    this.window = new ChestScreen();
+    this.window = null;
   }
 
   render(context) {
