@@ -11,12 +11,13 @@ class GameEngine {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
-    this.maze = new Maze(16, 0.64);
+    this.maze = new Maze(CONFIG.mazeGridSize, 0.64);
 
     this.options = {};
     this.entities = {
       wall: new Set(),
       enemy: new Set(),
+      spawner: new Set(),
       bullet: new Set(),
       tower: new Set(),
       chest: new Set(),
@@ -112,6 +113,11 @@ class GameEngine {
     }
 
     ////////////// Headings: want to move
+    // Spawner Tick
+    this.entities.spawner.forEach(spawner => {
+      spawner.tick(this.ticks);
+    });
+    
     // Enemy Headings
     this.entities.enemy.forEach(enemy => {
       this.collisionMap.updateEntity(enemy);
@@ -204,6 +210,9 @@ class GameEngine {
     // Wall
     this.entities.wall.forEach(wall => wall.render(this.context));
 
+    // Spawner
+    this.entities.spawner.forEach(spawner => spawner.render(this.context, this.ticks));
+    
     // Enemy
     this.entities.enemy.forEach(enemy => enemy.render(this.context));
 

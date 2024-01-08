@@ -1,23 +1,3 @@
-class Enemy extends Entity {
-  constructor(x, y, hp) {
-    super(x, y);
-    this.hp = hp;
-    this.maxHp = hp;
-  }
-
-  get shouldRemove() {
-    return this.hp <= 0;
-  }
-
-  tick(ticks, player, towers) {
-    console.error("this Enemy does not override tick()");
-  }
-
-  render(ticks) {
-    console.error("this Enemy does not override tick()");
-  }
-}
-
 class CrawlerEnemy extends Enemy {
   constructor(x, y) {
     super(x, y, 20);
@@ -64,7 +44,7 @@ class CrawlerEnemy extends Enemy {
     this.shape.color = this.colorRange((n - 1) / (n + 3));
 
     if(this.hp <= 0) {
-      gameEngine.deleteEntity("enemy", this);
+      gameEngine.deleteEntity(this);
       gameEngine.deleteEffect(this.shadow);
     }
     this.tickCollisionCounts.push(this.lastTickCollisionCount);
