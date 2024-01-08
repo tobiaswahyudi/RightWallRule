@@ -1,9 +1,9 @@
 class BulletEmitter {
-  constructor(anchorPosition, color = COLORS.towerBullet) {
+  constructor(anchorPosition, fireDelay, color = COLORS.towerBullet) {
     this.color = color;
     this.anchorPosition = anchorPosition;
     this.bulletSpeed = SPEEDS.bullet;
-    this.fireDelay = CONFIG.FPS * 0.3;
+    this.fireDelay = fireDelay;
     this.nextShoot = 0;
   }
 
@@ -17,8 +17,8 @@ class BulletEmitter {
 }
 
 class PlayerBulletEmitter extends BulletEmitter {
-  constructor(anchorPosition) {
-    super(anchorPosition, COLORS.playerBullet);
+  constructor(anchorPosition, fireDelay) {
+    super(anchorPosition, fireDelay, COLORS.playerBullet);
   }
 
   shoot(ticks, direction, isShotgun) {

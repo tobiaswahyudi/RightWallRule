@@ -2,7 +2,7 @@ class Player extends Entity {
   constructor() {
     super(0, 0);
 
-    this.shooty = new PlayerBulletEmitter(this.position);
+    this.shooty = new PlayerBulletEmitter(this.position, CONFIG.FPS * 0.1);
     this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
 
     this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.playerRadius, COLORS.shadowOnFloor);
