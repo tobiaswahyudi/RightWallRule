@@ -137,7 +137,13 @@ class GameEngine {
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 100, 0, 100, 50);
     }
-    if(this.input.rawInput.newlyPressedKeys.has("KeyE")) this.paused = !this.paused;
+    if(this.input.rawInput.newlyPressedKeys.has("KeyE")) {
+      this.paused = !this.paused;
+      // Draw a vignette on the background
+      this.context.resetTransform();
+      this.context.fillStyle = "#00000066";
+      this.context.fillRect(0, 0, this.width, this.height);
+    }
     
     this.context.resetTransform();
     // FPS Counter
