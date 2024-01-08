@@ -9,6 +9,9 @@ import { GameInputManager } from "./input.js";
 import { mutualCollide } from "../entities/collisions.js";
 import { UIManager } from "../ui/manager.js";
 
+import { HUD } from "../ui/hud.js";
+import { InventoryManager } from "./inventory.js";
+
 /**************************************
  * Game Engine Class
  **************************************/
@@ -49,6 +52,9 @@ class GameEngine {
 
     this.input = new GameInputManager();
     this.gameTicks = 0;
+
+    this.inventoryManager = new InventoryManager();
+    this.hud = new HUD(this.inventoryManager);
 
     this.realTicks = 0;
   }
@@ -271,6 +277,9 @@ class GameEngine {
 
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));
+
+    this.context.resetTransform();
+    this.hud.render(this.context);
 
     // // NAVIGATION GRID
     // this.context.fillStyle = "#00FF00";
