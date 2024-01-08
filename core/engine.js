@@ -215,25 +215,25 @@ class GameEngine {
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));
 
-    // NAVIGATION GRID
-    this.context.fillStyle = "#00FF00";
-    this.context.strokeStyle = "#00FF00";
-    this.maze.grid.forEach(row => row.forEach(cell => {
-      this.context.fillRect(cell.center.x - 2, cell.center.y - 2, 4, 4);
-      cell.neighbors.forEach(neighbor => {
-        if(neighbor.row < cell.row || neighbor.col < cell.col) {
-          this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${neighbor.center.x}, ${neighbor.center.y}`));
-        }
-      });
-    }))
+    // // NAVIGATION GRID
+    // this.context.fillStyle = "#00FF00";
+    // this.context.strokeStyle = "#00FF00";
+    // this.maze.grid.forEach(row => row.forEach(cell => {
+    //   this.context.fillRect(cell.center.x - 2, cell.center.y - 2, 4, 4);
+    //   cell.neighbors.forEach(neighbor => {
+    //     if(neighbor.row < cell.row || neighbor.col < cell.col) {
+    //       this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${neighbor.center.x}, ${neighbor.center.y}`));
+    //     }
+    //   });
+    // }))
 
-    this.context.strokeStyle = "#FF0000";
+    // this.context.strokeStyle = "#FF0000";
 
-    this.maze.grid.forEach(row => row.forEach(cell => {
-      if(cell.pathTarget) {
-        this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${cell.pathTarget.x}, ${cell.pathTarget.y}`));
-      }
-    }));
+    // this.maze.grid.forEach(row => row.forEach(cell => {
+    //   if(cell.pathTarget) {
+    //     this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${cell.pathTarget.x}, ${cell.pathTarget.y}`));
+    //   }
+    // }));
 
     this.context.resetTransform();
 
