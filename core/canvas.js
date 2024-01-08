@@ -52,6 +52,7 @@ class ScaledCanvasRenderingContext {
 
   set fillStyle(val) { this.context.fillStyle = val }
   set strokeStyle(val) { this.context.strokeStyle = val }
+  set lineWidth(val) { this.context.lineWidth = val }
   set font(val) { this.context.font = val }
   set textAlign(val) { this.context.textAlign = val }
 }
