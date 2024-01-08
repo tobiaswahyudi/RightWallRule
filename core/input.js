@@ -5,6 +5,7 @@ import { Vector2 } from "../utils/vector2.js";
  */
 class RawInputManager {
   constructor() {
+    this.newlyPressedKeys = new Set();
     this.pressedKeys = new Set();
     // A list of sets of keys; if 
     this.exclusions = [
@@ -22,6 +23,9 @@ class RawInputManager {
 
   keyDown(event) {
     const keyCode = event.code;
+
+    if(!this.pressedKeys.has(keyCode)) this.newlyPressedKeys.add(keyCode);
+
     this.maintainExclusions(keyCode);
     this.pressedKeys.add(keyCode);
   }
@@ -34,6 +38,10 @@ class RawInputManager {
   setupListeners(window) {
     window.onkeydown = this.keyDown.bind(this);
     window.onkeyup = this.keyUp.bind(this);
+  }
+
+  tick() {
+    this.newlyPressedKeys.clear();
   }
 }
 
@@ -82,5 +90,9 @@ export class GameInputManager {
     }
 
     return dir;
+  }
+
+  tick() {
+    this.rawInput.tick();
   }
 }

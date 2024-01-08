@@ -7,6 +7,7 @@ import { computeNavDistancesToPlayer } from "../maze/pathfinding.js";
 import { Player } from "../entities/player.js";
 import { GameInputManager } from "./input.js";
 import { mutualCollide } from "../entities/collisions.js";
+import { UIManager } from "../ui/manager.js";
 
 /**************************************
  * Game Engine Class
@@ -20,6 +21,9 @@ class GameEngine {
 
     this.width = window.innerWidth;
     this.height = window.innerHeight;
+
+    this.paused = false;
+    this.uiManager = new UIManager();
 
     this.maze = new Maze(CONFIG.mazeGridSize, 0.64);
 
@@ -44,7 +48,9 @@ class GameEngine {
     this.playerGridSquareLastTick = null;
 
     this.input = new GameInputManager();
-    this.ticks = 0;
+    this.gameTicks = 0;
+
+    this.realTicks = 0;
   }
   
   /**************************************
@@ -59,7 +65,7 @@ class GameEngine {
       return;
     }
 
-    entity.spawnTick = this.ticks;
+    entity.spawnTick = this.gameTicks;
     entity._id = `${type}-${crypto.randomUUID()}`;
     entity._type = type;
     this.entities[type].add(entity);
@@ -74,8 +80,8 @@ class GameEngine {
 
   // Spawns a new effect.
   spawnEffect(layer, effect, duration) {
-    effect.spawnTick = this.ticks;
-    effect.endTick = this.ticks + duration;
+    effect.spawnTick = this.gameTicks;
+    effect.endTick = this.gameTicks + duration;
     effect._layer = layer;
     this.effects[layer].add(effect);
   }
@@ -111,12 +117,45 @@ class GameEngine {
   }
 
   /**************************************
-   * Game engine tick.
+   * Engine tick. Does not call gameTick() if the game is paused.
    * Calls tick() for all entities, then calls this.render().
    **************************************/
+
   tick() {
     this.perf.logTickStart();
-    this.ticks++;
+    this.realTicks++;
+    if(!this.paused) {
+      this.gameTick();
+      ////////////// Render game
+      this.render(this.gameTicks);
+    } else {
+      ////////////// Render UI
+      // The game's last render is left in the background
+      this.uiManager.render(this.context);
+      this.context.fillStyle = "#000000";
+      this.context.fillRect(this.width - 100, 0, 100, 50);
+    }
+    if(this.input.rawInput.newlyPressedKeys.has("KeyE")) this.paused = !this.paused;
+    
+    this.context.resetTransform();
+    // FPS Counter
+    this.context.font = "15px Arial";
+    this.context.fillStyle = "#00FF00";
+    this.context.textAlign = "right";
+    this.context.fillText(Math.trunc(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
+    this.context.fillText(Math.trunc(this.perf.maxTps), this.width - 15, 33 * CONFIG.pixelation);
+
+    this.input.tick();
+
+    this.perf.logTickEnd();
+  }
+
+  /**************************************
+   * In-game tick.
+   * Calls tick() for all entities, then calls this.render().
+   **************************************/
+  gameTick() {
+    this.gameTicks++;
     // Compute everyone
 
     // Pathfinding
@@ -133,30 +172,30 @@ class GameEngine {
     ////////////// Headings: want to move
     // Spawner Tick
     this.entities.spawner.forEach(spawner => {
-      spawner.tick(this.ticks);
+      spawner.tick(this.gameTicks);
     });
     
     // Enemy Headings
     this.entities.enemy.forEach(enemy => {
       this.collisionMap.updateEntity(enemy);
-      enemy.tick(this.ticks, this.player, this.entities.tower);
+      enemy.tick(this.gameTicks, this.player, this.entities.tower);
     })
 
     // Bullet Headings
     this.entities.bullet.forEach(bullet => {
       this.collisionMap.updateEntity(bullet);
-      bullet.tick(this.ticks);
+      bullet.tick(this.gameTicks);
     })
 
     // Spawn new bullets
     if(this.input.shooting) {
-      const bullets = this.player.shoot(this.ticks, this.input.shootDir, true);
+      const bullets = this.player.shoot(this.gameTicks, this.input.shootDir, true);
       bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
     }
 
     // Player Headings
     this.collisionMap.updateEntity(this.player);
-    this.player.tick(this.ticks, this.input);
+    this.player.tick(this.gameTicks, this.input);
 
     ////////////// Collisions
 
@@ -184,12 +223,8 @@ class GameEngine {
     this.player.move();
 
     // Effects
-    this.effects.under.forEach(effect => effect.tick(this.ticks));
-    this.effects.above.forEach(effect => effect.tick(this.ticks));
-
-    ////////////// Render
-    this.render(this.ticks);
-    // console.log(this)
+    this.effects.under.forEach(effect => effect.tick(this.gameTicks));
+    this.effects.above.forEach(effect => effect.tick(this.gameTicks));
   }
 
   /**************************************
@@ -215,7 +250,7 @@ class GameEngine {
     this.entities.wall.forEach(wall => wall.render(this.context));
 
     // Spawner
-    this.entities.spawner.forEach(spawner => spawner.render(this.context, this.ticks));
+    this.entities.spawner.forEach(spawner => spawner.render(this.context, this.gameTicks));
     
     // Enemy
     this.entities.enemy.forEach(enemy => enemy.render(this.context));
@@ -248,17 +283,6 @@ class GameEngine {
     //     this.context.stroke(new Path2D(`M ${cell.center.x}, ${cell.center.y} L ${cell.pathTarget.x}, ${cell.pathTarget.y}`));
     //   }
     // }));
-
-    this.context.resetTransform();
-
-    // FPS Counter
-    this.context.font = "15px Arial";
-    this.context.fillStyle = "#00FF00";
-    this.context.textAlign = "right";
-    this.context.fillText(Math.trunc(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
-    this.context.fillText(Math.trunc(this.perf.maxTps), this.width - 15, 35 * CONFIG.pixelation);
-
-    this.perf.logTickEnd();
   }
 }
 
