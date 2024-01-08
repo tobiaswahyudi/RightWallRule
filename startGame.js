@@ -35,3 +35,5 @@ gameEngine.maze.deadEnds.slice(1, 11).forEach(cell => {
 })
 
 gameEngine.start(document.getElementById('the-canvas'), window);
+
+window.game = gameEngine;
