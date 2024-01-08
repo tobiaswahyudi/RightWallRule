@@ -79,19 +79,19 @@ class CircleShapedSprite {
           // On left
           if(this.anchorPosition.y < other.yStart) {
             // Above
-            nearestCorner = new Vector2(this.xStart, this.yStart);
+            nearestCorner = new Vector2(other.xStart, other.yStart);
           } else {
             // Below
-            nearestCorner = new Vector2(this.xStart, this.yEnd);
+            nearestCorner = new Vector2(other.xStart, other.yEnd);
           }
         } else {
           // On right
           if(this.anchorPosition.y < other.yStart) {
             // Above
-            nearestCorner = new Vector2(this.xEnd, this.yStart);
+            nearestCorner = new Vector2(other.xEnd, other.yStart);
           } else {
             // Below
-            nearestCorner = new Vector2(this.xEnd, this.yEnd);
+            nearestCorner = new Vector2(other.xEnd, other.yEnd);
           }
         }
         if(this.anchorPosition.delta(nearestCorner).magnitude < this.radius)
