@@ -67,7 +67,7 @@ class Maze {
         if(this.grid[row][col].E && col != this.size - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + 1)) {
           walls.push([idx, 'E']);
         }
-        if(this.grid[row][col].S && row != this.size - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + 16)) {
+        if(this.grid[row][col].S && row != this.size - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + CONFIG.mazeGridSize)) {
           walls.push([idx, 'S']);
         }
       })
@@ -81,7 +81,7 @@ class Maze {
       const row = Math.trunc(idx / this.size);
       const col = idx % this.size;
 
-      const adjacentCellOffset = direction == 'E' ? 1 : 16;
+      const adjacentCellOffset = direction == 'E' ? 1 : CONFIG.mazeGridSize;
 
       this.grid[row][col][direction] = false;
       const yieldingParent = this.unionFind.yieldingParent(idx, idx + adjacentCellOffset);
@@ -113,7 +113,7 @@ class Maze {
           this.grid[row][col+1].wallCount += 1;
           this.grid[row][col+1].W = true;
         }
-        if(this.grid[row][col].wallCount == 3) this.deadEnds.push([row, col]);
+        if(this.grid[row][col].wallCount == 3) this.deadEnds.push(this.grid[row][col]); 
       }
     }
     generateNavigationGraph(this.grid);
