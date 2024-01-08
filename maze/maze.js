@@ -98,14 +98,11 @@ export class Maze {
     for(let row = 0; row < this.size; row++) {
       this.grid[row][0].W = true;
       this.grid[row][0].wallCount++;
-      this.grid[row][this.size - 1].wallCount++;
-      if(this.grid[row][this.size - 1].S) this.grid[row][this.size - 1].wallCount++;
-    }
+      this.grid[row][this.size - 1].wallCount++;    }
     for(let col = 0; col < this.size; col++) {
       this.grid[0][col].N = true;
       this.grid[0][col].wallCount++;
       this.grid[this.size - 1][col].wallCount++;
-      if(this.grid[this.size - 1][col].E) this.grid[this.size - 1][col].wallCount++;
     }
     for(let row = 0; row < this.size; row++) {
       for(let col = 0; col < this.size; col++) {
