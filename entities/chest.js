@@ -32,10 +32,14 @@ export class Chest extends Entity {
   }
 
   render(context, ticks) {
+    context.fillStyle = "#FFFF5555";
+    const yellowStar = new Path2D();
+    yellowStar.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate((ticks / 2.1) + 30).scale(0.7 + 0.2 * Math.sin(ticks / 30)));
+    context.fill(yellowStar);
     context.fillStyle = "#FFFFDD99";
-    const path = new Path2D();
-    path.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(ticks / 2.1).scale(0.85 + 0.15 * Math.sin(ticks / 30)));
-    context.fill(path);
+    const whiteStar = new Path2D();
+    whiteStar.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(ticks / 2.1).scale(0.85 + 0.15 * Math.sin(ticks / 30)));
+    context.fill(whiteStar);
     this.shape.render(context);
   }
 
