@@ -12,6 +12,10 @@ export class InventoryManager {
     if(this.guns.length < this.gunCapacity) this.guns.push(gun);
   }
 
+  addTurret(turret) {
+    if(this.turrets.length < this.turretCapacity) this.turrets.push(turret);
+  }
+
   get selectedGun() {
     return this.guns[this.gunIndex];
   }

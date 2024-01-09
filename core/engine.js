@@ -12,6 +12,7 @@ import { UIManager } from "../ui/manager.js";
 import { HUD } from "../ui/hud.js";
 import { InventoryManager } from "./inventory.js";
 import { Gun, GunStats } from "../guns/gun.js";
+import { Turret, TurretStats } from "../turrets/turret.js";
 
 /**************************************
  * Game Engine Class
@@ -29,7 +30,7 @@ class GameEngine {
     this.paused = false;
     this.uiManager = new UIManager();
 
-    this.maze = new Maze(CONFIG.mazeGridSize, 0.64);
+    this.maze = new Maze(0.64);
 
     this.options = {};
     this.entities = {
@@ -37,7 +38,7 @@ class GameEngine {
       enemy: new Set(),
       spawner: new Set(),
       bullet: new Set(),
-      tower: new Set(),
+      turret: new Set(),
       chest: new Set(),
     };
     this.effects = {
@@ -60,8 +61,13 @@ class GameEngine {
     this.inventoryManager.addGun(new Gun(
       "Peashooter",
       new Image(),
-      "#336605",
+      "#304405",
       new GunStats(5, 1, SPEEDS.bullet, 1, 20)
+    ));
+
+    this.inventoryManager.addTurret(new Turret(
+      new Gun("Green Bean", new Image(), "#002211", new GunStats(2, 4, SPEEDS.bullet, 1, 10)),
+      new TurretStats(50, SIZES.mazeCell)
     ));
     
     this.hud = new HUD(this.inventoryManager);
@@ -194,12 +200,6 @@ class GameEngine {
       enemy.tick(this.gameTicks, this.player, this.entities.tower);
     })
 
-    // Bullet Headings
-    this.entities.bullet.forEach(bullet => {
-      this.collisionMap.updateEntity(bullet);
-      bullet.tick(this.gameTicks);
-    })
-
     // Spawn new bullets
     if(this.input.shooting) {
       const bullets = this.inventoryManager.selectedGun.shoot(
@@ -209,6 +209,28 @@ class GameEngine {
       );
       bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
     }
+
+    // Spawn new turrets
+    if(this.input.rawInput.newlyPressedKeys.has('KeyE')) {
+      if(this.inventoryManager.turrets[0].deployed) {
+        this.inventoryManager.turrets[0].undeploy();
+      } else {
+        this.inventoryManager.turrets[0].deploy(this.player.position);
+      }
+    }
+
+    // Turret Ticks
+    this.entities.turret.forEach(turret => {
+      const bullets = turret.tick(this.gameTicks);
+      if(bullets.length != 0)
+        bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
+    });
+    
+    // Bullet Headings
+    this.entities.bullet.forEach(bullet => {
+      this.collisionMap.updateEntity(bullet);
+      bullet.tick(this.gameTicks);
+    });
 
     // Player Headings
     this.collisionMap.updateEntity(this.player);
@@ -278,6 +300,9 @@ class GameEngine {
 
     // Bullet
     this.entities.bullet.forEach(bullet => bullet.render(this.context));
+
+    // Turret
+    this.entities.turret.forEach(turret => turret.render(this.context));
 
     // Player
     this.player.render(this.context);

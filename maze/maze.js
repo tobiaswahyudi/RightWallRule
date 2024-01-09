@@ -4,6 +4,18 @@ import { UnionFind } from "../utils/unionFind.js";
 import { coinFlip, randomChoice } from "../utils/random.js";
 import { generateNavigationGraph } from "./navigation.js";
 
+
+export function indexifyRowCol(row, col) {
+  return row * CONFIG.mazeGridSize + col;
+}
+
+export function deindexifyRowCol(idx) {
+  const row = Math.trunc(idx / CONFIG.mazeGridSize);
+  const col = idx % CONFIG.mazeGridSize;
+
+  return [row,col];
+}
+
 export class GridCell {
   constructor(row, col) {
     this.N = false;
@@ -22,58 +34,57 @@ export class GridCell {
 }
 
 export class Maze {
-  constructor(size, wallProbability) {
-    this.size = size;
-    this.grid = Array(size).fill(0).map((v, rowIdx) => Array(size).fill(0).map((v, colIdx) => new GridCell(rowIdx, colIdx)));
+  constructor(wallProbability) {
+    this.grid = Array(CONFIG.mazeGridSize).fill(0).map((v, rowIdx) => Array(CONFIG.mazeGridSize).fill(0).map((v, colIdx) => new GridCell(rowIdx, colIdx)));
 
-    this.unionFind = new UnionFind(size * size);
+    this.unionFind = new UnionFind(CONFIG.mazeGridSize * CONFIG.mazeGridSize);
     this.deadEnds = []
 
     this.generate(wallProbability);
   }
 
   generate(wallProbability) {
-    for(let row = 0; row < this.size; row++) {
-      for(let col = 0; col < this.size; col++) {
-        if(col == this.size - 1) {
+    for(let row = 0; row < CONFIG.mazeGridSize; row++) {
+      for(let col = 0; col < CONFIG.mazeGridSize; col++) {
+        if(col == CONFIG.mazeGridSize - 1) {
           this.grid[row][col].E = true;
         } else {
           const wall = coinFlip(wallProbability)
           this.grid[row][col].E = wall;
-          if(!wall) this.unionFind.unite((row * this.size + col), (row * this.size + col + 1));
+          if(!wall) this.unionFind.unite((row * CONFIG.mazeGridSize + col), (row * CONFIG.mazeGridSize + col + 1));
         }
-        if(row == this.size - 1) {
+        if(row == CONFIG.mazeGridSize - 1) {
           this.grid[row][col].S = true;
         } else {
           const wall = coinFlip(wallProbability)
           this.grid[row][col].S = wall;
-          if(!wall) this.unionFind.unite((row * this.size + col), (row * this.size + col + this.size));
+          if(!wall) this.unionFind.unite((row * CONFIG.mazeGridSize + col), (row * CONFIG.mazeGridSize + col + CONFIG.mazeGridSize));
         }
       }
     }
 
     const componentSet = new Set();
 
-    for(let idx = 0; idx < this.size * this.size; idx++) {
+    for(let idx = 0; idx < CONFIG.mazeGridSize * CONFIG.mazeGridSize; idx++) {
       if(this.unionFind.findPar(idx) == idx) componentSet.add(idx);
     }
 
     while(componentSet.size > 1) {
       const component = randomChoice(componentSet, componentSet.size);
       const elements = []
-      for(let idx = 0; idx < this.size * this.size; idx++) {
+      for(let idx = 0; idx < CONFIG.mazeGridSize * CONFIG.mazeGridSize; idx++) {
         if(this.unionFind.findPar(idx) == component) elements.push(idx);
       }
       const walls = []
       elements.forEach(idx => {
-        const row = Math.trunc(idx / this.size);
-        const col = idx % this.size;
+        const row = Math.trunc(idx / CONFIG.mazeGridSize);
+        const col = idx % CONFIG.mazeGridSize;
 
         if(!this.grid[row][col].E && !this.grid[row][col].S) return;
-        if(this.grid[row][col].E && col != this.size - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + 1)) {
+        if(this.grid[row][col].E && col != CONFIG.mazeGridSize - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + 1)) {
           walls.push([idx, 'E']);
         }
-        if(this.grid[row][col].S && row != this.size - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + CONFIG.mazeGridSize)) {
+        if(this.grid[row][col].S && row != CONFIG.mazeGridSize - 1 && this.unionFind.findPar(idx) != this.unionFind.findPar(idx + CONFIG.mazeGridSize)) {
           walls.push([idx, 'S']);
         }
       })
@@ -84,8 +95,7 @@ export class Maze {
 
       const [idx, direction] = randomChoice(walls, walls.length);
 
-      const row = Math.trunc(idx / this.size);
-      const col = idx % this.size;
+      const [row,col] = deindexifyRowCol(idx);
 
       const adjacentCellOffset = direction == 'E' ? 1 : CONFIG.mazeGridSize;
 
@@ -95,23 +105,23 @@ export class Maze {
       this.unionFind.unite(idx, idx + adjacentCellOffset);
     }
 
-    for(let row = 0; row < this.size; row++) {
+    for(let row = 0; row < CONFIG.mazeGridSize; row++) {
       this.grid[row][0].W = true;
       this.grid[row][0].wallCount++;
-      this.grid[row][this.size - 1].wallCount++;    }
-    for(let col = 0; col < this.size; col++) {
+      this.grid[row][CONFIG.mazeGridSize - 1].wallCount++;    }
+    for(let col = 0; col < CONFIG.mazeGridSize; col++) {
       this.grid[0][col].N = true;
       this.grid[0][col].wallCount++;
-      this.grid[this.size - 1][col].wallCount++;
+      this.grid[CONFIG.mazeGridSize - 1][col].wallCount++;
     }
-    for(let row = 0; row < this.size; row++) {
-      for(let col = 0; col < this.size; col++) {
-        if(this.grid[row][col].S && row != this.size - 1) {
+    for(let row = 0; row < CONFIG.mazeGridSize; row++) {
+      for(let col = 0; col < CONFIG.mazeGridSize; col++) {
+        if(this.grid[row][col].S && row != CONFIG.mazeGridSize - 1) {
           this.grid[row][col].wallCount += 1;
           this.grid[row+1][col].wallCount += 1;
           this.grid[row+1][col].N = true;
         }
-        if(this.grid[row][col].E && col != this.size - 1) {
+        if(this.grid[row][col].E && col != CONFIG.mazeGridSize - 1) {
           this.grid[row][col].wallCount += 1;
           this.grid[row][col+1].wallCount += 1;
           this.grid[row][col+1].W = true;
@@ -124,15 +134,15 @@ export class Maze {
 
   generateWalls() {
     const walls = [
-      [0, this.size, 0, 0],
-      [this.size, this.size, 0, this.size],
-      [0, this.size, this.size, this.size],
-      [0, 0, 0, this.size]
+      [0, CONFIG.mazeGridSize, 0, 0],
+      [CONFIG.mazeGridSize, CONFIG.mazeGridSize, 0, CONFIG.mazeGridSize],
+      [0, CONFIG.mazeGridSize, CONFIG.mazeGridSize, CONFIG.mazeGridSize],
+      [0, 0, 0, CONFIG.mazeGridSize]
     ]
 
     let wallStart = null;
-    for(let row = 0; row < this.size - 1; row++) {
-      for(let col = 0; col < this.size; col++) {
+    for(let row = 0; row < CONFIG.mazeGridSize - 1; row++) {
+      for(let col = 0; col < CONFIG.mazeGridSize; col++) {
         if(this.grid[row][col].S) {
           if(wallStart == null) wallStart = col;
         } else if(wallStart != null) {
@@ -141,13 +151,13 @@ export class Maze {
         }
       }
       if(wallStart != null) {
-        walls.push([wallStart, this.size, row + 1, row + 1]);
+        walls.push([wallStart, CONFIG.mazeGridSize, row + 1, row + 1]);
         wallStart = null;
       }
     }
 
-    for(let col = 0; col < this.size - 1; col++) {
-      for(let row = 0; row < this.size; row++) {
+    for(let col = 0; col < CONFIG.mazeGridSize - 1; col++) {
+      for(let row = 0; row < CONFIG.mazeGridSize; row++) {
         if(this.grid[row][col].E) {
           if(wallStart == null) wallStart = row;
         } else if(wallStart != null) {
@@ -156,7 +166,7 @@ export class Maze {
         }
       }
       if(wallStart != null) {
-        walls.push([col+1, col+1, wallStart, this.size]);
+        walls.push([col+1, col+1, wallStart, CONFIG.mazeGridSize]);
         wallStart = null;
       }
     }
