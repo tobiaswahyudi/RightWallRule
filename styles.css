@@ -163,6 +163,21 @@ h5 {
   background-color: #00000066;
 
   margin-bottom: 10px;
+  position: relative;
+}
+
+.key-tag {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  left: 0;
+  top: 0;
+  padding: 2px 6px;
+  border-bottom: 2px solid white;
+  border-right: 2px solid white;
+  border-radius: 0 0 4px 0;
 }
 
 .turret-img {
