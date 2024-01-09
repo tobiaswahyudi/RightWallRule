@@ -13,4 +13,38 @@
     <h1>The game doesn't seem to be working.</h1>
     <h2>Please check that your browser has JavaScript enabled.</h2>
   </canvas>
+  <div id="hud" class="v-flex">
+    <div class="h-flex">
+      <div id="avatar">&#3486;</div>
+      <div class="v-flex">
+        <div id="hpbar-outer">
+          <div id="hpbar-inner"></div>
+        </div>
+        <div class="h-flex"  id="guns-container">
+          <!-- Gun Slots here -->
+        </div>
+      </div>
+    </div>
+    <div id="turrets-container" class="v-flex">
+      <!-- Turret Slots here -->
+    </div>
+  </div>
+  <div id="modal-backdrop" style="display: none;"></div>
+  <dialog id="open-chest" style="display: none;">
+    <h1>A box full of<br>magical potting supplies!</h1>
+    <div class="h-flex">
+      <button class="chest-option">
+        <h3>Cultivate<br>new gun</h3>
+        <img src="./img/newgun.png">
+      </button>
+      <button class="chest-option">
+        <h3>Fertilize<br>gun <small>-or-</small> turret</h3>
+        <img src="./img/upgrade.png">
+      </button>
+      <button class="chest-option">
+        <h3>Crossbreed<br>a new turret</h3>
+        <img src="./img/newturret.png">
+      </button>
+    </div>
+  </dialog>
 </body>

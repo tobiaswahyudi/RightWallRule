@@ -132,14 +132,6 @@ class GameEngine {
     requestAnimationFrame(runTick);
   }
 
-  pause() {
-    this.paused = true;
-    // Draw a vignette on the background
-    this.context.resetTransform();
-    this.context.fillStyle = "#00000066";
-    this.context.fillRect(0, 0, this.width, this.height);
-  }
-
   /**************************************
    * Engine tick. Does not call gameTick() if the game is paused.
    * Calls tick() for all entities, then calls this.render().
@@ -151,14 +143,9 @@ class GameEngine {
     if(!this.paused) {
       this.gameTick();
       ////////////// Render game
-      if(!this.paused) this.render(this.gameTicks);
+      this.render(this.gameTicks);
     }
     if(this.paused) {
-      ////////////// Render UI
-      // The game's last render is left in the background
-      this.uiManager.tick(this.input.mousePosition);
-      if(this.input.mouseDown) this.uiManager.click(this.input.mousePosition);
-      this.uiManager.render(this.context);
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 100, 0, 100, 50);
     }
@@ -297,9 +284,6 @@ class GameEngine {
 
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));
-
-    this.context.resetTransform();
-    this.hud.render(this.context);
 
     // // NAVIGATION GRID
     // this.context.fillStyle = "#00FF00";

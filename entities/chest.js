@@ -1,7 +1,6 @@
 import { Entity } from "./entity.js";
 import { RectShapedSprite } from "./shapes.js";
 
-import { ChestScreen } from "../ui/screens/chest.js";
 import gameEngine from "../core/engine.js";
 import { Player } from "./player.js";
 
@@ -45,8 +44,8 @@ export class Chest extends Entity {
 
   collide(rhs) {
     if(rhs instanceof Player && !this.opened) {
-      gameEngine.pause();
-      gameEngine.uiManager.window = new ChestScreen(() => {
+      gameEngine.paused = true;
+      gameEngine.uiManager.showChestDialog(() => {
         gameEngine.deleteEntity(this);
         gameEngine.paused = false;
       });

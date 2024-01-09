@@ -9,3 +9,124 @@ html, body, canvas {
 canvas {
   image-rendering: pixelated;
 }
+
+h1 {
+  font-size: 60px;
+  font-family: 'Zilla Slab', sans-serif;
+  text-align: center;
+  margin: 10px 0 40px 0;
+  user-select: none;
+}
+
+h3 {
+  font-size: 30px;
+  font-family: 'Zilla Slab', sans-serif;
+  text-align: center;
+  margin: 0 0 24px 0;
+  user-select: none;
+}
+
+dialog {
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 24px 48px;
+}
+
+.h-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.v-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* HUD Display */
+#hud {
+  pointer-events: none;
+  position: absolute;
+  box-sizing: border-box;
+  padding: 10px 0 0 10px;
+}
+
+#avatar {
+  pointer-events: none;
+  height: 120px;
+  flex: 0 0 120px;
+  line-height: 120px;
+  text-align: center;
+  color: white;
+  font-size: 100px;
+  outline: 2px solid white;
+  border-radius: 20px;
+  background-color: #00000066;
+
+  margin-right: 20px;
+
+  user-select: none;
+}
+
+#guns-container {
+  width: 510px;
+}
+
+#hpbar-outer {
+  width: 500px;
+  height: 30px;
+  outline: 2px solid white;
+  border-radius: 5px;
+  background-color: #00000033;
+  
+  margin-bottom: 10px;
+}
+
+#hpbar-inner {
+  background-color: red;
+  width: 39%;
+}
+
+.gun-slot {
+  flex: 0 0 160px;
+  height: 80px;
+
+  outline: 2px solid white;
+  border-radius: 5px;
+  background-color: #00000066;
+
+  margin-right: 10px;
+}
+
+#turrets-container {
+  margin-top: 40px;
+}
+
+.turret-slot {
+  width: 200px;
+  flex: 0 0 120px;
+
+  outline: 2px solid white;
+  border-radius: 5px;
+  background-color: #00000066;
+
+  margin-bottom: 10px;
+}
+
+.chest-option {
+  width: 220px;
+  padding: 24px 0;
+  margin: 0 7.5px;
+}
+
+#modal-backdrop {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: #00000066;
+}

@@ -1,17 +1,31 @@
 export class UIManager {
   constructor() {
-    this.window = null;
+    this.state = null;
+    this.backdrop = document.getElementById('modal-backdrop');
+    this.openChestDialog = document.getElementById('open-chest');
   }
 
-  render(context) {
-    this.window.render(context);
+  show() {
+    this.backdrop.style.display = "block";
+    this[this.state].style.display = "block";
   }
 
-  tick(mousePosition) {
-    this.window.tick(mousePosition);
+  close() {
+    this[this.state].style.display = "none";
+    this.backdrop.style.display = "none";
+    this.state = null;
   }
 
-  click(mousePosition) {
-    this.window.click(mousePosition);
+  showChestDialog(returnFn) {
+    this.state = 'openChestDialog';
+
+    const buttons = this.openChestDialog.children[1].children;
+
+    buttons[0].onclick = () => {
+      this.close();
+      returnFn();
+    }
+
+    this.show();
   }
 }
