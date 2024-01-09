@@ -1,3 +1,10 @@
+* {
+  font-family: 'Zilla Slab', sans-serif;
+  box-sizing: border-box;
+  
+  user-select: none;
+}
+
 html, body, canvas {
   position: absolute;
   margin: 0;
@@ -53,7 +60,7 @@ dialog {
   pointer-events: none;
   position: absolute;
   box-sizing: border-box;
-  padding: 10px 0 0 10px;
+  padding: 24px 0 0 16px;
 }
 
 #avatar {
@@ -63,9 +70,9 @@ dialog {
   line-height: 120px;
   text-align: center;
   color: white;
-  font-size: 100px;
+  font-size: 80px;
   outline: 2px solid white;
-  border-radius: 20px;
+  border-radius: 60px;
   background-color: #00000066;
 
   margin-right: 20px;
@@ -74,27 +81,28 @@ dialog {
 }
 
 #guns-container {
-  width: 510px;
+  width: 630px;
 }
 
 #hpbar-outer {
-  width: 500px;
-  height: 30px;
+  width: 620px;
+  height: 18px;
   outline: 2px solid white;
   border-radius: 5px;
-  background-color: #00000033;
+  background-color: #66444477;
   
   margin-bottom: 10px;
 }
 
 #hpbar-inner {
   background-color: red;
+  height: 100%;
   width: 39%;
 }
 
 .gun-slot {
-  flex: 0 0 160px;
-  height: 80px;
+  flex: 0 0 200px;
+  height: 92px;
 
   outline: 2px solid white;
   border-radius: 5px;
@@ -103,19 +111,85 @@ dialog {
   margin-right: 10px;
 }
 
+.gun-img {
+  margin: 0 8px;
+  image-rendering: pixelated;
+}
+
+.gun-info {
+  height: 100%;
+  border-left: 2px solid white;
+}
+
+.gun-stats {
+  flex: 1;
+  padding: 8px 0 0 8px;
+  border-top: 2px solid white;
+  width: 100%;
+}
+
+.gun-stat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: white;
+}
+
+.stat-img {
+  filter: invert(1);
+  margin-top: 4px;
+  margin-bottom: -4px;
+}
+
+.stat-img-col2 {
+  margin-left: 45px;
+  margin-right: -61px;
+}
+
+h5 {
+  margin: 8px 0 8px 8px;
+  font-weight: 600;
+}
+
 #turrets-container {
   margin-top: 40px;
 }
 
 .turret-slot {
-  width: 200px;
-  flex: 0 0 120px;
+  width: 214px;
+  flex: 0 0 144px;
 
   outline: 2px solid white;
   border-radius: 5px;
   background-color: #00000066;
 
   margin-bottom: 10px;
+}
+
+.turret-img {
+  margin: 0 16px 24px;
+  image-rendering: pixelated;
+}
+
+.turret-base-img {
+  margin: 8px -46px 0 16px;
+  image-rendering: pixelated;
+}
+
+.turret-deployment-status {
+  margin: 0 8px 8px 8px;
+}
+
+.turret-hpbar-outer {
+  flex: 0 0 6px;
+  width: 128px;
+  margin: 0 16px 8px 8px;
+  background-color: #FFAAAACC;
+}
+
+.turret-hpbar-inner {
+  background-color: red;
+  height: 100%;
+  width: 39%; 
 }
 
 .chest-option {

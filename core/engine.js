@@ -60,13 +60,13 @@ class GameEngine {
 
     this.inventoryManager.addGun(new Gun(
       "Peashooter",
-      new Image(),
+      "./img/guns/peashooter.png",
       "#304405",
-      new GunStats(5, 1, SPEEDS.bullet, 1, 20)
+      new GunStats(1, 6, SPEEDS.bullet, 1, 5)
     ));
 
     this.inventoryManager.addTurret(new Turret(
-      new Gun("Green Bean", new Image(), "#002211", new GunStats(2, 4, SPEEDS.bullet, 1, 10)),
+      new Gun("Double Peashooter", "./img/guns/peashooter.png", "#002211", new GunStats(2, 3, SPEEDS.bullet, 1, 10)),
       new TurretStats(50, SIZES.mazeCell)
     ));
     

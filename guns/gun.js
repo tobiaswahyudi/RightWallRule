@@ -1,5 +1,6 @@
 import { CONFIG } from "../config.js";
 import { Bullet } from "../entities/bullet.js";
+import { ImageSrc } from "../utils/image.js";
 
 const MULTISHOT_SPREAD = 2;
 
@@ -18,9 +19,10 @@ export class GunStats {
 }
 
 export class Gun {
-  constructor(name, image, bulletColor, gunStats) {
+  constructor(name, imgSrc, bulletColor, gunStats) {
     this.name = name;
-    this.image = image;
+    this.imgSrc = imgSrc;
+    this.image = ImageSrc(imgSrc);
     this.color = bulletColor;
     this.stats = gunStats;
 
