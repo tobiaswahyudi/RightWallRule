@@ -6,48 +6,6 @@ import gameEngine from "../core/engine.js";
 import { EFFECT_LAYERS, CircleEffect } from "./effect.js";
 import { thunk } from "../utils/thunk.js";
 
-export class BulletEmitter {
-  constructor(anchorPosition, fireDelay, color = COLORS.towerBullet) {
-    this.color = color;
-    this.anchorPosition = anchorPosition;
-    this.bulletSpeed = SPEEDS.bullet;
-    this.fireDelay = fireDelay;
-    this.nextShoot = 0;
-  }
-
-  shoot(ticks, direction) {
-    if(ticks >= this.nextShoot) {
-      this.nextShoot = ticks + this.fireDelay;
-      return [new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction, this.bulletSpeed)];
-    }
-    return [];
-  }
-}
-
-export class PlayerBulletEmitter extends BulletEmitter {
-  constructor(anchorPosition, fireDelay) {
-    super(anchorPosition, fireDelay, COLORS.playerBullet);
-  }
-
-  shoot(ticks, direction, isShotgun) {
-    if(ticks >= this.nextShoot) {
-      if(isShotgun) {
-        this.nextShoot = ticks + 3 * this.fireDelay;
-        const bullets = [];
-        for(let i = 0; i < 5; i++) {
-          const deltaAngle = (Math.random() * 2 - 1) * 10;
-          bullets.push(new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction.rotate(deltaAngle), this.bulletSpeed));
-        }
-        return bullets;
-      } else {
-        this.nextShoot = ticks + this.fireDelay;
-        return [new Bullet(this.anchorPosition.x, this.anchorPosition.y, this.color, direction, this.bulletSpeed)];
-      }
-    }
-    return [];
-  }
-}
-
 export class Bullet extends Entity {
   constructor(x, y, color, heading, speed) {
     super(x, y);

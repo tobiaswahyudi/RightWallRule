@@ -1,6 +1,6 @@
 import { PerfCounter } from "./perf.js";
 import { Maze } from "../maze/maze.js";
-import { SIZES, CONFIG, COLORS } from "../config.js";
+import { SIZES, CONFIG, COLORS, SPEEDS } from "../config.js";
 import { CollisionHashMap } from "../utils/collisionHashMap.js";
 import { ScaledCanvas } from "./canvas.js";
 import { computeNavDistancesToPlayer } from "../maze/pathfinding.js";
@@ -11,6 +11,7 @@ import { UIManager } from "../ui/manager.js";
 
 import { HUD } from "../ui/hud.js";
 import { InventoryManager } from "./inventory.js";
+import { Gun, GunStats } from "../guns/gun.js";
 
 /**************************************
  * Game Engine Class
@@ -55,8 +56,16 @@ class GameEngine {
     this.gameTicks = 0;
 
     this.inventoryManager = new InventoryManager();
-    this.hud = new HUD(this.inventoryManager);
 
+    this.inventoryManager.addGun(new Gun(
+      "Peashooter",
+      new Image(),
+      "#336605",
+      new GunStats(5, 1, SPEEDS.bullet, 1, 20)
+    ));
+    
+    this.hud = new HUD(this.inventoryManager);
+    
     this.realTicks = 0;
   }
   
@@ -206,7 +215,11 @@ class GameEngine {
 
     // Spawn new bullets
     if(this.input.shooting) {
-      const bullets = this.player.shoot(this.gameTicks, this.input.shootDir, true);
+      const bullets = this.inventoryManager.selectedGun.shoot(
+        this.gameTicks,
+        this.input.shootDir.scale(SIZES.playerRadius).add(this.player.position),
+        this.input.shootDir
+      );
       bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
     }
 
