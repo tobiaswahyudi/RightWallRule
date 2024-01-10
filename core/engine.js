@@ -195,6 +195,11 @@ class GameEngine {
     this.entities.spawner.forEach(spawner => {
       spawner.tick(this.gameTicks);
     });
+
+    // Chest Tick
+    this.entities.chest.forEach(chest => {
+      chest.tick(this.gameTicks);
+    });
     
     // Enemy Headings
     this.entities.enemy.forEach(enemy => {

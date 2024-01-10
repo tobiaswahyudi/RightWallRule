@@ -5,7 +5,8 @@ import gameEngine from "../core/engine.js";
 import { Player } from "./player.js";
 
 import { Spawner } from "./enemies/spawner.js";
-import { CONFIG } from "../config.js";
+import { CONFIG, SIZES } from "../config.js";
+import { AbstractEffect, EFFECT_LAYERS } from "./effect.js";
 
 export class Chest extends Entity {
   constructor(x, y) {
@@ -31,6 +32,28 @@ export class Chest extends Entity {
     `);
 
     this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, "#EEFFEE");
+    this.effect = new AbstractEffect(x, y);
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
+  }
+
+  tick() {
+    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
+    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
+
+    let myCell = gameEngine.maze.grid[myGridRow][myGridCol];
+
+    const coords = [];
+    do {
+      coords.push(myCell.center);
+      myCell = myCell.nextCell;
+    } while (myCell);
+    coords.push(gameEngine.player.position);
+
+    if(coords.length < 2) return;
+
+    this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
+    this.effect.stroke = "#000044";
+    this.effect.strokeWidth = 2;
   }
 
   render(context, ticks) {
@@ -50,6 +73,7 @@ export class Chest extends Entity {
       gameEngine.paused = true;
       gameEngine.uiManager.showChestDialog(() => {
         gameEngine.deleteEntity(this);
+        gameEngine.deleteEffect(this.effect);
         gameEngine.paused = false;
 
         gameEngine.claimedChests++;
@@ -58,6 +82,7 @@ export class Chest extends Entity {
           console.log("Spawner");
           const unlucky = [...gameEngine.entities.chest][0];
           gameEngine.deleteEntity(unlucky);
+          gameEngine.deleteEffect(unlucky.effect);
           gameEngine.spawnEntity("spawner", new Spawner(unlucky.position.x, unlucky.position.y, 8 * CONFIG.FPS));
         }
       });
