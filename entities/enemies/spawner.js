@@ -1,5 +1,5 @@
 import { CrawlerEnemy } from "./crawler.js";
-import { SIZES } from "../../config.js";
+import { CONFIG, SIZES, SPEEDS } from "../../config.js";
 import { CircleShapedSprite } from "./../shapes.js";
 import gameEngine from "../../core/engine.js";
 import { Entity } from "../entity.js";
@@ -31,23 +31,54 @@ export class Spawner extends Entity {
     // 100 * sin(3.14159 * 1/3)
 
     this.shape = new CircleShapedSprite(this.position, 15, "#000044");
+
+    this.lastSentinel = null;
   }
 
   tick(ticks) {
-    if(ticks > this.lastSpawn + this.spawnDelay) {
-      this.lastSpawn = ticks;
-      this.spawnHorde();
+    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
+    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
+
+    let myCell = gameEngine.maze.grid[myGridRow][myGridCol];
+    let lastEdgeCell = myCell;
+    let distance = myCell.distanceToPlayer;
+
+    while(myCell && myCell.nextCell) {
+      if(gameEngine.edgeCells.has(myCell)) lastEdgeCell = myCell;
+      myCell = myCell.nextCell;
+    }
+
+    distance -= lastEdgeCell.distanceToPlayer;
+
+    const ticksToDistance = distance / (CONFIG.FPS/2 * SPEEDS.crawler * 0.8);
+
+    if(ticks > this.lastSpawn + this.spawnDelay + ticksToDistance) {
+      this.lastSpawn = ticks - ticksToDistance;
+      this.spawnHorde(lastEdgeCell.center, ticks - ticksToDistance);
     }
   }
 
-  spawnHorde() {
+  resetSpawn(ticks) {
+    return (sentinel) => {
+      if(sentinel == this.lastSentinel) this.lastSpawn = ticks - this.spawnDelay;
+    }
+  }
+
+  spawnHorde(position, ticks) {
     const quantity = 24 + normalSample() * 8;
-    for(let i = 0; i < quantity; i++) {
+    for(let i = 1; i < quantity; i++) {
       gameEngine.spawnEntity("enemy", new CrawlerEnemy(
-        this.position.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3),
-        this.position.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3)
+        position.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3),
+        position.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3)
       ));
     }
+    const sentinel = new CrawlerEnemy(
+      position.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3),
+      position.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3)
+    );
+    sentinel.designateAsSentinel(this.resetSpawn(ticks));
+    this.lastSentinel = sentinel;
+    gameEngine.spawnEntity("enemy", sentinel);
   }
 
   collide() {

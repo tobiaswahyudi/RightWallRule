@@ -11,6 +11,10 @@ export class Enemy extends Entity {
     return this.hp <= 0;
   }
 
+  designateAsSentinel(sentinelAction) {
+    this.sentinelAction = sentinelAction;
+  }
+
   tick(ticks, player, towers) {
     console.error("this Enemy does not override tick()");
   }

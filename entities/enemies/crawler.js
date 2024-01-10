@@ -44,6 +44,10 @@ export class CrawlerEnemy extends Enemy {
       // Cull self
       gameEngine.deleteEntity(this);
       gameEngine.deleteEffect(this.shadow);
+
+      // If the sentinel is culled, take corrective action
+      if(this.sentinelAction) this.sentinelAction(this);
+
       return;
     }
 
