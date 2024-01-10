@@ -156,7 +156,7 @@ class GameEngine {
     }
     if(this.paused) {
       this.context.fillStyle = "#000000";
-      this.context.fillRect(this.width - 100, 0, 100, 50);
+      this.context.fillRect(this.width - 100, 0, 100, 54);
     }
     
     this.context.resetTransform();
@@ -164,8 +164,9 @@ class GameEngine {
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
-    this.context.fillText(Math.trunc(this.perf.fps), this.width - 15, 15 * CONFIG.pixelation);
-    this.context.fillText(Math.trunc(this.perf.maxTps), this.width - 15, 33 * CONFIG.pixelation);
+    this.context.fillText(this.perf.fps.toFixed(0) + ' FPS', this.width - 15, 15 * CONFIG.pixelation);
+    this.context.fillText(this.perf.tickAvg.toFixed(2) + 'ms/t', this.width - 15, 33 * CONFIG.pixelation);
+    this.context.fillText(this.perf.maxTps.toFixed(0) + ' Max', this.width - 15, 51 * CONFIG.pixelation);
 
     this.input.tick();
 

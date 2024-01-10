@@ -42,6 +42,12 @@ export class PerfCounter {
     return total/this.ticksPerSecond.length;
   }
 
+  get tickAvg() {
+    if(this.tickDurations.length == 0) return 0;
+    const total = this.tickDurations.reduce((a,b) => a+b);
+    return total/this.tickDurations.length;
+  }
+
   get maxTps() {
     if(this.tickDurations.length == 0) return 0;
     const total = this.tickDurations.reduce((a,b) => a+b);
