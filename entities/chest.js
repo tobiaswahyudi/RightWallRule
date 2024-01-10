@@ -79,7 +79,6 @@ export class Chest extends Entity {
         gameEngine.claimedChests++;
 
         for(let i = 0; i < gameEngine.claimedChests; i++) {
-          console.log("Spawner");
           const unlucky = [...gameEngine.entities.chest][0];
           gameEngine.deleteEntity(unlucky);
           gameEngine.deleteEffect(unlucky.effect);

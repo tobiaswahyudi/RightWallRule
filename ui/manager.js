@@ -54,7 +54,6 @@ export class UIManager {
     }
 
     inventory.guns.forEach((gun, idx) => {
-      console.log(gun, idx);
       const slot = new GunSlot(gunSlotsCtr, gun);
       slot.node.classList.add('hoverable');
       slot.node.onclick = () => {
