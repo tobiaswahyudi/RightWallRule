@@ -46,6 +46,12 @@ export class Vector2 {
     return new Vector2(this.x * Math.cos(theta) + this.y * Math.sin(theta), this.y * Math.cos(theta) - this.x * Math.sin(theta));
   }
 
+  // Returns the CCW angle in radians between this vector and (1, 0);
+  get theta() {
+    if(this.x >= 0) return Math.atan(this.y / this.x);
+    return Math.PI + Math.atan(this.y / this.x);
+  }
+
   // Returns this vector rotated 90 degrees.
   perp() {
     return this.rotate(90);

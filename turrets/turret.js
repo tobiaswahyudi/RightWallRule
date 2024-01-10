@@ -3,6 +3,7 @@ import gameEngine from "../core/engine.js";
 import { Entity } from "../entities/entity.js";
 import { CircleShapedSprite } from "../entities/shapes.js";
 import { indexifyRowCol } from "../maze/maze.js";
+import { Vector2 } from "../utils/vector2.js";
 
 export const TURRET_TARGETING_TENDENCY = {
   NEAREST_FIRST: "Nearest First",
@@ -30,6 +31,8 @@ export class Turret extends Entity {
 
     this.adjacentCells = new Set();
     this.nearbyEnemies = new Set();
+
+    this.targetDirection = new Vector2(1, 0);
 
     this.shape = new CircleShapedSprite(this.position, 15, "#223366");
   }
@@ -90,13 +93,22 @@ export class Turret extends Entity {
 
     if(nearestEnemyDistance > this.stats.targetingRange) return [];
 
-    const dir = nearestEnemy.position.delta(this.position).normalize();
-    return this.gun.shoot(ticks, this.position, dir.normalize());
+    this.targetDirection = nearestEnemy.position.delta(this.position).normalize();
+    return this.gun.shoot(ticks, this.position, this.targetDirection.normalize());
   }
 
   render(context) {
     if(!this.deployed) throw new Error("Attempting to render not-deployed turret");
     this.shape.render(context);
+    
+    context.save();
+    context.translate(this.position.x, this.position.y);
+    context.rotate(this.targetDirection.theta);
+    if(this.targetDirection.x < 0) {
+      context.scale(1, -1);
+    }
+    context.drawImage(this.gun.image, 15-16, -10);
+    context.restore();
   }
 
   collide(other, collisionPoint) {

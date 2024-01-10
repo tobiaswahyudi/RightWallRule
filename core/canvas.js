@@ -1,10 +1,10 @@
 export class ScaledCanvas {
-  constructor(canvas, scale) {
+  constructor(canvas, scaleRatio) {
     this.canvas = canvas;
-    this.scale = scale;
+    this.scaleRatio = scaleRatio;
 
-    this.canvas.width = window.innerWidth/scale;
-    this.canvas.height = window.innerHeight/scale;
+    this.canvas.width = window.innerWidth/scaleRatio;
+    this.canvas.height = window.innerHeight/scaleRatio;
   }
 
   getContext(type) {
@@ -12,14 +12,14 @@ export class ScaledCanvas {
       // Whaddaya tryna pull?
       console.error("No 3d, deal with it?");
     }
-    return new ScaledCanvasRenderingContext(this.canvas.getContext('2d'), this.scale);
+    return new ScaledCanvasRenderingContext(this.canvas.getContext('2d'), this.scaleRatio);
   }
 }
 
 class ScaledCanvasRenderingContext {
-  constructor(context, scale) {
+  constructor(context, scaleRatio) {
     this.context = context;
-    this.scale = scale;
+    this.scaleRatio = scaleRatio;
 
     // turn off image aliasing
     this.context.msImageSmoothingEnabled = false;
@@ -29,27 +29,31 @@ class ScaledCanvasRenderingContext {
   }
 
   fillRect(x, y, width, height) {
-    this.context.fillRect(x/this.scale, y/this.scale, width/this.scale, height/this.scale);
+    this.context.fillRect(x/this.scaleRatio, y/this.scaleRatio, width/this.scaleRatio, height/this.scaleRatio);
   }
 
   strokeRect(x, y, width, height) {
-    this.context.strokeRect(x/this.scale, y/this.scale, width/this.scale, height/this.scale);
+    this.context.strokeRect(x/this.scaleRatio, y/this.scaleRatio, width/this.scaleRatio, height/this.scaleRatio);
   }
 
   ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, counterclockwise = false) {
-    this.context.ellipse(x/this.scale, y/this.scale, radiusX/this.scale, radiusY/this.scale, rotation, startAngle, endAngle, counterclockwise);
+    this.context.ellipse(x/this.scaleRatio, y/this.scaleRatio, radiusX/this.scaleRatio, radiusY/this.scaleRatio, rotation, startAngle, endAngle, counterclockwise);
   }
 
   fillText(text, x, y, maxWidth = undefined) {
-    this.context.fillText(text, x/this.scale, y/this.scale, maxWidth ? maxWidth/this.scale : undefined);
+    this.context.fillText(text, x/this.scaleRatio, y/this.scaleRatio, maxWidth ? maxWidth/this.scaleRatio : undefined);
   }
 
-  translate(x, y) { this.context.translate(x/this.scale, y/this.scale) }
+  translate(x, y) { this.context.translate(x/this.scaleRatio, y/this.scaleRatio) }
   resetTransform() { this.context.resetTransform() }
   beginPath() { this.context.beginPath() }
   fill(...args) { this.context.fill(...args) }
   stroke(...args) { this.context.stroke(...args) }
   drawImage(...args) { this.context.drawImage(...args) }
+  save(...args) { this.context.save(...args) }
+  restore(...args) { this.context.restore(...args) }
+  rotate(...args) { this.context.rotate(...args) }
+  scale(...args) { this.context.scale(...args) }
 
   set fillStyle(val) { this.context.fillStyle = val }
   set strokeStyle(val) { this.context.strokeStyle = val }
