@@ -46,6 +46,8 @@ class GameEngine {
       above: new Set()
     };
     this.collisionMap = new CollisionHashMap();
+    this.screenCells = new Set();
+    this.edgeCells = new Set();
 
     this.player = new Player(this);
     this.player._id = "player";
@@ -205,6 +207,34 @@ class GameEngine {
     if(playerGridSquare != this.playerGridSquareLastTick) {
       computeNavDistancesToPlayer(this.maze.grid, this.player, playerGridSquare);
       this.playerGridSquareLastTick = playerGridSquare;
+
+      const leftBound = Math.floor((playerGridSquare.center.x - (this.width / 2)) / SIZES.mazeCell) - 1;
+      const topBound = Math.floor((playerGridSquare.center.y - (this.height / 2)) / SIZES.mazeCell) - 1;
+      const rightBound = Math.floor((playerGridSquare.center.x + (this.width / 2)) / SIZES.mazeCell) + 1;
+      const bottomBound = Math.floor((playerGridSquare.center.y + (this.height / 2)) / SIZES.mazeCell) + 1;
+
+      this.screenCells.clear();
+      this.edgeCells.clear();
+
+      for(let i = leftBound; i <= rightBound; i++) {
+        if(0 <= i && i < CONFIG.mazeGridSize) {
+          if(0 <= topBound) this.edgeCells.add(this.maze.grid[topBound][i]);
+          if(bottomBound < CONFIG.mazeGridSize) this.edgeCells.add(this.maze.grid[bottomBound][i]);
+        }
+      }
+      for(let i = topBound; i <= bottomBound; i++) {
+        if(0 <= i && i < CONFIG.mazeGridSize) {
+          if(0 <= leftBound) this.edgeCells.add(this.maze.grid[i][leftBound]);
+          if(rightBound < CONFIG.mazeGridSize) this.edgeCells.add(this.maze.grid[i][rightBound]);
+        }
+      }
+      for(let i = topBound + 1; i < bottomBound; i++) {
+        for(let j = leftBound + 1; j < rightBound; j++) {
+          if(0 <= i && i < CONFIG.mazeGridSize)  if(0 <= j && j < CONFIG.mazeGridSize) {
+            this.screenCells.add(this.maze.grid[i][j]);
+          }
+        }
+      }
     }
 
     ////////////// Headings: want to move

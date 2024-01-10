@@ -39,6 +39,14 @@ export class CrawlerEnemy extends Enemy {
 
     const myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 
+    // Outside screen space
+    if(!gameEngine.screenCells.has(myCell) && !gameEngine.edgeCells.has(myCell)) {
+      // Cull self
+      gameEngine.deleteEntity(this);
+      gameEngine.deleteEffect(this.shadow);
+      return;
+    }
+
     const target = myCell.pathTarget;
     
     this.velocity = target.delta(this.position).normalize().scale(SPEEDS.crawler);
