@@ -62,6 +62,11 @@ h3 {
   filter: invert(1);
 }
 
+.h3-button {
+  padding: 2rem 3rem 0;
+  display: block;
+}
+
 /* HUD Display */
 #hud {
   pointer-events: none;
@@ -260,7 +265,7 @@ dialog {
   padding-left: 10px;
 }
 
-#discard-new-gun {
-  margin: auto;
-  padding: 2rem 3rem 0;
+#pause-game > button {
+  width: 100%;
+  margin-bottom: 10px;
 }

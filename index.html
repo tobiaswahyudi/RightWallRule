@@ -31,6 +31,13 @@
     </div>
   </div>
   <div id="modal-backdrop" style="display: none;"></div>
+  <dialog id="pause-game" style="display: none;">
+    <h1>Game Paused</h1>
+    <button class="h3-button hoverable"><h3>Resume</h3></button>
+    <button class="h3-button hoverable"><h3>Options</h3></button>
+    <button class="h3-button hoverable"><h3>Controls</h3></button>
+    <button class="h3-button hoverable"><h3>Restart Game</h3></button>
+  </dialog>
   <dialog id="open-chest" style="display: none;">
     <h1>A box full of<br>magical potting supplies!</h1>
     <div class="h-flex">
@@ -57,7 +64,7 @@
     </div>
     <h2>-or-</h2>
     <div class="h-flex">
-      <button id="discard-new-gun"><h3>Discard the new gun</h3></button>
+      <button id="discard-new-gun" class="h3-button hoverable"><h3>Discard the new gun</h3></button>
     </div>
   </dialog>
 </body>

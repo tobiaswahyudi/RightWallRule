@@ -153,10 +153,14 @@ class GameEngine {
       this.gameTick();
       ////////////// Render game
       this.render(this.gameTicks);
-    }
-    if(this.paused) {
+    } else {
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 100, 0, 100, 54);
+
+      if(this.input.rawInput.newlyPressedKeys.has('Escape') && this.uiManager._state == "pauseDialog") {
+        this.paused = false;
+        this.uiManager.closeDialog();
+      }
     }
     
     this.context.resetTransform();
@@ -179,7 +183,14 @@ class GameEngine {
    **************************************/
   gameTick() {
     this.gameTicks++;
-    // Compute everyone
+    
+    if(this.input.rawInput.newlyPressedKeys.has('Escape')) {
+      this.paused = true;
+      this.uiManager.showPauseDialog(() => {
+        this.paused = false;
+        this.uiManager.closeDialog();
+      });
+    }
 
     // Pathfinding
     
