@@ -4,6 +4,9 @@ import { RectShapedSprite } from "./shapes.js";
 import gameEngine from "../core/engine.js";
 import { Player } from "./player.js";
 
+import { Spawner } from "./enemies/spawner.js";
+import { CONFIG } from "../config.js";
+
 export class Chest extends Entity {
   constructor(x, y) {
     super(x, y);
@@ -48,6 +51,15 @@ export class Chest extends Entity {
       gameEngine.uiManager.showChestDialog(() => {
         gameEngine.deleteEntity(this);
         gameEngine.paused = false;
+
+        gameEngine.claimedChests++;
+
+        for(let i = 0; i < gameEngine.claimedChests; i++) {
+          console.log("Spawner");
+          const unlucky = [...gameEngine.entities.chest][0];
+          gameEngine.deleteEntity(unlucky);
+          gameEngine.spawnEntity("spawner", new Spawner(unlucky.position.x, unlucky.position.y, 8 * CONFIG.FPS));
+        }
       });
       this.opened = true;
     }

@@ -59,20 +59,22 @@ class GameEngine {
     this.inventoryManager = new InventoryManager();
 
     this.inventoryManager.addGun(new Gun(
-      "Peashooter",
+      "Triple Peashooter",
       "./img/guns/peashooter.png",
       "#304405",
-      new GunStats(1, 6, SPEEDS.bullet, 1, 5)
+      new GunStats(3, 5, SPEEDS.bullet, 1, 5)
     ));
 
     this.inventoryManager.addTurret(new Turret(
-      new Gun("Double Peashooter", "./img/guns/peashooter.png", "#002211", new GunStats(2, 3, SPEEDS.bullet, 1, 10)),
+      new Gun("Double Peashooter", "./img/guns/peashooter.png", "#002211", new GunStats(2, 6, SPEEDS.bullet, 1, 10)),
       new TurretStats(50, SIZES.mazeCell)
     ));
     
     this.hud = new HUD(this.inventoryManager);
     
     this.realTicks = 0;
+
+    this.claimedChests = -1;
   }
   
   /**************************************
