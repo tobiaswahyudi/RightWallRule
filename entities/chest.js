@@ -34,6 +34,8 @@ export class Chest extends Entity {
     this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, "#EEFFEE");
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
+
+    this.seenByPlayer = false;
   }
 
   tick() {
@@ -42,18 +44,22 @@ export class Chest extends Entity {
 
     let myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 
-    const coords = [];
-    do {
-      coords.push(myCell.center);
-      myCell = myCell.nextCell;
-    } while (myCell);
-    coords.push(gameEngine.player.position);
+    if(gameEngine.screenCells.has(myCell)) this.seenByPlayer = true;
 
-    if(coords.length < 2) return;
+    if(this.seenByPlayer) {
+      const coords = [];
+      do {
+        coords.push(myCell.center);
+        myCell = myCell.nextCell;
+      } while (myCell);
+      coords.push(gameEngine.player.position);
 
-    this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
-    this.effect.stroke = "#00004455";
-    this.effect.strokeWidth = 2;
+      if(coords.length < 2) return;
+
+      this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
+      this.effect.stroke = "#00004455";
+      this.effect.strokeWidth = 2;
+    }
   }
 
   render(context, ticks) {
