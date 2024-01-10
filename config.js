@@ -11,8 +11,8 @@ export const COLORS = {
 
 export const SIZES = {
   wallWidth: 30,
-  playerRadius: 15,
-  enemyRadius: 10,
+  playerRadius: 25,
+  enemyRadius: 20,
   bulletRadius: 5,
   bulletSmokeRadius: {
     min: 2,
@@ -30,7 +30,7 @@ export const WEIGHTS = {
 }
 
 export const SPEEDS = {
-  player: 3,
+  player: 15,
   crawler: 1.2,
   bullet: 12,
 }
