@@ -88,7 +88,7 @@ export class Spawner extends Entity {
   render(context, ticks) {
     context.fillStyle = "#440066";
     const path = new Path2D();
-    path.addPath(this.spiralPath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(ticks).scale(0.85 + 0.15 * Math.sin(ticks / 20)));
+    path.addPath(this.spiralPath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(-ticks).scale(0.85 + 0.15 * Math.sin(ticks / 20)));
     context.fill(path);
     this.shape.render(context);
   }
