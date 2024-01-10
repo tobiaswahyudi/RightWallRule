@@ -11,6 +11,7 @@ html, body, canvas {
   padding: 0;
   width: 100vw;
   height: 100vh;
+  font-size: 12px;
 }
 
 canvas {
@@ -18,25 +19,27 @@ canvas {
 }
 
 h1 {
-  font-size: 60px;
+  font-size: 5rem;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
-  margin: 10px 0 40px 0;
+  margin: 1rem 0 3.5rem 0;
+  user-select: none;
+}
+
+h2 {
+  font-size: 3rem;
+  font-family: 'Zilla Slab', sans-serif;
+  text-align: center;
+  margin: 0 0 2rem 0;
   user-select: none;
 }
 
 h3 {
-  font-size: 30px;
+  font-size: 2.5rem;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
-  margin: 0 0 24px 0;
+  margin: 0 0 2rem 0;
   user-select: none;
-}
-
-dialog {
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 24px 48px;
 }
 
 .h-flex {
@@ -53,6 +56,10 @@ dialog {
   align-items: start;
   justify-content: space-around;
   width: 100%;
+}
+
+.hoverable:hover {
+  filter: invert(1);
 }
 
 /* HUD Display */
@@ -81,11 +88,11 @@ dialog {
 }
 
 #guns-container {
-  width: 630px;
+  width: 642px;
 }
 
 #hpbar-outer {
-  width: 620px;
+  width: 632px;
   height: 18px;
   outline: 2px solid white;
   border-radius: 5px;
@@ -101,8 +108,9 @@ dialog {
 }
 
 .gun-slot {
-  flex: 0 0 200px;
-  height: 92px;
+  flex: 0 0 17em;
+  width: 17em;
+  height: 7.66em;
 
   outline: 2px solid white;
   border-radius: 5px;
@@ -112,8 +120,10 @@ dialog {
 }
 
 .gun-img {
-  margin: 0 8px;
+  margin: 0 0.66em;
   image-rendering: pixelated;
+  width: 2.66em;
+  height: 2.66em;
 }
 
 .gun-info {
@@ -123,31 +133,33 @@ dialog {
 
 .gun-stats {
   flex: 1;
-  padding: 8px 0 0 8px;
+  padding: 0.66em 0 0 0.66em;
   border-top: 2px solid white;
   width: 100%;
 }
 
 .gun-stat {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
   color: white;
 }
 
 .stat-img {
   filter: invert(1);
-  margin-top: 4px;
-  margin-bottom: -4px;
+  margin-top: 0.33em;
+  margin-bottom: -0.33em;
+  width: 1.33em;
+  height: 1.33em;
 }
 
 .stat-img-col2 {
-  margin-left: 45px;
-  margin-right: -61px;
+  margin-left: 3.75em;
+  margin-right: -5em;
 }
 
 h5 {
-  margin: 8px 0 8px 8px;
+  margin: 0.66em 0 0.66em 0.66em;
   font-weight: 600;
+  font-size: 1em;
 }
 
 #turrets-container {
@@ -155,8 +167,9 @@ h5 {
 }
 
 .turret-slot {
-  width: 214px;
   flex: 0 0 144px;
+  width: 214px;
+  height: 144px;
 
   outline: 2px solid white;
   border-radius: 5px;
@@ -213,9 +226,41 @@ h5 {
   margin: 0 7.5px;
 }
 
+/* DIALOGS */
+
+button {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+dialog {
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 24px 48px;
+  background: #cbdfb6;
+  border: 4px solid #778b60;
+  border-radius: 8px;
+}
+
 #modal-backdrop {
   width: 100vw;
   height: 100vh;
   position: absolute;
   background-color: #00000066;
+}
+
+#the-new-gun {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  padding-left: 10px;
+}
+
+#replace-gun-slots {
+  margin-bottom: 2rem;
+  padding-left: 10px;
+}
+
+#discard-new-gun {
+  margin: auto;
+  padding: 2rem 3rem 0;
 }

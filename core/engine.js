@@ -71,6 +71,7 @@ class GameEngine {
     ), 0);
     
     this.hud = new HUD(this.inventoryManager);
+    this.inventoryManager.hud = this.hud;
     
     this.realTicks = 0;
 

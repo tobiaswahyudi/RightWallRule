@@ -1,12 +1,12 @@
-class GunSlot {
+export class GunSlot {
   constructor(container, gun) {
-    this._gun = gun;
+    this._gun = null;
     this.node = document.createElement('div');
     this.node.classList.add('gun-slot');
     this.node.classList.add('h-flex');
 
     container.appendChild(this.node);
-    if(this._gun) this.createElements();
+    if(gun) this.gun = gun;
   }
 
   createElements() {
@@ -51,7 +51,7 @@ class GunSlot {
 
 class TurretSlot {
   constructor(container, turret, idx) {
-    this._turret = turret;
+    this._turret = null;
     this.node = document.createElement('div');
     this.node.classList.add('turret-slot');
     this.node.classList.add('h-flex');
@@ -62,7 +62,7 @@ class TurretSlot {
     this.node.appendChild(keyTag);
 
     container.appendChild(this.node);
-    if(this._turret) this.createElements();
+    if(turret) this.turret = turret;
   }
 
   createElements() {

@@ -71,7 +71,7 @@ export class Chest extends Entity {
   collide(rhs) {
     if(rhs instanceof Player && !this.opened) {
       gameEngine.paused = true;
-      gameEngine.uiManager.showChestDialog(() => {
+      gameEngine.uiManager.showChestDialog(gameEngine.inventoryManager, () => {
         gameEngine.deleteEntity(this);
         gameEngine.deleteEffect(this.effect);
         gameEngine.paused = false;
