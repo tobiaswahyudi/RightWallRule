@@ -192,6 +192,10 @@ class GameEngine {
       });
     }
 
+    if(this.input.rawInput.newlyPressedKeys.has('KeyE')) {
+      this.inventoryManager.cycleGuns();
+    }
+
     // Pathfinding
     
     const playerGridRow = Math.floor(this.player.position.y / SIZES.mazeCell);

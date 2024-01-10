@@ -92,12 +92,8 @@ h3 {
   user-select: none;
 }
 
-#guns-container {
-  width: 642px;
-}
-
 #hpbar-outer {
-  width: 632px;
+  width: 550px;
   height: 18px;
   outline: 2px solid white;
   border-radius: 5px;
@@ -112,6 +108,38 @@ h3 {
   width: 39%;
 }
 
+#gun-control-tooltip {
+  position: absolute;
+  width: unset;
+  left: 213px;
+  top: 108px;
+  align-items: start;
+  font-size: 0.8em;
+
+  opacity: 0.8;
+}
+
+#gun-control-tooltip svg {
+  margin-right: 4px;
+}
+
+.key-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  padding: 2px 6px;
+  border: 2px solid white;
+  border-radius: 4px;
+}
+
+#guns-container {
+  width: 560px;
+  font-size: 0.8rem;
+  align-items: start;
+  justify-content: start;
+}
+
 .gun-slot {
   flex: 0 0 17em;
   width: 17em;
@@ -122,6 +150,10 @@ h3 {
   background-color: #00000066;
 
   margin-right: 10px;
+}
+
+.gun-slot:first-child {
+  font-size: 1rem;
 }
 
 .gun-img {
@@ -184,15 +216,11 @@ h5 {
   position: relative;
 }
 
-.key-tag {
+.turret-slot .key-tag {
   position: absolute;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
   left: 0;
   top: 0;
-  padding: 2px 6px;
+  border: 0px;
   border-bottom: 2px solid white;
   border-right: 2px solid white;
   border-radius: 0 0 4px 0;

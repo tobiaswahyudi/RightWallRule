@@ -34,9 +34,17 @@ export class GunSlot {
     nodes.forEach(node => this.node.appendChild(node));
   }
 
+  destroyElements() {
+    [...this.node.children].forEach(e => e.remove());
+  }
+
   set gun(val) {
     if(!this._gun) this.createElements();
     this._gun = val;
+    if(!this._gun) {
+      this.destroyElements();
+      return;
+    }
 
     this.node.children[0].src = val.imgSrc;
     this.node.children[1].children[0].innerText = val.name;
@@ -127,9 +135,7 @@ export class HUD {
 
   update() {
     this.gunSlots.forEach((slot, idx) => {
-      if(this.inventory.guns[idx]) {
-        slot.gun = this.inventory.guns[idx];
-      }
+      slot.gun = this.inventory.guns[idx];
     });
 
     this.turretSlots.forEach((slot, idx) => {

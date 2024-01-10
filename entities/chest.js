@@ -52,7 +52,7 @@ export class Chest extends Entity {
     if(coords.length < 2) return;
 
     this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
-    this.effect.stroke = "#000044";
+    this.effect.stroke = "#00004455";
     this.effect.strokeWidth = 2;
   }
 
