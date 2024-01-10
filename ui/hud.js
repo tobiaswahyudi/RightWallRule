@@ -110,6 +110,9 @@ class TurretSlot {
     this.node.children[1].src = "./img/guns/turret_base.png";
     this.node.children[2].src = val.gun.imgSrc;
     this.node.children[3].children[0].innerText = val.gun.name + '\nTurret';
+
+    this.node.children[3].children[2].innerText = val.deployed ? `Recallable in 0:30` : "Not Deployed";
+
     const quantity = `x${val.gun.stats.bulletCount}`;
     const fireRate = `${val.gun.stats.fireRate}/s`;
     const damage = `${val.gun.stats.damage}dmg`;

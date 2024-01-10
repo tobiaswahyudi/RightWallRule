@@ -169,7 +169,7 @@ class GameEngine {
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
     this.context.fillText(this.perf.fps.toFixed(0) + ' FPS', this.width - 15, 15 * CONFIG.pixelation);
-    this.context.fillText(this.perf.tickAvg.toFixed(2) + 'ms/t', this.width - 15, 33 * CONFIG.pixelation);
+    this.context.fillText(this.perf.tickAvg.toFixed(2) + ' ms/t', this.width - 15, 33 * CONFIG.pixelation);
     this.context.fillText(this.perf.maxTps.toFixed(0) + ' Max', this.width - 15, 51 * CONFIG.pixelation);
 
     this.input.tick();
@@ -235,12 +235,13 @@ class GameEngine {
     }
 
     // Spawn new turrets
-    if(this.input.rawInput.newlyPressedKeys.has('KeyE')) {
+    if(this.input.rawInput.newlyPressedKeys.has('Digit1')) {
       if(this.inventoryManager.turrets[0].deployed) {
         this.inventoryManager.turrets[0].undeploy();
       } else {
         this.inventoryManager.turrets[0].deploy(this.player.position);
       }
+      this.hud.update();
     }
 
     // Turret Ticks
