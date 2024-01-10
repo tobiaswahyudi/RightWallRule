@@ -1,11 +1,12 @@
 class GunSlot {
-  constructor(container) {
-    this._gun = null;
+  constructor(container, gun) {
+    this._gun = gun;
     this.node = document.createElement('div');
     this.node.classList.add('gun-slot');
     this.node.classList.add('h-flex');
 
     container.appendChild(this.node);
+    if(this._gun) this.createElements();
   }
 
   createElements() {
@@ -34,7 +35,7 @@ class GunSlot {
   }
 
   set gun(val) {
-    if(this._gun == null) this.createElements();
+    if(!this._gun) this.createElements();
     this._gun = val;
 
     this.node.children[0].src = val.imgSrc;
@@ -49,8 +50,8 @@ class GunSlot {
 }
 
 class TurretSlot {
-  constructor(container, idx) {
-    this._turret = null;
+  constructor(container, turret, idx) {
+    this._turret = turret;
     this.node = document.createElement('div');
     this.node.classList.add('turret-slot');
     this.node.classList.add('h-flex');
@@ -61,11 +62,12 @@ class TurretSlot {
     this.node.appendChild(keyTag);
 
     container.appendChild(this.node);
+    if(this._turret) this.createElements();
   }
 
   createElements() {
     const slotDoc = new DOMParser().parseFromString(`
-      <img class="turret-base-img" src="./img/guns/turret_base.png">
+      <img class="turret-base-img">
       <img class="turret-img">
       <div class="v-flex gun-info">
         <h5 class="gun-stat"></h5>
@@ -94,9 +96,10 @@ class TurretSlot {
   }
 
   set turret(val) {
-    if(this._turret == null) this.createElements();
+    if(!this._turret) this.createElements();
     this._turret = val;
 
+    this.node.children[1].src = "./img/guns/turret_base.png";
     this.node.children[2].src = val.gun.imgSrc;
     this.node.children[3].children[0].innerText = val.gun.name + '\nTurret';
     const quantity = `x${val.gun.stats.bulletCount}`;
@@ -116,21 +119,21 @@ export class HUD {
     this.turretsContainer = document.getElementById('turrets-container');
     this.hpbar = document.getElementById('hpbar-inner');
 
-    this.gunSlots = Array(this.inventory.gunCapacity).fill(0).map(zero => new GunSlot(this.gunsContainer));
-    this.turretSlots = Array(this.inventory.turretCapacity).fill(0).map((zero, idx) => new TurretSlot(this.turretsContainer, idx));
+    this.gunSlots = this.inventory.guns.map(gun => new GunSlot(this.gunsContainer, gun));
+    this.turretSlots = this.inventory.turrets.map((turret, idx) => new TurretSlot(this.turretsContainer, turret, idx));
 
     this.update();
   }
 
   update() {
     this.gunSlots.forEach((slot, idx) => {
-      if(this.inventory.guns.length > idx) {
+      if(this.inventory.guns[idx]) {
         slot.gun = this.inventory.guns[idx];
       }
     });
 
     this.turretSlots.forEach((slot, idx) => {
-      if(this.inventory.turrets.length > idx) {
+      if(this.inventory.turrets[idx]) {
         slot.turret = this.inventory.turrets[idx];
       }
     })
