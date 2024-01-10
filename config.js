@@ -30,7 +30,7 @@ export const WEIGHTS = {
 }
 
 export const SPEEDS = {
-  player: 15,
+  player: 6,
   crawler: 1.2,
   bullet: 12,
 }
