@@ -1,3 +1,24 @@
+const GUN_STATS_HTML = `
+<div class="gun-stats">
+  <img class="stat-img" src="./img/stats/quantity.png">
+  <img class="stat-img stat-img-col2" src="./img/stats/firerate.png">
+  <span class="gun-stat">abc</span>
+  <br/>
+  <img class="stat-img" src="./img/stats/accuracy.png">
+  <img class="stat-img stat-img-col2" src="./img/stats/power.png">
+  <span class="gun-stat">abc</span>
+</div>
+`
+
+function displayGunStats(gunStatsCtr, stats) {
+  const quantity = `x${stats.bulletCount}`;
+  const fireRate = `${stats.fireRate.toFixed(1)}/s`;
+  const damage = `${stats.damage.toFixed(1)}dmg`;
+  const accuracy = `${stats.spread.toFixed(1)}°`;
+  gunStatsCtr.children[2].innerText = `${quantity}${"\xA0".repeat(9 - quantity.length)}${fireRate}`;
+  gunStatsCtr.children[6].innerText = `${accuracy}${"\xA0".repeat(9 - accuracy.length)}${damage}`;
+}
+
 export class GunSlot {
   constructor(container, gun) {
     this._gun = null;
@@ -14,15 +35,7 @@ export class GunSlot {
       <img class="gun-img">
       <div class="v-flex gun-info">
         <h5 class="gun-stat"></h5>
-        <div class="gun-stats">
-          <img class="stat-img" src="./img/stats/quantity.png">
-          <img class="stat-img stat-img-col2" src="./img/stats/firerate.png">
-          <span class="gun-stat">abc</span>
-          <br/>
-          <img class="stat-img" src="./img/stats/power.png">
-          <img class="stat-img stat-img-col2" src="./img/stats/accuracy.png">
-          <span class="gun-stat">abc</span>
-        </div>
+        ${GUN_STATS_HTML}
       </div>
     `, "text/html");
     const nodes = [...slotDoc.body.children];
@@ -48,12 +61,7 @@ export class GunSlot {
 
     this.node.children[0].src = val.imgSrc;
     this.node.children[1].children[0].innerText = val.name;
-    const quantity = `x${val.stats.bulletCount}`;
-    const fireRate = `${val.stats.fireRate}/s`;
-    const damage = `${val.stats.damage}dmg`;
-    const accuracy = `${val.stats.spread}°`;
-    this.stats.children[2].innerText = `${quantity}${"\xA0".repeat(9 - quantity.length)}${fireRate}`;
-    this.stats.children[6].innerText = `${damage}${"\xA0".repeat(9 - damage.length)}${accuracy}`;
+    displayGunStats(this.stats, val.stats);
   }
 }
 
@@ -83,15 +91,7 @@ class TurretSlot {
           <div class="turret-hpbar-inner"></div>
         </div>
         <span class="gun-stat turret-deployment-status">Not deployed</span>
-        <div class="gun-stats">
-          <img class="stat-img" src="./img/stats/quantity.png">
-          <img class="stat-img stat-img-col2" src="./img/stats/firerate.png">
-          <span class="gun-stat">abc</span>
-          <br/>
-          <img class="stat-img" src="./img/stats/power.png">
-          <img class="stat-img stat-img-col2" src="./img/stats/accuracy.png">
-          <span class="gun-stat">abc</span>
-        </div>
+        ${GUN_STATS_HTML}
       </div>
     `, "text/html");
     const nodes = [...slotDoc.body.children];
@@ -113,12 +113,7 @@ class TurretSlot {
 
     this.node.children[3].children[2].innerText = val.deployed ? `Recallable in 0:30` : "Not Deployed";
 
-    const quantity = `x${val.gun.stats.bulletCount}`;
-    const fireRate = `${val.gun.stats.fireRate}/s`;
-    const damage = `${val.gun.stats.damage}dmg`;
-    const accuracy = `${val.gun.stats.spread}°`;
-    this.stats.children[2].innerText = `${quantity}${"\xA0".repeat(9 - quantity.length)}${fireRate}`;
-    this.stats.children[6].innerText = `${damage}${"\xA0".repeat(9 - damage.length)}${accuracy}`;
+    displayGunStats(this.stats, val.gun.stats);
   }
 }
 

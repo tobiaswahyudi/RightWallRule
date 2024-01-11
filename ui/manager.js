@@ -1,6 +1,5 @@
 import { GunSlot } from "./hud.js";
-import { Gun, GunStats } from "../guns/gun.js";
-import { SPEEDS } from "../config.js";
+import { createRandomGun } from "../guns/gun.js";
 
 export class UIManager {
   constructor() {
@@ -41,10 +40,10 @@ export class UIManager {
   }
 
   showNewGunDialog(inventory, returnFn) {
-    const DEBUGING_PURPOSES_NEW_GUN = new Gun("Stinky Beaner", "./img/guns/peashooter.png", "#EEFF00", new GunStats(8, 1, SPEEDS.bullet, 2, 5));
+    const newGun = createRandomGun();
 
     const newGunCtr = document.getElementById('the-new-gun');
-    const newGunSlot = new GunSlot(newGunCtr, DEBUGING_PURPOSES_NEW_GUN);
+    const newGunSlot = new GunSlot(newGunCtr, newGun);
     
     const gunSlotsCtr = document.getElementById('replace-gun-slots');
 
@@ -57,7 +56,7 @@ export class UIManager {
       const slot = new GunSlot(gunSlotsCtr, gun);
       slot.node.classList.add('hoverable');
       slot.node.onclick = () => {
-        inventory.replaceGun(DEBUGING_PURPOSES_NEW_GUN, idx);
+        inventory.replaceGun(newGun, idx);
         this.state = null;
         cleanup();
         returnFn();
