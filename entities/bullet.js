@@ -39,6 +39,12 @@ export class Bullet extends Entity {
   }
 
   collide(other, collisionPoint) {
+    if(other instanceof Enemy) {
+      if(other.hp < 0) return;
+      other.hp -= 5 * this.stats.damage;
+      if(other.hp < 0) this.stats.kills++;
+      other.velocity.add(this.velocity.normalize().scale(WEIGHTS.repulsion.bullet));
+    }
     gameEngine.deleteEntity(this);
     gameEngine.spawnEffect(
       EFFECT_LAYERS.above,
@@ -51,9 +57,5 @@ export class Bullet extends Entity {
       ),
       6
     );
-    if(other instanceof Enemy) {
-      other.hp -= 5 * this.stats.damage;
-      other.velocity.add(this.velocity.normalize().scale(WEIGHTS.repulsion.bullet));
-    }
   }
 }

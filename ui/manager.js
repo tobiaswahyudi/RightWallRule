@@ -47,9 +47,11 @@ export class UIManager {
     
     const gunSlotsCtr = document.getElementById('replace-gun-slots');
 
-    const cleanup = () => {
+    const cleanupAndClose = () => {
       newGunSlot.node.remove();
       [...gunSlotsCtr.children].forEach(c => c.remove());
+      this.state = null;
+      returnFn();
     }
 
     inventory.guns.forEach((gun, idx) => {
@@ -57,11 +59,12 @@ export class UIManager {
       slot.node.classList.add('hoverable');
       slot.node.onclick = () => {
         inventory.replaceGun(newGun, idx);
-        this.state = null;
-        cleanup();
-        returnFn();
+        cleanupAndClose();
       }
     })
+
+    const discardBtn = document.getElementById('discard-new-gun');
+    discardBtn.onclick = cleanupAndClose;
 
     this.state = 'newGunDialog';
   }

@@ -12,6 +12,7 @@ export class GunStats {
     this.bulletSpeed = bulletSpeed;
     this.damage = damage;
     this.spread = spread;
+    this.kills = 0;
   }
 
   get fireDelay() {

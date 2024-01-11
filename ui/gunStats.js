@@ -18,6 +18,9 @@ export class GunStatsDisplay {
       <img class="stat-img" src="./img/stats/goodness.png">
       <span class="gun-stat">abc</span>
       <br/>
+      <img class="stat-img" src="./img/stats/kills.png">
+      <span class="gun-stat">abc</span>
+      <br/>
       <br/>
       <span class="gun-stat">No special effects</span>
       `}
@@ -42,8 +45,10 @@ export class GunStatsDisplay {
     if(this.extended) {
       const speed = `${this._gunStats.bulletSpeed.toFixed(1)}px/s`;
       const goodness = `${this._gunStats.goodness.toFixed(1)} goodness`;
+      const kills = `${this._gunStats.kills} kills`;
       this.statLines[2].innerText = speed;
       this.statLines[3].innerText = goodness;
+      this.statLines[4].innerText = kills;
     }
   }
 
