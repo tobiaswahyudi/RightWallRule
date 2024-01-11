@@ -2,7 +2,7 @@ import { SIZES, CONFIG } from "../config.js";
 import { Vector2 } from "../utils/vector2.js";
 import { UnionFind } from "../utils/unionFind.js";
 import { coinFlip, randomChoice } from "../utils/random.js";
-import { generateNavigationGraph } from "./navigation.js";
+import { generateNavigationGraph } from "./pathfinding.js";
 
 
 export function indexifyRowCol(row, col) {
