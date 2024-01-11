@@ -4,7 +4,7 @@ import { CircleEffect } from "../circleEffect.js";
 import { EFFECT_LAYERS } from "../effect.js";
 import { VFXPoof } from "./poof.js";
 
-const FLARE_DURATION = 60;
+const FLARE_DURATION = 120;
 
 function flareMove(startPosition, targetPosition) {
   return (fx, ticks) => {
