@@ -1,5 +1,5 @@
 import { createRandomGun } from "../guns/gun.js";
-import { GunSlotDisplay } from "./slotDisplay.js";
+import { GunSlotDisplay, TurretSlotDisplay } from "./slotDisplay.js";
 
 export class UIManager {
   constructor() {
@@ -8,6 +8,7 @@ export class UIManager {
     this.pauseDialog = document.getElementById('pause-game');
     this.openChestDialog = document.getElementById('open-chest');
     this.newGunDialog = document.getElementById('new-gun');
+    this.upgradeDialog = document.getElementById('upgrade-fertilize');
   }
 
   set state(val) {
@@ -36,6 +37,7 @@ export class UIManager {
     const buttons = this.openChestDialog.children[1].children;
 
     buttons[0].onclick = () => { this.showNewGunDialog(inventory, returnFn) }
+    buttons[1].onclick = () => { this.showUpgradeDialog(inventory, returnFn) }
     this.state = 'openChestDialog';
   }
 
@@ -67,5 +69,37 @@ export class UIManager {
     discardBtn.onclick = cleanupAndClose;
 
     this.state = 'newGunDialog';
+  }
+
+  showUpgradeDialog(inventory, returnFn) {
+    const gunSlotsCtr = document.getElementById('upgrade-gun-slots');
+    const turretSlotsCtr = document.getElementById('upgrade-turret-slots');
+
+    const cleanupAndClose = () => {
+      [...gunSlotsCtr.children].forEach(c => c.remove());
+      [...turretSlotsCtr.children].forEach(c => c.remove());
+      this.state = null;
+      returnFn();
+    }
+
+    inventory.guns.forEach(gun => {
+      const slot = new GunSlotDisplay(gunSlotsCtr, gun, true);
+      slot.node.classList.add('hoverable');
+      slot.node.onclick = () => {
+        // Upgrade
+        cleanupAndClose();
+      }
+    })
+
+    inventory.turrets.forEach(turret => {
+      const slot = new TurretSlotDisplay(turretSlotsCtr, turret, true);
+      slot.node.classList.add('hoverable');
+      slot.node.onclick = () => {
+        // Upgrade
+        cleanupAndClose();
+      }
+    })
+
+    this.state = 'upgradeDialog';
   }
 }

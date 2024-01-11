@@ -46,7 +46,7 @@ h3 {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   width: 100%;
 }
 
@@ -209,17 +209,18 @@ h5.gun-stat {
 .turret-slot {
   flex: 0 0 144px;
   width: 214px;
-  height: 144px;
+  min-width: 214px;
+  min-height: 144px;
 
   outline: 2px solid white;
   border-radius: 5px;
   background-color: #00000066;
 
-  margin-bottom: 10px;
+  margin: 0 10px 10px 0;
   position: relative;
 }
 
-.turret-slot .key-tag {
+.turret-slot > .key-tag {
   position: absolute;
   left: 0;
   top: 0;
@@ -296,8 +297,12 @@ dialog {
   padding-left: 10px;
 }
 
-#replace-gun-slots .gun-slot {
+.dialog-slots-container > .gun-slot, .dialog-slots-container > .turret-slot {
   align-self: stretch;
+}
+
+#upgrade-gun-slots {
+  margin-bottom: 2em;
 }
 
 #pause-game > button {

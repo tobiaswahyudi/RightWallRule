@@ -9,7 +9,7 @@ export class HUD {
     this.hpbar = document.getElementById('hpbar-inner');
 
     this.gunSlots = this.inventory.guns.map(gun => new GunSlotDisplay(this.gunsContainer, gun, false));
-    this.turretSlots = this.inventory.turrets.map((turret, idx) => new TurretSlotDisplay(this.turretsContainer, turret, idx, false));
+    this.turretSlots = this.inventory.turrets.map((turret, idx) => new TurretSlotDisplay(this.turretsContainer, turret, false, idx));
 
     this.update();
   }

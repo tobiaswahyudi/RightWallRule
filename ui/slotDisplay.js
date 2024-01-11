@@ -51,7 +51,7 @@ export class GunSlotDisplay {
   }
 }
 export class TurretSlotDisplay {
-  constructor(container, turret, idx, extended) {
+  constructor(container, turret, extended, idx = -1) {
     this._turret = null;
     this.node = document.createElement('div');
     this.node.classList.add('turret-slot');
@@ -63,6 +63,8 @@ export class TurretSlotDisplay {
     keyTag.classList.add('key-tag');
     keyTag.innerText = idx + 1;
     this.node.appendChild(keyTag);
+    // Still append the keyTag, otherwise indexing node.children gets finicky
+    if(idx == -1) keyTag.style.display = "none";
 
     container.appendChild(this.node);
     if(turret) this.turret = turret;
