@@ -31,8 +31,8 @@ gameEngine.maze.deadEnds.sort((a,b) => coinFlip(0.5) ? -1 : 1);
 gameEngine.player.position.x = gameEngine.maze.deadEnds[0].center.x;
 gameEngine.player.position.y = gameEngine.maze.deadEnds[0].center.y;
 // Take 10 for chests
-gameEngine.maze.deadEnds.slice(1, 11).forEach(cell => {
-  gameEngine.spawnEntity("chest", new Chest(cell.center.x, cell.center.y));
+gameEngine.maze.deadEnds.slice(1, 11).forEach((cell, idx) => {
+  gameEngine.spawnEntity("chest", new Chest(cell.center.x, cell.center.y, idx));
 })
 
 gameEngine.start(document.getElementById('the-canvas'), window);

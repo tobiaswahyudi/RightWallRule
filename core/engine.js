@@ -3,7 +3,7 @@ import { Maze } from "../maze/maze.js";
 import { SIZES, CONFIG, COLORS, SPEEDS } from "../config.js";
 import { CollisionHashMap } from "../utils/collisionHashMap.js";
 import { ScaledCanvas } from "./canvas.js";
-import { computeNavDistancesToPlayer } from "../maze/pathfinding.js";
+import { computeChestToPlayerPaths, computeNavDistancesToPlayer } from "../maze/pathfinding.js";
 import { Player } from "../entities/player.js";
 import { GameInputManager } from "./input.js";
 import { mutualCollide } from "../entities/collisions.js";
@@ -48,6 +48,8 @@ class GameEngine {
     this.collisionMap = new CollisionHashMap();
     this.screenCells = new Set();
     this.edgeCells = new Set();
+
+    this.seenChests = new Set();
 
     this.player = new Player(this);
     this.player._id = "player";
@@ -206,6 +208,8 @@ class GameEngine {
 
     if(playerGridSquare != this.playerGridSquareLastTick) {
       computeNavDistancesToPlayer(this.maze.grid, this.player, playerGridSquare);
+      computeChestToPlayerPaths(this.seenChests);
+
       this.playerGridSquareLastTick = playerGridSquare;
 
       const leftBound = Math.floor((playerGridSquare.center.x - (this.width / 2)) / SIZES.mazeCell) - 1;

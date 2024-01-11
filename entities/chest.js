@@ -9,9 +9,12 @@ import { CONFIG, SIZES } from "../config.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { AbstractEffect } from "../effects/abstractEffect.js";
 import { VFXFlare } from "../effects/vfx/flare.js";
+import { computeChestToPlayerPaths, dirIndexGap } from "../maze/pathfinding.js";
+
+const CHEST_PATH_GAP = 10;
 
 export class Chest extends Entity {
-  constructor(x, y) {
+  constructor(x, y, idx) {
     super(x, y);
 
     const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
@@ -45,41 +48,80 @@ export class Chest extends Entity {
 
     this.seenByPlayer = false;
     this.renderPath = false;
+    this.pathColor = `hsl(${36 * idx} 100% 60%)`;
     this.startRenderPathTick = 0;
   }
 
   tick(ticks) {
     if(gameEngine.screenCells.has(this.cell) && !this.seenByPlayer) {
       this.seenByPlayer = true;
-      VFXFlare(gameEngine.player.position, this.position, "#FFFF22", (flareDespawnTicks) => {
+      gameEngine.seenChests.add(this);
+      VFXFlare(gameEngine.player.position, this.position, this.pathColor, (flareDespawnTicks) => {
         this.renderPath = true;
         this.startRenderPathTick = flareDespawnTicks;
+        computeChestToPlayerPaths(gameEngine.seenChests);
       })
     }
-
-    let myCell = this.cell;
 
     if(this.renderPath) {
       let lineLength = (ticks - this.startRenderPathTick) * SIZES.mazeCell / CONFIG.FPS;
       const coords = [];
-      do {
-        coords.push(myCell.center);
+      let myCell = this.cell;
+      let currentCoords = myCell.center;
+      coords.push(currentCoords);
+      let lastOffset = 0;
+      let lastDir = myCell.nextCellDir;
+      myCell = myCell.nextCell;
+      while (myCell) {
+        let nextLocation = myCell.center.copy;
+        const currentOffset = (myCell.chestPaths.indexOf(this) - (myCell.chestPaths.length - 1)/ 2) * CHEST_PATH_GAP;
+        let currentAxis = null;
+        let currentAxisFactor = 1;
+        const currentDir = myCell.nextCellDir;
+        if(currentDir == 'E') { currentAxis = 'y'; currentAxisFactor =  1; } else
+        if(currentDir == 'W') { currentAxis = 'y'; currentAxisFactor = -1; } else
+        if(currentDir == 'S') { currentAxis = 'x'; currentAxisFactor = -1; } else
+        if(currentDir == 'N') { currentAxis = 'x'; currentAxisFactor =  1; }
+
+        const otherAxis = currentAxis == 'x' ? 'y' : 'x';
+        const otherAxisFactor = currentAxis == 'x' ? -1 : 1;
+
+        nextLocation[currentAxis] += currentAxisFactor * currentOffset;
+        if(dirIndexGap(lastDir, currentDir) == 0) {
+          nextLocation[otherAxis] += currentAxisFactor * otherAxisFactor * lastOffset;
+        } else if(dirIndexGap(lastDir, currentDir) == 1) {
+          nextLocation[otherAxis] += currentAxisFactor * otherAxisFactor * currentOffset;
+        } else if(dirIndexGap(lastDir, currentDir) == 2) {
+          nextLocation[otherAxis] -= currentAxisFactor * otherAxisFactor * lastOffset;
+        }
+
+        lastOffset = currentOffset;
+        lastDir = currentDir;
+
         if(lineLength > SIZES.mazeCell) {
           lineLength -= SIZES.mazeCell;
         } else {
-          const nextLocation = myCell.nextCell ? myCell.nextCell.center : gameEngine.player.position;
-          coords.push(nextLocation.delta(myCell.center).scale(lineLength / SIZES.mazeCell).add(myCell.center));
+          coords.push(nextLocation.delta(currentCoords).scale(lineLength / SIZES.mazeCell).add(currentCoords));
           lineLength = 0;
           break;
         }
+        currentCoords = nextLocation;
         myCell = myCell.nextCell;
-      } while (myCell);
-      if(lineLength > 0) coords.push(gameEngine.player.position);
+        coords.push(currentCoords);
+      }
+      if(lineLength > SIZES.mazeCell) {
+        coords.push(currentCoords);
+        coords.push(gameEngine.player.position);
+      } else {
+        const nextLocation = gameEngine.player.position;
+        coords.push(nextLocation.delta(currentCoords).scale(lineLength / SIZES.mazeCell).add(currentCoords));
+        lineLength = 0;
+      }
 
       if(coords.length < 2) return;
 
       this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
-      this.effect.stroke = "#00004455";
+      this.effect.stroke = this.pathColor;
       this.effect.strokeWidth = 2;
     }
   }

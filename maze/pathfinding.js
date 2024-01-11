@@ -6,15 +6,30 @@ import { MinHeap } from "../utils/priorityQueue.js";
  * Pathfinds.
  **************************************/
 
+const DIRECTIONS = ["E", "N", "W", "S"];
+
+export function dirIndex(dir) {
+  return DIRECTIONS.indexOf(dir);
+}
+
+function nextCCWDir(dir, gap = 1) {
+  return DIRECTIONS[(dirIndex(dir) + gap) % 4];
+}
+
+export function dirIndexGap(inDir, outDir) {
+  return (dirIndex(inDir) - dirIndex(outDir) + 3) % 4;
+}
+
+// me.neighbors[i] = [nbor,dir] means that nbor[dir] = me.
 export function generateNavigationGraph(cells) {
   cells.forEach((row, rowIdx) => row.forEach((cell, colIdx) => {
     if(!cell.E) {
-      cell.neighbors.push(cells[rowIdx][colIdx + 1]);
-      cells[rowIdx][colIdx + 1].neighbors.push(cell);
+      cell.neighbors.push([cells[rowIdx][colIdx + 1], "W"]);
+      cells[rowIdx][colIdx + 1].neighbors.push([cell, "E"]);
     }
     if(!cell.S) {
-      cell.neighbors.push(cells[rowIdx + 1][colIdx]);
-      cells[rowIdx + 1][colIdx].neighbors.push(cell);
+      cell.neighbors.push([cells[rowIdx + 1][colIdx], "N"]);
+      cells[rowIdx + 1][colIdx].neighbors.push([cell, "S"]);
     }
   }));
 }
@@ -25,34 +40,49 @@ export function computeNavDistancesToPlayer(grid, player, playerGridCell) {
     cell.visited = false;
     cell.distanceToPlayer = 0;
     cell.nextCell = null;
+    cell.nextCellDir = null;
     cell.pathTarget = null;
+
+    cell.chestPaths = [];
+    cell.chestPathsByDir = [[], [], []];
   }));
 
   playerGridCell.visited = true;
   playerGridCell.distanceToPlayer = 0;
   playerGridCell.pathTarget = player.position;
 
-  playerGridCell.neighbors.forEach(nbor => {
-    pq.push({key: 0, cell: nbor, nextCell: null, pathTarget: player.position});
+  playerGridCell.neighbors.forEach(([nbor, dir]) => {
+    pq.push({key: 0, cell: nbor, nextCell: null, nextCellDir: dir, pathTarget: player.position});
   })
 
   while(!pq.empty()) {
-    const {key, cell, nextCell, pathTarget} = pq.pop();
+    const {key, cell, nextCell, nextCellDir, pathTarget} = pq.pop();
     if(cell.visited) continue;
     cell.visited = true;
     cell.distanceToPlayer = key;
     cell.nextCell = nextCell;
+    cell.nextCellDir = nextCellDir;
     cell.pathTarget = pathTarget;
 
-    cell.neighbors.forEach(nbor => {
+    cell.neighbors.forEach(([nbor, dir]) => {
       if(nbor.visited) return;
-      pq.push({key: key + cell.center.delta(nbor.center).magnitude, cell: nbor, nextCell: cell, pathTarget: cell.center.copy.add(nbor.center).scale(0.5)});
+      pq.push({key: key + cell.center.delta(nbor.center).magnitude, cell: nbor, nextCell: cell, nextCellDir: dir, pathTarget: cell.center.copy.add(nbor.center).scale(0.5)});
     })
   }
 }
 
-export function computeChestToPlayerPaths(grid, chests) {
-  for(const chest in chests) {
+export function computeChestToPlayerPaths(chests) {
+  for(const chest of chests) {
+    let accumulator = [chest];
+    let inDir = nextCCWDir(chest.cell.nextCellDir, 2);
+    let curCell = chest.cell.nextCell;
 
+    while(curCell) {
+      curCell.chestPathsByDir[dirIndexGap(inDir, curCell.nextCellDir)] = accumulator;
+      curCell.chestPaths = curCell.chestPathsByDir.flat();
+      accumulator = curCell.chestPaths;
+      inDir = nextCCWDir(curCell.nextCellDir, 2);
+      curCell = curCell.nextCell;
+    }
   }
 }
