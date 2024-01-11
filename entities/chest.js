@@ -13,6 +13,12 @@ import { VFXFlare } from "../effects/vfx/flare.js";
 export class Chest extends Entity {
   constructor(x, y) {
     super(x, y);
+
+    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
+    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
+
+    this.cell = gameEngine.maze.grid[myGridRow][myGridCol];
+
     this.innerRadius = 10;
     this.outerRadius = 55;
     this.opened = false;
@@ -39,28 +45,36 @@ export class Chest extends Entity {
 
     this.seenByPlayer = false;
     this.renderPath = false;
+    this.startRenderPathTick = 0;
   }
 
-  tick() {
-    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
-    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
-
-    let myCell = gameEngine.maze.grid[myGridRow][myGridCol];
-
-    if(gameEngine.screenCells.has(myCell) && !this.seenByPlayer) {
+  tick(ticks) {
+    if(gameEngine.screenCells.has(this.cell) && !this.seenByPlayer) {
       this.seenByPlayer = true;
-      VFXFlare(gameEngine.player.position, this.position, "#FFFF22", () => {
+      VFXFlare(gameEngine.player.position, this.position, "#FFFF22", (flareDespawnTicks) => {
         this.renderPath = true;
+        this.startRenderPathTick = flareDespawnTicks;
       })
     }
 
+    let myCell = this.cell;
+
     if(this.renderPath) {
+      let lineLength = (ticks - this.startRenderPathTick) * SIZES.mazeCell / CONFIG.FPS;
       const coords = [];
       do {
         coords.push(myCell.center);
+        if(lineLength > SIZES.mazeCell) {
+          lineLength -= SIZES.mazeCell;
+        } else {
+          const nextLocation = myCell.nextCell ? myCell.nextCell.center : gameEngine.player.position;
+          coords.push(nextLocation.delta(myCell.center).scale(lineLength / SIZES.mazeCell).add(myCell.center));
+          lineLength = 0;
+          break;
+        }
         myCell = myCell.nextCell;
       } while (myCell);
-      coords.push(gameEngine.player.position);
+      if(lineLength > 0) coords.push(gameEngine.player.position);
 
       if(coords.length < 2) return;
 

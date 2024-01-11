@@ -18,7 +18,7 @@ export class Effect {
     if(this.animation) this.animation(this, ticks);
     if(this.endTick == ticks) {
       gameEngine.deleteEffect(this);
-      if(this.despawnAction) this.despawnAction();
+      if(this.despawnAction) this.despawnAction(ticks);
     }
   }
 }

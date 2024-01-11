@@ -18,9 +18,9 @@ export function VFXFlare(startPosition, targetPosition, color, despawnAction = t
   const flare = new CircleEffect(
     startPosition.x, startPosition.y, flareMove(startPosition, targetPosition, FLARE_DURATION), 8, color
   );
-  flare.despawnAction = () => {
+  flare.despawnAction = (ticks) => {
     VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, 120, 200, color, 30);
-    despawnAction();
+    despawnAction(ticks);
   };
   gameEngine.spawnEffect(EFFECT_LAYERS.above, flare, FLARE_DURATION);
 }
