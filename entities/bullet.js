@@ -7,9 +7,10 @@ import { EFFECT_LAYERS, CircleEffect } from "./effect.js";
 import { thunk } from "../utils/thunk.js";
 
 export class Bullet extends Entity {
-  constructor(x, y, color, heading, speed) {
+  constructor(x, y, color, heading, gunStats) {
     super(x, y);
-    this.velocity = heading.copy.scale(speed);
+    this.velocity = heading.copy.scale(gunStats.bulletSpeed);
+    this.stats = gunStats;
 
     this.color = color;
     this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius, color);
@@ -23,13 +24,13 @@ export class Bullet extends Entity {
     gameEngine.spawnEffect(
       EFFECT_LAYERS.under,
       new CircleEffect(
-        this.position.x + (Math.random() - 0.5) * 4,
-        this.position.y + (Math.random() - 0.5) * 4,
+        this.position.x,
+        this.position.y,
         this._bulletSmokeShrinkAnimation,
-        Math.random() * (SIZES.bulletSmokeRadius.max - SIZES.bulletSmokeRadius.min) + SIZES.bulletSmokeRadius.min,
+        SIZES.bulletRadius - 2,
         "rgba(252, 240, 199, 0.5)"
       ),
-      10
+      2
     );
   }
 
@@ -51,7 +52,7 @@ export class Bullet extends Entity {
       6
     );
     if(other instanceof Enemy) {
-      other.hp -= 5;
+      other.hp -= 5 * this.stats.damage;
       other.velocity.add(this.velocity.normalize().scale(WEIGHTS.repulsion.bullet));
     }
   }

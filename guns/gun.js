@@ -40,7 +40,7 @@ export class Gun {
       for(let i = 0; i < this.stats.bulletCount; i++) {
         const baseAngle = (i - (this.stats.bulletCount - 1) / 2) * MULTISHOT_SPREAD;
         const deltaAngle = (Math.random() * 2 - 1) * this.stats.spread;
-        bullets.push(new Bullet(position.x, position.y, this.color, direction.rotate(baseAngle + deltaAngle), this.stats.bulletSpeed));
+        bullets.push(new Bullet(position.x, position.y, this.color, direction.rotate(baseAngle + deltaAngle), this.stats));
       }
       return bullets;
     }
