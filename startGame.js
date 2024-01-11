@@ -1,7 +1,8 @@
 import gameEngine from "./core/engine.js";
 import { Wall } from "./entities/wall.js";
 import { CONFIG, COLORS, SIZES } from "./config.js";
-import { EFFECT_LAYERS, RectEffect } from "./entities/effect.js";
+import { EFFECT_LAYERS } from "./effects/effect.js";
+import { RectEffect } from "./effects/rectEffect.js";
 import { thunk } from "./utils/thunk.js";
 import { coinFlip } from "./utils/random.js";
 import { Chest } from "./entities/chest.js";

@@ -6,7 +6,8 @@ import { Player } from "./player.js";
 
 import { Spawner } from "./enemies/spawner.js";
 import { CONFIG, SIZES } from "../config.js";
-import { AbstractEffect, EFFECT_LAYERS } from "./effect.js";
+import { EFFECT_LAYERS } from "../effects/effect.js";
+import { AbstractEffect } from "../effects/abstractEffect.js";
 
 export class Chest extends Entity {
   constructor(x, y) {

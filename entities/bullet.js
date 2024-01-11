@@ -3,7 +3,8 @@ import { Enemy } from "./enemies/enemy.js";
 import { CircleShapedSprite } from "./shapes.js";
 import { SIZES, COLORS, WEIGHTS, SPEEDS } from "../config.js";
 import gameEngine from "../core/engine.js";
-import { EFFECT_LAYERS, CircleEffect } from "./effect.js";
+import { EFFECT_LAYERS } from "../effects/effect.js";
+import { CircleEffect } from "../effects/circleEffect.js";
 import { thunk } from "../utils/thunk.js";
 
 export class Bullet extends Entity {

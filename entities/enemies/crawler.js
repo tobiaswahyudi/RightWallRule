@@ -1,7 +1,8 @@
 import { Enemy } from "./enemy.js";
 import { CONFIG, COLORS, SIZES, WEIGHTS, SPEEDS } from "../../config.js";
 import { CircleShapedSprite } from "../shapes.js";
-import { CircleEffect, EFFECT_LAYERS } from "../effect.js";
+import { EFFECT_LAYERS } from "../../effects/effect.js";
+import { CircleEffect } from "../../effects/circleEffect.js";
 import gameEngine from "../../core/engine.js";
 import { CircularBuffer } from "../../utils/circularBuffer.js";
 

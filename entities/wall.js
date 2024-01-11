@@ -1,7 +1,8 @@
 import { Entity } from "./entity.js";
 import { COLORS, SIZES, } from "../config.js";
 import { RectShapedSprite } from "./shapes.js";
-import { AbstractEffect, EFFECT_LAYERS } from "./effect.js";
+import { EFFECT_LAYERS } from "../effects/effect.js";
+import { AbstractEffect } from "../effects/abstractEffect.js";
 import gameEngine from "../core/engine.js";
 
 export class Wall extends Entity {
