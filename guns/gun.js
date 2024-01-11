@@ -22,6 +22,26 @@ export class GunStats {
   get goodness() {
     return (bulletCountToGoodness(this.bulletCount) + 1) * (fireRateToGoodness(this.fireRate) + 1) * (damageToGoodness(this.damage) + 1);
   }
+
+  get copy() {
+    const cpy = new GunStats();
+    cpy.bulletCount = this.bulletCount;
+    cpy.fireRate = this.fireRate;
+    cpy.bulletSpeed = this.bulletSpeed;
+    cpy.damage = this.damage;
+    cpy.spread = this.spread;
+    cpy.kills = this.kills;
+    return cpy;
+  }
+
+upgrade(additiveFactor, multiplicativeFactor = 1) {
+    const newStats = randomGunStatsFromGoodness(Math.min(this.goodness + additiveFactor, this.goodness * multiplicativeFactor));
+    this.bulletCount = Math.max(this.bulletCount, newStats.bulletCount);
+    this.fireRate = Math.max(this.fireRate, newStats.fireRate);
+    this.damage = Math.max(this.damage, newStats.damage);
+    this.bulletSpeed = Math.max(this.bulletSpeed, newStats.bulletSpeed) / 2;
+    this.spread = (this.spread, newStats.spread) / 2;
+  }
 }
 export class Gun {
   constructor(name, imgSrc, bulletColor, gunStats) {
@@ -47,6 +67,10 @@ export class Gun {
     }
     return [];
   }
+
+  get copy() {
+    return new Gun(this.name, this.imgSrc, this.color, this.stats.copy);
+  }
 };
 
 function bulletCountToGoodness(count) {
@@ -70,21 +94,26 @@ function goodnessToDamage(goodness) {
   return ((goodness / 5 * 2) + 0.2);
 }
 
-export function createRandomGun() {
-  const targetGoodness = Math.max(5, normalSample() * 12 + 20);
+function randomGunStatsFromGoodness(targetGoodness) {
   const randomRatios = Array(3).fill(0).map(x => 1/Math.random() - 1); 
   const ratioSum = randomRatios.reduce((a,b) => a+b);
   const goodnesses = randomRatios.map(r => Math.exp((r / ratioSum) * Math.log(targetGoodness)));
+  return new GunStats(
+    goodnessToBulletCount(goodnesses[0]),
+    goodnessToFireRate(goodnesses[1]),
+    Math.random() * 12 + 4,
+    goodnessToDamage(goodnesses[2]),
+    Math.random() * 25
+  );
+}
+
+export function createRandomGun() {
+  const targetGoodness = Math.max(5, normalSample() * 12 + 20);
+  
   return new Gun(
     crypto.randomUUID().slice(0, 13),
     "./img/guns/placeholder.png",
     "#55FF00",
-    new GunStats(
-      goodnessToBulletCount(goodnesses[0]),
-      goodnessToFireRate(goodnesses[1]),
-      Math.random() * 12 + 4,
-      goodnessToDamage(goodnesses[2]),
-      Math.random() * 25
-    )
+    randomGunStatsFromGoodness(targetGoodness)
   );
 }

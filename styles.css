@@ -62,6 +62,10 @@ h3 {
   filter: invert(1);
 }
 
+.disabled {
+  opacity: 0.3;
+}
+
 .h3-button {
   padding: 2rem 3rem 0;
   display: block;
@@ -303,6 +307,15 @@ dialog {
 
 #upgrade-gun-slots {
   margin-bottom: 2em;
+}
+
+#upgrade-done-slots {
+  margin-bottom: 4em;
+}
+
+#upgrade-done-slots h1 {
+  display: inline;
+  margin: 0 20px 0 10px;
 }
 
 #pause-game > button {

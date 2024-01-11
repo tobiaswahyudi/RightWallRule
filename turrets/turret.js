@@ -15,6 +15,10 @@ export class TurretStats {
     this.maxHp = hp;
     this.targetingRange = targetingRange;
   }
+
+  get copy() {
+    return new TurretStats(this.maxHp, this.targetingRange);
+  }
 }
 
 export class Turret extends Entity {
@@ -113,5 +117,9 @@ export class Turret extends Entity {
 
   collide(other, collisionPoint) {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.player);
+  }
+
+  get copy() {
+    return new Turret(this.gun.copy, this.stats.copy);
   }
 }

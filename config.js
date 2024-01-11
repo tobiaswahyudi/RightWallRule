@@ -23,9 +23,9 @@ export const SIZES = {
 
 export const WEIGHTS = {
   repulsion: {
-    enemy: 0.24,
+    enemy: 0.4,
     bullet: 10,
-    player: 0.36,
+    player: 0.5,
   }
 }
 
