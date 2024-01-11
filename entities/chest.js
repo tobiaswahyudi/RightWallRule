@@ -109,12 +109,18 @@ export class Chest extends Entity {
         myCell = myCell.nextCell;
         coords.push(currentCoords);
       }
-      if(lineLength > SIZES.mazeCell) {
-        coords.push(currentCoords);
+      const nextLocation = currentCoords.copy;
+      if(lastDir == 'W' || lastDir == 'E') {
+        nextLocation.x = gameEngine.player.position.x;
+      } else {
+        nextLocation.y = gameEngine.player.position.y;
+      }
+      const deltaLen = nextLocation.delta(currentCoords).magnitude;
+      if(lineLength > deltaLen) {
+        coords.push(nextLocation);
         coords.push(gameEngine.player.position);
       } else {
-        const nextLocation = gameEngine.player.position;
-        coords.push(nextLocation.delta(currentCoords).scale(lineLength / SIZES.mazeCell).add(currentCoords));
+        coords.push(nextLocation.delta(currentCoords).scale(lineLength / deltaLen).add(currentCoords));
         lineLength = 0;
       }
 
