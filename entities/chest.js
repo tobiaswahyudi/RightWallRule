@@ -8,6 +8,7 @@ import { Spawner } from "./enemies/spawner.js";
 import { CONFIG, SIZES } from "../config.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { AbstractEffect } from "../effects/abstractEffect.js";
+import { VFXFlare } from "../effects/vfx/flare.js";
 
 export class Chest extends Entity {
   constructor(x, y) {
@@ -37,6 +38,7 @@ export class Chest extends Entity {
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
 
     this.seenByPlayer = false;
+    this.renderPath = false;
   }
 
   tick() {
@@ -45,9 +47,14 @@ export class Chest extends Entity {
 
     let myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 
-    if(gameEngine.screenCells.has(myCell)) this.seenByPlayer = true;
+    if(gameEngine.screenCells.has(myCell) && !this.seenByPlayer) {
+      this.seenByPlayer = true;
+      VFXFlare(gameEngine.player.position, this.position, "#FFFF22", () => {
+        this.renderPath = true;
+      })
+    }
 
-    if(this.seenByPlayer) {
+    if(this.renderPath) {
       const coords = [];
       do {
         coords.push(myCell.center);
