@@ -87,7 +87,7 @@ class GameEngine {
   // Spawns a new entity.
   spawnEntity(type, entity) {
     // Please shoot some enemies, I'm begging you
-    if(type == "enemy" && this.entities[type].size > 666) {
+    if(type == "enemy" && this.entities[type].size > 300) {
       this.deleteEffect(entity.shadow);
       return;
     }
