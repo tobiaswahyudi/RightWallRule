@@ -6,6 +6,7 @@ export class UIManager {
     this._state = null;
     this.backdrop = document.getElementById('modal-backdrop');
     this.pauseDialog = document.getElementById('pause-game');
+    this.controlsDialog = document.getElementById('controls');
     this.openChestDialog = document.getElementById('open-chest');
     this.newGunDialog = document.getElementById('new-gun');
     this.upgradeDialog = document.getElementById('upgrade-fertilize');
@@ -31,7 +32,13 @@ export class UIManager {
   showPauseDialog(unpause) {
     this.state = 'pauseDialog';
     this.pauseDialog.children[1].onclick = unpause;
+    this.pauseDialog.children[3].onclick = () => this.showControlsDialog();
     this.pauseDialog.children[4].onclick = () => {window.location.reload()};
+  }
+
+  showControlsDialog() {
+    this.state = 'controlsDialog';
+    this.controlsDialog.children[2].children[0].onclick = () => {this.state = 'pauseDialog'};
   }
 
   showChestDialog(inventory, returnFn) {

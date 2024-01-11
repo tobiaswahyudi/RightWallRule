@@ -27,7 +27,7 @@ h1 {
 }
 
 h2 {
-  font-size: 3rem;
+  font-size: 3em;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
   margin: 0 0 2rem 0;
@@ -35,10 +35,10 @@ h2 {
 }
 
 h3 {
-  font-size: 2.5rem;
+  font-size: 2.5em;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
-  margin: 0 0 2rem 0;
+  margin: 0 0 0.8em 0;
   user-select: none;
 }
 
@@ -56,6 +56,10 @@ h3 {
   align-items: start;
   justify-content: space-around;
   width: 100%;
+}
+
+.spacer {
+  flex: 1 1 1em;
 }
 
 .hoverable:hover {
@@ -278,7 +282,7 @@ dialog {
   top: 50%;
   transform: translateY(-50%);
   padding: 24px 48px;
-  background: #cbdfb6;
+  background: #91a978;
   border: 4px solid #778b60;
   border-radius: 8px;
 }
@@ -321,4 +325,12 @@ dialog {
 #pause-game > button {
   width: 100%;
   margin-bottom: 10px;
+}
+
+#controls-diagram {
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  max-height: 500px;
+  height: 500px;
+  align-items: center;
 }
