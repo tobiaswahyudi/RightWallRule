@@ -38,7 +38,7 @@ export class Turret extends Entity {
 
     this.targetDirection = new Vector2(1, 0);
 
-    this.shape = new CircleShapedSprite(this.position, 15, "#223366");
+    this.shape = new CircleShapedSprite(this.position, 15, "rgb(185, 122, 87)");
   }
 
   deploy(position) {
@@ -111,7 +111,7 @@ export class Turret extends Entity {
     if(this.targetDirection.x < 0) {
       context.scale(1, -1);
     }
-    context.drawImage(this.gun.image, 15-16, -10);
+    context.drawImage(this.gun.image, 16-16, -9);
     context.restore();
   }
 
