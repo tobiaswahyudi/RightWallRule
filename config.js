@@ -6,7 +6,19 @@ export const COLORS = {
   player: "#0582CA",
   playerBullet: "#F18F01",
   towerBase: "#157F1F",
-  towerBullet: "#4CB963"
+  towerBullet: "#4CB963",
+  hueNames: {
+    0: 'Apple',
+    36: 'Orange',
+    72: 'Pear',
+    108: 'Lime',
+    144: 'Mint',
+    180: 'Clear Sky',
+    216: 'Blueberry',
+    252: 'Iris',
+    288: 'Violet',
+    324: 'Grape'
+  }
 };
 
 export const SIZES = {

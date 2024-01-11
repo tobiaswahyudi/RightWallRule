@@ -16,7 +16,7 @@ function flareMove(startPosition, targetPosition) {
 
 export function VFXFlare(startPosition, targetPosition, color, despawnAction = thunk) {
   const flare = new CircleEffect(
-    startPosition.x, startPosition.y, flareMove(startPosition, targetPosition, FLARE_DURATION), 8, color
+    startPosition.x, startPosition.y, flareMove(startPosition.copy, targetPosition, FLARE_DURATION), 8, color
   );
   flare.despawnAction = (ticks) => {
     VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, 120, 200, color, 30);

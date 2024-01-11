@@ -75,6 +75,27 @@ h3 {
   display: block;
 }
 
+/* Log messages */
+#messages {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  align-items: end;
+  justify-content: end;
+  padding: 0 2em 2em 0;
+}
+
+#messages span {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.log-message {
+  opacity: 1;
+  transition: opacity 0.5s;
+  font-style: italic;
+  font-size: 2rem;
+}
+
 /* HUD Display */
 #hud {
   pointer-events: none;

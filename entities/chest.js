@@ -5,7 +5,7 @@ import gameEngine from "../core/engine.js";
 import { Player } from "./player.js";
 
 import { Spawner } from "./enemies/spawner.js";
-import { CONFIG, SIZES } from "../config.js";
+import { COLORS, CONFIG, SIZES } from "../config.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { AbstractEffect } from "../effects/abstractEffect.js";
 import { VFXFlare } from "../effects/vfx/flare.js";
@@ -42,13 +42,14 @@ export class Chest extends Entity {
       Z
     `);
 
-    this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, "#EEFFEE");
+    this.pathColor = `hsl(${36 * idx} 100% 60%)`;
+    this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor);
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
 
     this.seenByPlayer = false;
     this.renderPath = false;
-    this.pathColor = `hsl(${36 * idx} 100% 60%)`;
+    this.idx = idx;
     this.startRenderPathTick = 0;
   }
 
@@ -60,6 +61,8 @@ export class Chest extends Entity {
         this.renderPath = true;
         this.startRenderPathTick = flareDespawnTicks;
         computeChestToPlayerPaths(gameEngine.seenChests);
+        gameEngine.hud.log(`Tracked the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, flareDespawnTicks);
+        gameEngine.hud.log("&nbsp;", gameEngine.gameTicks);
       })
     }
 
@@ -133,7 +136,7 @@ export class Chest extends Entity {
   }
 
   render(context, ticks) {
-    context.fillStyle = "#FFFF5555";
+    context.fillStyle = `hsla(${36 * this.idx} 100% 60% / 0.5)`;
     const yellowStar = new Path2D();
     yellowStar.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate((ticks / 2.1) + 30).scale(0.7 + 0.2 * Math.sin(ticks / 30)));
     context.fill(yellowStar);
@@ -154,12 +157,26 @@ export class Chest extends Entity {
 
         gameEngine.claimedChests++;
 
+        const deletedChests = [];
+
         for(let i = 0; i < gameEngine.claimedChests; i++) {
           const unlucky = [...gameEngine.entities.chest][0];
           gameEngine.deleteEntity(unlucky);
           gameEngine.deleteEffect(unlucky.effect);
           gameEngine.spawnEntity("spawner", new Spawner(unlucky.position.x, unlucky.position.y, 8 * CONFIG.FPS));
+          deletedChests.push(`<span style="color: ${unlucky.pathColor};">${COLORS.hueNames[36 * unlucky.idx]}</span>`);
         }
+        if(deletedChests.length == 0) {
+          gameEngine.hud.log(`You grabbed the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, gameEngine.gameTicks);
+          gameEngine.hud.log(`You feel an ominous presence...`, gameEngine.gameTicks);
+        } else if(deletedChests.length == 1) {
+          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal angered the labyrinth...`, gameEngine.gameTicks);
+          gameEngine.hud.log(`The ${deletedChests[0]} crystal became infected.`, gameEngine.gameTicks);
+        } else {
+          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal stoked the labyrinth's fury...`, gameEngine.gameTicks);
+          gameEngine.hud.log(`The ${deletedChests.join(', ')} crystals now spread the infection!`, gameEngine.gameTicks);
+        }
+        gameEngine.hud.log("&nbsp;", gameEngine.gameTicks);
       });
       this.opened = true;
     }

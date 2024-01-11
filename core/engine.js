@@ -200,6 +200,8 @@ class GameEngine {
       this.inventoryManager.cycleGuns();
     }
 
+    this.hud.tick(this.gameTicks);
+
     // Pathfinding
     
     const playerGridRow = Math.floor(this.player.position.y / SIZES.mazeCell);
