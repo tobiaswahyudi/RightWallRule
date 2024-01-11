@@ -1,5 +1,5 @@
-import { GunSlot } from "./hud.js";
 import { createRandomGun } from "../guns/gun.js";
+import { GunSlotDisplay } from "./slotDisplay.js";
 
 export class UIManager {
   constructor() {
@@ -43,7 +43,7 @@ export class UIManager {
     const newGun = createRandomGun();
 
     const newGunCtr = document.getElementById('the-new-gun');
-    const newGunSlot = new GunSlot(newGunCtr, newGun);
+    const newGunSlot = new GunSlotDisplay(newGunCtr, newGun, true);
     
     const gunSlotsCtr = document.getElementById('replace-gun-slots');
 
@@ -53,7 +53,7 @@ export class UIManager {
     }
 
     inventory.guns.forEach((gun, idx) => {
-      const slot = new GunSlot(gunSlotsCtr, gun);
+      const slot = new GunSlotDisplay(gunSlotsCtr, gun, true);
       slot.node.classList.add('hoverable');
       slot.node.onclick = () => {
         inventory.replaceGun(newGun, idx);
