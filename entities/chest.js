@@ -67,7 +67,7 @@ export class Chest extends Entity {
     }
 
     if(this.renderPath) {
-      let lineLength = (ticks - this.startRenderPathTick) * SIZES.mazeCell / CONFIG.FPS;
+      let lineLength = (ticks - this.startRenderPathTick) * 2 * SIZES.mazeCell / CONFIG.FPS;
       const coords = [];
       let myCell = this.cell;
       let currentCoords = myCell.center;

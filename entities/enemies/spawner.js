@@ -50,7 +50,7 @@ export class Spawner extends Entity {
 
     distance -= lastEdgeCell.distanceToPlayer;
 
-    const ticksToDistance = distance / (CONFIG.FPS/2 * SPEEDS.crawler * 0.8);
+    const ticksToDistance = 2 * distance / SPEEDS.crawler;
 
     if(ticks > this.lastSpawn + this.spawnDelay + ticksToDistance) {
       this.lastSpawn = ticks - ticksToDistance;
