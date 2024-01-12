@@ -16,6 +16,6 @@ export class Entity {
 
   get rotation() {
     if(this.velocity.x == 0 && this.velocity.y == 0) return 0;
-    return Math.atan(this.velocity.y / this.velocity.x);
+    return Math.atan2(this.velocity.y, this.velocity.x);
   }
 }
