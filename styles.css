@@ -11,7 +11,8 @@ html, body, canvas {
   padding: 0;
   width: 100vw;
   height: 100vh;
-  font-size: 12px;
+  font-size: 14px;
+
 }
 
 canvas {
@@ -19,7 +20,7 @@ canvas {
 }
 
 h1 {
-  font-size: 5rem;
+  font-size: 4rem;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
   margin: 1rem 0 3.5rem 0;
@@ -27,7 +28,7 @@ h1 {
 }
 
 h2 {
-  font-size: 3em;
+  font-size: 2.5em;
   font-family: 'Zilla Slab', sans-serif;
   text-align: center;
   margin: 0 0 2rem 0;
@@ -93,7 +94,7 @@ h3 {
   opacity: 1;
   transition: opacity 0.5s;
   font-style: italic;
-  font-size: 2rem;
+  font-size: 1rem;
 }
 
 /* HUD Display */
@@ -106,29 +107,29 @@ h3 {
 
 #avatar {
   pointer-events: none;
-  height: 120px;
-  flex: 0 0 120px;
-  line-height: 120px;
+  height: 10rem;
+  flex: 0 0 10rem;
+  line-height: 10rem;
   text-align: center;
   color: white;
   font-size: 80px;
   outline: 2px solid white;
-  border-radius: 60px;
+  border-radius: 5rem;
   background-color: #00000066;
 
-  margin-right: 20px;
+  margin-right: 1rem;
 
   user-select: none;
 }
 
 #hpbar-outer {
-  width: 550px;
-  height: 18px;
+  width: 46.2rem;
+  height: 1rem;
   outline: 2px solid white;
   border-radius: 5px;
   background-color: #66444477;
   
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
 }
 
 #hpbar-inner {
@@ -140,10 +141,9 @@ h3 {
 #gun-control-tooltip {
   position: absolute;
   width: unset;
-  left: 213px;
-  top: 108px;
+  left: 18em;
+  top: 9em;
   align-items: start;
-  font-size: 0.8em;
 
   opacity: 0.8;
 }
@@ -154,7 +154,6 @@ h3 {
 
 .key-tag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
   font-weight: 800;
   color: black;
   background: white;
@@ -164,7 +163,7 @@ h3 {
 }
 
 #guns-container {
-  width: 560px;
+  width: 46.2rem;
   font-size: 0.8rem;
   align-items: start;
   justify-content: start;
@@ -173,13 +172,14 @@ h3 {
 .gun-slot {
   flex: 0 0 17em;
   width: 17em;
-  min-height: 7.66em;
+  min-height: 8em;
 
   outline: 2px solid white;
   border-radius: 5px;
   background-color: #00000066;
 
-  margin-right: 10px;
+  margin-right: 1rem;
+  height: 1px;
 }
 
 .gun-slot:first-child {
@@ -232,20 +232,21 @@ h5.gun-stat {
 }
 
 #turrets-container {
-  margin-top: 40px;
+  margin-top: 3rem;
 }
 
 .turret-slot {
-  flex: 0 0 144px;
-  width: 214px;
-  min-width: 214px;
-  min-height: 144px;
+  flex: 0 0 1rem;
+  width: 18rem;
+  min-width: 18rem;
+  min-height: 12rem;
+  height: 1px;
 
   outline: 2px solid white;
   border-radius: 5px;
   background-color: #00000066;
 
-  margin: 0 10px 10px 0;
+  margin: 0 1rem 1rem 0;
   position: relative;
 }
 
@@ -260,23 +261,27 @@ h5.gun-stat {
 }
 
 .turret-img {
-  margin: 0 16px 24px;
+  margin: 0 1.17rem 2rem;
+  width: 2.66em;
+  height: 2.66em;
   image-rendering: pixelated;
 }
 
 .turret-base-img {
-  margin: 8px -46px 0 16px;
+  margin: 0.66rem -4rem 0 1.33rem;
+  width: 2.66em;
+  height: 5.33em;
   image-rendering: pixelated;
 }
 
 .turret-deployment-status {
-  margin: 0 8px 8px 8px;
+  margin: 0 0.66rem 0.66rem 0.66rem;
 }
 
 .turret-hpbar-outer {
-  flex: 0 0 6px;
-  width: 128px;
-  margin: 0 16px 8px 8px;
+  flex: 0 0 0.5rem;
+  width: 11em;  
+  margin: 0 0 0.66rem 0.66rem;
   background-color: #FFAAAACC;
 }
 
@@ -287,9 +292,9 @@ h5.gun-stat {
 }
 
 .chest-option {
-  width: 220px;
-  padding: 24px 0;
-  margin: 0 7.5px;
+  width: 18em;
+  padding: 2em 0;
+  margin: 0 0.5em;
 }
 
 /* DIALOGS */
@@ -334,6 +339,14 @@ dialog {
   margin-bottom: 2em;
 }
 
+#the-new-gun > .gun-slot, .dialog-slots-container > .gun-slot {
+  min-height: 16em;
+}
+
+.dialog-slots-container > .turret-slot {
+  min-height: 20em;
+}
+
 #upgrade-done-slots {
   margin-bottom: 4em;
 }
@@ -343,15 +356,23 @@ dialog {
   margin: 0 20px 0 10px;
 }
 
+#upgrade-done-slots > .gun-slot {
+  min-height: 16em;
+}
+
+#upgrade-done-slots > .turret-slot {
+  min-height: 20em;
+}
+
 #pause-game > button {
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 1em;
 }
 
 #controls-diagram {
   font-size: 0.8rem;
   flex-wrap: wrap;
-  max-height: 500px;
-  height: 500px;
+  max-height: calc( 405px + 10em );
+  height: calc( 405px + 10em );
   align-items: center;
 }
