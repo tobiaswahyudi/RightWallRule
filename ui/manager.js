@@ -129,10 +129,10 @@ export class UIManager {
     }
     container.appendChild(theArrow);
     if(isGun) {
-      thing.stats.upgrade(5, 1.1);
+      thing.stats.upgrade(30, 2);
       new GunSlotDisplay(container, thing, true);
     } else {
-      thing.gun.stats.upgrade(5, 1.1);
+      thing.gun.stats.upgrade(30, 2);
       new TurretSlotDisplay(container, thing, true);
     }
 

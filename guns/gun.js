@@ -5,73 +5,6 @@ import { normalSample } from "../utils/random.js";
 
 const MULTISHOT_SPREAD = 2;
 
-export class GunStats {
-  constructor(bulletCount, fireRate, bulletSpeed, damage, spread) {
-    this.bulletCount = bulletCount;
-    this.fireRate = fireRate;
-    this.bulletSpeed = bulletSpeed;
-    this.damage = damage;
-    this.spread = spread;
-    this.kills = 0;
-  }
-
-  get fireDelay() {
-    return CONFIG.FPS/this.fireRate;
-  }
-
-  get goodness() {
-    return (bulletCountToGoodness(this.bulletCount) + 1) * (fireRateToGoodness(this.fireRate) + 1) * (damageToGoodness(this.damage) + 1);
-  }
-
-  get copy() {
-    const cpy = new GunStats();
-    cpy.bulletCount = this.bulletCount;
-    cpy.fireRate = this.fireRate;
-    cpy.bulletSpeed = this.bulletSpeed;
-    cpy.damage = this.damage;
-    cpy.spread = this.spread;
-    cpy.kills = this.kills;
-    return cpy;
-  }
-
-upgrade(additiveFactor, multiplicativeFactor = 1) {
-    const newStats = randomGunStatsFromGoodness(Math.min(this.goodness + additiveFactor, this.goodness * multiplicativeFactor));
-    this.bulletCount = Math.max(this.bulletCount, newStats.bulletCount);
-    this.fireRate = Math.max(this.fireRate, newStats.fireRate);
-    this.damage = Math.max(this.damage, newStats.damage);
-    this.bulletSpeed = Math.max(this.bulletSpeed, newStats.bulletSpeed) / 2;
-    this.spread = (this.spread, newStats.spread) / 2;
-  }
-}
-export class Gun {
-  constructor(name, imgSrc, bulletColor, gunStats) {
-    this.name = name;
-    this.imgSrc = imgSrc;
-    this.image = ImageSrc(imgSrc);
-    this.color = bulletColor;
-    this.stats = gunStats;
-
-    this.nextShoot = 0;
-  }
-
-  shoot(ticks, position, direction) {
-    if(ticks >= this.nextShoot) {
-      this.nextShoot = ticks + this.stats.fireDelay;
-      const bullets = [];
-      for(let i = 0; i < this.stats.bulletCount; i++) {
-        const baseAngle = (i - (this.stats.bulletCount - 1) / 2) * MULTISHOT_SPREAD;
-        const deltaAngle = (Math.random() * 2 - 1) * this.stats.spread;
-        bullets.push(new Bullet(position.x, position.y, this.color, direction.rotate(baseAngle + deltaAngle), this.stats));
-      }
-      return bullets;
-    }
-    return [];
-  }
-
-  get copy() {
-    return new Gun(this.name, this.imgSrc, this.color, this.stats.copy);
-  }
-};
 
 function bulletCountToGoodness(count) {
   return count;
@@ -106,6 +39,75 @@ function randomGunStatsFromGoodness(targetGoodness) {
     Math.random() * 25
   );
 }
+export class GunStats {
+  constructor(bulletCount, fireRate, bulletSpeed, damage, spread) {
+    this.bulletCount = bulletCount;
+    this.fireRate = fireRate;
+    this.bulletSpeed = bulletSpeed;
+    this.damage = damage;
+    this.spread = spread;
+    this.kills = 0;
+  }
+
+  get fireDelay() {
+    return CONFIG.FPS/this.fireRate;
+  }
+
+  get goodness() {
+    return (bulletCountToGoodness(this.bulletCount) + 1) * (fireRateToGoodness(this.fireRate) + 1) * (damageToGoodness(this.damage) + 1);
+  }
+
+  get copy() {
+    const cpy = new GunStats();
+    cpy.bulletCount = this.bulletCount;
+    cpy.fireRate = this.fireRate;
+    cpy.bulletSpeed = this.bulletSpeed;
+    cpy.damage = this.damage;
+    cpy.spread = this.spread;
+    cpy.kills = this.kills;
+    return cpy;
+  }
+
+  upgrade(additiveFactor, multiplicativeFactor = 1) {
+    const targetGoodness = Math.min(this.goodness + additiveFactor, this.goodness * multiplicativeFactor);
+    const goodnessRatio = targetGoodness / this.goodness;
+    const randomRatios = Array(3).fill(0).map(x => 1/Math.random() - 1);
+    const randomRatioSum = randomRatios.reduce((a,b) => a+b);
+    const goodnesses = randomRatios.map(randomRatio => Math.exp((randomRatio / randomRatioSum) * Math.log(goodnessRatio)));
+    this.bulletCount = goodnessToBulletCount(bulletCountToGoodness(this.bulletCount) * goodnesses[0]);
+    this.fireRate = goodnessToFireRate(fireRateToGoodness(this.fireRate) * goodnesses[1]);
+    this.damage = goodnessToDamage(damageToGoodness(this.damage) * goodnesses[2]);
+  }
+}
+export class Gun {
+  constructor(name, imgSrc, bulletColor, gunStats) {
+    this.name = name;
+    this.imgSrc = imgSrc;
+    this.image = ImageSrc(imgSrc);
+    this.color = bulletColor;
+    this.stats = gunStats;
+
+    this.nextShoot = 0;
+  }
+
+  shoot(ticks, position, direction) {
+    if(ticks >= this.nextShoot) {
+      this.nextShoot = ticks + this.stats.fireDelay;
+      const bullets = [];
+      for(let i = 0; i < this.stats.bulletCount; i++) {
+        const baseAngle = (i - (this.stats.bulletCount - 1) / 2) * MULTISHOT_SPREAD;
+        const deltaAngle = (Math.random() * 2 - 1) * this.stats.spread;
+        bullets.push(new Bullet(position.x, position.y, this.color, direction.rotate(baseAngle + deltaAngle), this.stats));
+      }
+      return bullets;
+    }
+    return [];
+  }
+
+  get copy() {
+    return new Gun(this.name, this.imgSrc, this.color, this.stats.copy);
+  }
+};
 
 export function createRandomGun() {
   const targetGoodness = Math.max(5, normalSample() * 12 + 20);
