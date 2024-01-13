@@ -14,7 +14,9 @@ export class Bullet extends Entity {
     this.stats = gunStats;
 
     this.color = color;
-    this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius, color);
+    this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius * this.stats.damage, color);
+
+    this.hit = false;
   }
 
   _bulletSmokeShrinkAnimation(bulletSmoke, ticks) {
@@ -40,7 +42,8 @@ export class Bullet extends Entity {
   }
 
   collide(other, collisionPoint) {
-    if(other instanceof Enemy) {
+    if(other instanceof Enemy && !this.hit) {
+      this.hit = true;
       if(other.hp < 0) return;
       other.hp -= this.stats.damage;
       if(other.hp < 0) this.stats.kills++;
