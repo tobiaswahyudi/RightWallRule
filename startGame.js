@@ -6,6 +6,7 @@ import { RectEffect } from "./effects/rectEffect.js";
 import { thunk } from "./utils/thunk.js";
 import { coinFlip } from "./utils/random.js";
 import { Chest } from "./entities/chest.js";
+import { Spawner } from "./entities/enemies/spawner.js";
 
 // Walls
 gameEngine.maze.generateWalls().forEach(([xStart, yStart, xEnd, yEnd]) => {
@@ -33,6 +34,11 @@ gameEngine.player.position.y = gameEngine.maze.deadEnds[0].center.y;
 // Take 10 for chests
 gameEngine.maze.deadEnds.slice(1, 11).forEach((cell, idx) => {
   gameEngine.spawnEntity("chest", new Chest(cell.center.x, cell.center.y, idx));
+})
+
+// Take 2 for spawners
+gameEngine.maze.deadEnds.slice(11, 13).forEach((cell, idx) => {
+  gameEngine.spawnEntity("spawner", new Spawner(cell.center.x, cell.center.y, 8 * CONFIG.FPS));
 })
 
 gameEngine.start(document.getElementById('the-canvas'), window);
