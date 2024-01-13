@@ -361,12 +361,12 @@ class GameEngine {
 
     // Bullet
     this.entities.bullet.forEach(bullet => bullet.render(this.context));
+    
+    // Player
+    this.player.render(this.context);
 
     // Turret
     this.entities.turret.forEach(turret => turret.render(this.context));
-
-    // Player
-    this.player.render(this.context);
 
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));
