@@ -30,7 +30,7 @@ export const SIZES = {
     min: 2,
     max: 4
   },
-  mazeCell: 240,
+  mazeCell: 256,
 };
 
 export const WEIGHTS = {

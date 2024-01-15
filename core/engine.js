@@ -447,7 +447,7 @@ class GameEngine {
     this.effects.under.forEach(effect => effect.render(this.context));
 
     // Wall
-    this.entities.wall.forEach(wall => wall.render(this.context));
+    this.context.drawImage(this.maze.image, -32, -32);
 
     // Spawner
     this.entities.spawner.forEach(spawner => spawner.render(this.context, this.gameTicks));
