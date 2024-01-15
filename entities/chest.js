@@ -42,8 +42,8 @@ export class Chest extends Entity {
       Z
     `);
 
-    this.pathColor = `hsl(${36 * idx} 100% 60%)`;
-    this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor);
+    this.pathColor = (opacity) => `hsla(${36 * idx} 100% 60% / ${opacity})`;
+    this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor(1));
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
 
@@ -57,11 +57,11 @@ export class Chest extends Entity {
     if(gameEngine.screenCells.has(this.cell) && !this.seenByPlayer) {
       this.seenByPlayer = true;
       gameEngine.seenChests.add(this);
-      VFXFlare(gameEngine.player.position, this.position, this.pathColor, (flareDespawnTicks) => {
+      VFXFlare(gameEngine.player.position, this.position, this.pathColor(0.8), (flareDespawnTicks) => {
         this.renderPath = true;
         this.startRenderPathTick = flareDespawnTicks;
         computeChestToPlayerPaths(gameEngine.seenChests);
-        gameEngine.hud.log(`Tracked the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, flareDespawnTicks);
+        gameEngine.hud.log(`Tracked the <span style="color: ${this.pathColor(1)};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, flareDespawnTicks);
         gameEngine.hud.log("&nbsp;", gameEngine.gameTicks);
       })
     }
@@ -130,13 +130,13 @@ export class Chest extends Entity {
       if(coords.length < 2) return;
 
       this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
-      this.effect.stroke = this.pathColor;
+      this.effect.stroke = this.pathColor(0.5);
       this.effect.strokeWidth = 2;
     }
   }
 
   render(context, ticks) {
-    context.fillStyle = `hsla(${36 * this.idx} 100% 60% / 0.5)`;
+    context.fillStyle = this.pathColor(0.5);
     const yellowStar = new Path2D();
     yellowStar.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate((ticks / 2.1) + 30).scale(0.7 + 0.2 * Math.sin(ticks / 30)));
     context.fill(yellowStar);

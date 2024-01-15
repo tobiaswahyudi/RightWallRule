@@ -13,6 +13,7 @@ import { HUD } from "../ui/hud.js";
 import { InventoryManager } from "./inventory.js";
 import { Gun, GunStats } from "../guns/gun.js";
 import { Turret, TurretStats } from "../turrets/turret.js";
+import { Vector2 } from "../utils/vector2.js";
 
 /**************************************
  * Game Engine Class
@@ -36,6 +37,7 @@ class GameEngine {
     this.entities = {
       wall: new Set(),
       enemy: new Set(),
+      enemyWave: new Set(),
       spawner: new Set(),
       bullet: new Set(),
       turret: new Set(),
@@ -91,8 +93,11 @@ class GameEngine {
     // Please shoot some enemies, I'm begging you
     if(type == "enemy" && this.entities[type].size > 300) {
       this.deleteEffect(entity.shadow);
+      this.deleteEnemyFromWave(entity);
       return;
     }
+
+    entity.spawned = true;
 
     entity.spawnTick = this.gameTicks;
     entity._id = `${type}-${crypto.randomUUID()}`;
@@ -102,9 +107,25 @@ class GameEngine {
     this.collisionMap.registerEntity(entity);
   }
 
+  spawnEnemyWave(wave) {
+    this.onscreen = true;
+    this.entities.enemyWave.add(wave);
+  }
+
   deleteEntity(entity) {
+    if(!entity.spawned) console.warn("Attempting to delete non-spawned entity", entity);
+
     this.entities[entity._type].delete(entity);
     this.collisionMap.deleteEntity(entity);
+
+    entity.spawned = false;
+  }
+
+  deleteEnemyFromWave(enemy) {
+    enemy.wave.remove(enemy);
+    if(enemy.wave.enemies.length == 0) {
+      this.entities.enemyWave.delete(enemy.wave);
+    }
   }
 
   // Spawns a new effect.
@@ -255,10 +276,86 @@ class GameEngine {
     });
     
     // Enemy Headings
-    this.entities.enemy.forEach(enemy => {
-      this.collisionMap.updateEntity(enemy);
-      enemy.tick(this.gameTicks, this.player, this.entities.tower);
-    })
+    this.entities.enemyWave.forEach(wave => {
+      if(wave.enemies.length == 0) {
+        this.entities.enemyWave.delete(wave);
+        return;
+      }
+      if(wave.onscreen) {
+        // This should be an invariant, but there is a bug somewhere.
+        wave.enemies.forEach(enemy => {
+          if(!enemy.spawned) gameEngine.spawnEntity('enemy', enemy);
+        });
+        let anyCulled = false;
+        wave.enemies.forEach(enemy => {
+          this.collisionMap.updateEntity(enemy);
+
+          const offscreen = enemy.tick(this.gameTicks, this.player, this.entities.tower);
+          if(offscreen) anyCulled = true;
+        });
+        if(anyCulled) {
+          wave.onscreen = false;
+          wave.lastCulledTick = this.gameTicks;
+
+          wave.enemies.forEach(enemy => gameEngine.deleteEntity(enemy));
+        }
+      } else {
+        const myGridRow = Math.floor(wave.position.y / SIZES.mazeCell);
+        const myGridCol = Math.floor(wave.position.x / SIZES.mazeCell);
+
+        let myCell = this.maze.grid[myGridRow][myGridCol];
+        let spawnPosition = null;
+
+        if(this.screenCells.has(myCell)) {
+          // Wave is on screen, move all enemies to where they should be.
+
+          let travelDistance = (this.gameTicks - wave.lastCulledTick) * SPEEDS.crawler / 2;
+
+          while(myCell.nextCell && travelDistance > myCell.nextCell.distanceToPlayer) {
+            myCell = myCell.nextCell;
+          }
+  
+          if(travelDistance < myCell.distanceToPlayer || !myCell.nextCell) {
+            wave.onscreen = true;
+            spawnPosition = myCell.center;
+          } else {
+            travelDistance -= myCell.distanceToPlayer;
+            const deltaLen = myCell.nextCell.distanceToPlayer - myCell.distanceToPlayer;
+ 
+            wave.onscreen = true;
+            spawnPosition = myCell.nextCell.center.delta(myCell.center).scale(travelDistance / deltaLen).add(myCell.center);
+          }
+        } else {
+          // Wave is off screen, see if enough time has elapsed for them to walk on screen
+          let distance = myCell.nextCell.distanceToPlayer + wave.position.delta(myCell.nextCell.center).magnitude;
+
+          while(true) {
+            if(this.edgeCells.has(myCell) &&
+              (this.screenCells.has(myCell.nextCell) || this.edgeCells.has(myCell.nextCell))) break;
+            myCell = myCell.nextCell;
+          }
+          let nextIncomingEdgeCell = myCell;
+
+          distance -= nextIncomingEdgeCell.distanceToPlayer;
+
+          const ticksToDistance = 2 * distance / SPEEDS.crawler;
+
+          if(this.gameTicks > wave.lastCulledTick + ticksToDistance) {
+            wave.onscreen = true;
+            spawnPosition = nextIncomingEdgeCell.center;
+          }
+        }
+
+        if(wave.onscreen) {
+          wave.enemies.forEach(enemy => {
+            enemy.position.x = spawnPosition.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3);
+            enemy.position.y = spawnPosition.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3);
+            enemy.velocity = new Vector2(0, 0);
+            gameEngine.spawnEntity('enemy', enemy);
+          });
+        }
+      }
+    });
 
     // Spawn new bullets
     if(this.input.shooting) {
@@ -315,7 +412,9 @@ class GameEngine {
     
     ////////////// Movement
     // Move Enemies
-    this.entities.enemy.forEach(enemy => enemy.move())
+    this.entities.enemy.forEach(enemy => {
+      if(enemy.wave.onscreen) enemy.move();
+    })
 
     // Move Bullets
     this.entities.bullet.forEach(bullet => bullet.move())

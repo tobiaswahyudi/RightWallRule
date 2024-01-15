@@ -40,18 +40,6 @@ export class CrawlerEnemy extends Enemy {
 
     const myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 
-    // Outside screen space
-    if(!gameEngine.screenCells.has(myCell) && !gameEngine.edgeCells.has(myCell)) {
-      // Cull self
-      gameEngine.deleteEntity(this);
-      gameEngine.deleteEffect(this.shadow);
-
-      // If the sentinel is culled, take corrective action
-      if(this.sentinelAction) this.sentinelAction(this);
-
-      return;
-    }
-
     const target = myCell.pathTarget;
     
     this.velocity = target.delta(this.position).normalize().scale(SPEEDS.crawler);
@@ -66,9 +54,16 @@ export class CrawlerEnemy extends Enemy {
     if(this.hp <= 0) {
       gameEngine.deleteEntity(this);
       gameEngine.deleteEffect(this.shadow);
+      gameEngine.deleteEnemyFromWave(this);
     }
     this.tickCollisionCounts.push(this.lastTickCollisionCount);
     this.lastTickCollisionCount = 0;
+
+    // Outside screen space
+    if(!gameEngine.screenCells.has(myCell) && !gameEngine.edgeCells.has(myCell)) {
+      // Report outside screen space
+      return true;
+    }
   }
 
   render(context) {

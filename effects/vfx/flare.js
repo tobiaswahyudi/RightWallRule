@@ -4,7 +4,7 @@ import { CircleEffect } from "../circleEffect.js";
 import { EFFECT_LAYERS } from "../effect.js";
 import { VFXPoof } from "./poof.js";
 
-const FLARE_DURATION = 120;
+const FLARE_DURATION = 60;
 
 function flareMove(startPosition, targetPosition) {
   return (fx, ticks) => {
@@ -19,7 +19,7 @@ export function VFXFlare(startPosition, targetPosition, color, despawnAction = t
     startPosition.x, startPosition.y, flareMove(startPosition.copy, targetPosition, FLARE_DURATION), 8, color
   );
   flare.despawnAction = (ticks) => {
-    VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, 120, 200, color, 30);
+    VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, 150, 250, color, 30);
     despawnAction(ticks);
   };
   gameEngine.spawnEffect(EFFECT_LAYERS.above, flare, FLARE_DURATION);
