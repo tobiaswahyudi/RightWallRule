@@ -42,7 +42,7 @@ export class Chest extends Entity {
       Z
     `);
 
-    this.pathColor = (opacity) => `hsla(${36 * idx} 90% 60% / ${opacity})`;
+  this.pathColor = (opacity) => `hsla(${36 * idx} 100% 60% / ${opacity})`;
     this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor(1));
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
@@ -57,7 +57,7 @@ export class Chest extends Entity {
     if(gameEngine.screenCells.has(this.cell) && !this.seenByPlayer) {
       this.seenByPlayer = true;
       gameEngine.seenChests.add(this);
-      VFXFlare(gameEngine.player.position, this.position, this.pathColor(0.8), (flareDespawnTicks) => {
+      VFXFlare(gameEngine.player.position, this.position, this.pathColor(1), (flareDespawnTicks) => {
         this.renderPath = true;
         this.startRenderPathTick = flareDespawnTicks;
         computeChestToPlayerPaths(gameEngine.seenChests);
@@ -130,7 +130,7 @@ export class Chest extends Entity {
       if(coords.length < 2) return;
 
       this.effect.shapeConstructor = () => new Path2D(`M ${coords.map(vec => `${vec.x}, ${vec.y}`).join(" L ")}`);
-      this.effect.stroke = this.pathColor(0.5);
+      this.effect.stroke = this.pathColor(0.8);
       this.effect.strokeWidth = 2;
     }
   }
