@@ -48,6 +48,8 @@ export class Bullet extends Entity {
       other.hp -= this.stats.damage;
       if(other.hp < 0) this.stats.kills++;
       other.velocity.add(this.velocity.normalize().scale(WEIGHTS.repulsion.bullet));
+
+      other.lastBulletDirection = this.velocity;
     }
     gameEngine.deleteEntity(this);
     gameEngine.spawnEffect(

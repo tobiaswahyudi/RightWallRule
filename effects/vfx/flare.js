@@ -19,7 +19,7 @@ export function VFXFlare(startPosition, targetPosition, color, despawnAction = t
     startPosition.x, startPosition.y, flareMove(startPosition.copy, targetPosition, FLARE_DURATION), 8, color
   );
   flare.despawnAction = (ticks) => {
-    VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, 150, 250, color, 30);
+    VFXPoof(EFFECT_LAYERS.above, targetPosition, 20, 10, color, 30, 150, 250);
     despawnAction(ticks);
   };
   gameEngine.spawnEffect(EFFECT_LAYERS.above, flare, FLARE_DURATION);

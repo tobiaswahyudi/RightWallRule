@@ -5,6 +5,7 @@ import { EFFECT_LAYERS } from "../../effects/effect.js";
 import { CircleEffect } from "../../effects/circleEffect.js";
 import gameEngine from "../../core/engine.js";
 import { CircularBuffer } from "../../utils/circularBuffer.js";
+import { VFXPoof } from "../../effects/vfx/poof.js";
 
 const followMe = (position, xOffset, yOffset) => {
   return (effect, ticks) => {
@@ -69,6 +70,7 @@ export class CrawlerEnemy extends Enemy {
     super.die();
     // Look at Bullet.js
     const direction = this.lastBulletDirection;
+    VFXPoof(EFFECT_LAYERS.above, this.position, 10, 20, this.shape.color, 30, 80, 100, -direction.thetaDeg - 20, -direction.thetaDeg + 20);
   }
 
   render(context) {

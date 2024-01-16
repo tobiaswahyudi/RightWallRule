@@ -9,12 +9,13 @@ function movePoofParticle(startPosition, endPosition) {
   }
 }
 
-export function VFXPoof(layer, position, count, radius, minSpeed, maxSpeed, color, duration) {
-  const angle = 360/count;
+export function VFXPoof(layer, position, count, radius, color, duration, minSpeed, maxSpeed, minAngle = 0, maxAngle = 360) {
+  const a = maxAngle - minAngle;
+  const angle = a/count;
   const direction = new Vector2(1, 0);
   for(let i = 0; i < count; i++) {
     const speed = Math.random() * (maxSpeed - minSpeed) + minSpeed;
-    const theta = (i + Math.random() - 0.5) * angle;
+    const theta = (i + Math.random() - 0.5) * angle + minAngle;
     gameEngine.spawnEffect(
       layer,
       new CircleEffect(

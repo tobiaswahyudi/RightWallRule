@@ -51,6 +51,10 @@ export class Vector2 {
     return Math.atan2(this.y, this.x);
   }
 
+  get thetaDeg() {
+    return this.theta / Math.PI * 180;
+  }
+
   // Returns this vector rotated 90 degrees.
   perp() {
     return this.rotate(90);
