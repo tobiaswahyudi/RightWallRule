@@ -42,7 +42,7 @@ export class Chest extends Entity {
       Z
     `);
 
-    this.pathColor = (opacity) => `hsla(${36 * idx} 100% 60% / ${opacity})`;
+    this.pathColor = (opacity) => `hsla(${36 * idx} 90% 60% / ${opacity})`;
     this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor(1));
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
@@ -164,16 +164,16 @@ export class Chest extends Entity {
           gameEngine.deleteEntity(unlucky);
           gameEngine.deleteEffect(unlucky.effect);
           gameEngine.spawnEntity("spawner", new Spawner(unlucky.position.x, unlucky.position.y, 8 * CONFIG.FPS));
-          deletedChests.push(`<span style="color: ${unlucky.pathColor};">${COLORS.hueNames[36 * unlucky.idx]}</span>`);
+          deletedChests.push(`<span style="color: ${unlucky.pathColor(1)};">${COLORS.hueNames[36 * unlucky.idx]}</span>`);
         }
         if(deletedChests.length == 0) {
-          gameEngine.hud.log(`You grabbed the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, gameEngine.gameTicks);
+          gameEngine.hud.log(`You grabbed the <span style="color: ${this.pathColor(1)};">${COLORS.hueNames[36 * this.idx]}</span> crystal!`, gameEngine.gameTicks);
           gameEngine.hud.log(`You feel an ominous presence...`, gameEngine.gameTicks);
         } else if(deletedChests.length == 1) {
-          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal angered the labyrinth...`, gameEngine.gameTicks);
+          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor(1)};">${COLORS.hueNames[36 * this.idx]}</span> crystal angered the labyrinth...`, gameEngine.gameTicks);
           gameEngine.hud.log(`The ${deletedChests[0]} crystal became infected.`, gameEngine.gameTicks);
         } else {
-          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor};">${COLORS.hueNames[36 * this.idx]}</span> crystal stoked the labyrinth's fury...`, gameEngine.gameTicks);
+          gameEngine.hud.log(`Snatching the <span style="color: ${this.pathColor(1)};">${COLORS.hueNames[36 * this.idx]}</span> crystal stoked the labyrinth's fury...`, gameEngine.gameTicks);
           gameEngine.hud.log(`The ${deletedChests.join(', ')} crystals now spread the infection!`, gameEngine.gameTicks);
         }
         gameEngine.hud.log("&nbsp;", gameEngine.gameTicks);
