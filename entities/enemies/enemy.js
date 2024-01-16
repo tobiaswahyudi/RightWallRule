@@ -26,6 +26,7 @@ export class Enemy extends Entity {
   }
 
   cull() {
+    if(this.culled) return;
     this.culled = true;
     gameEngine.deleteEntity(this);
     gameEngine.deleteEffect(this.shadow);

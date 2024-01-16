@@ -269,6 +269,10 @@ class GameEngine {
       chest.tick(this.gameTicks);
     });
     
+    this.entities.enemyWave.forEach(wave => {
+      if(wave.enemies.length == 0) this.entities.enemyWave.delete(wave);
+    });
+
     // Enemy Headings
     this.entities.enemyWave.forEach(wave => {
       if(wave.onscreen) {
@@ -340,10 +344,6 @@ class GameEngine {
           });
         }
       }
-    });
-
-    this.entities.enemyWave.forEach(wave => {
-      if(wave.enemies.length == 0) this.entities.enemyWave.delete(wave);
     });
 
     // Spawn new bullets
