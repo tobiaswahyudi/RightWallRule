@@ -1,15 +1,19 @@
 import { Entity } from "./entity.js";
-import { CONFIG, COLORS, SIZES, WEIGHTS, SPEEDS } from "../config.js";
+import { COLORS, SIZES, WEIGHTS, SPEEDS, CONFIG } from "../config.js";
 import { CircleShapedSprite } from "./shapes.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { CircleEffect } from "../effects/circleEffect.js";
 import { Vector2 } from "../utils/vector2.js";
-import gameEngine from "../core/engine.js";
 import { ImageSrc } from "../utils/image.js";
+import { HPManager } from "./hpManager.js";
+import { Enemy } from "./enemies/enemy.js";
+import gameEngine from "../core/engine.js";
 
 export class Player extends Entity {
   constructor(gameEngine) {
     super(0, 0);
+
+    this.hp = new HPManager(100, CONFIG.FPS * 2, 0.05);
 
     this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
 
@@ -32,6 +36,7 @@ export class Player extends Entity {
     this.velocity = input.movement.scale(SPEEDS.player);
     if(input.movement.magnitude > 0) this.lastDirection = input.movement;
     if(gameEngine.input.shooting) this.lastDirection = gameEngine.input.shootDir;
+    this.hp.tick(ticks);
   }
 
   render(context) {
@@ -47,7 +52,8 @@ export class Player extends Entity {
     context.restore();
   }
 
-  collide(other, collisionPoint) {
+  collide(other, collisionPoint, ticks) {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.player);
+    if(other instanceof Enemy) this.hp.takeDmg(0.1, ticks);
   }
 }

@@ -10,7 +10,7 @@ export class InventoryManager {
 
   replaceGun(gun, slotIdx) {
     this.guns[slotIdx] = gun;
-    if(this.hud) this.hud.update();
+    if(this.hud) this.hud.updateSlots();
   }
 
   cycleGuns() {
@@ -21,12 +21,12 @@ export class InventoryManager {
     const cycle = this.guns.splice(0, slotIdx);
     this.guns = this.guns.concat(cycle);
 
-    if(this.hud) this.hud.update();
+    if(this.hud) this.hud.updateSlots();
   }
 
   replaceTurret(turret, slotIdx) {
     this.turrets[slotIdx] = turret;
-    if(this.hud) this.hud.update();
+    if(this.hud) this.hud.updateSlots();
   }
 
   get selectedGun() {

@@ -142,7 +142,7 @@ export class UIManager {
       container.appendChild(theArrow);
       this.state = null;
       returnFn();
-      inventory.hud.update();
+      inventory.hud.updateSlots();
     };
 
     this.state = 'upgradeDoneDialog';

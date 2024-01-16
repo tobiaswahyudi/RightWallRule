@@ -29,13 +29,13 @@ export class HUD {
     this.gunSlots = this.inventory.guns.map(gun => new GunSlotDisplay(this.gunsContainer, gun, false));
     this.turretSlots = this.inventory.turrets.map((turret, idx) => new TurretSlotDisplay(this.turretsContainer, turret, false, idx));
 
-    this.update();
+    this.updateSlots();
 
     this.messages = new LinkedList();
     this.messagesToRemove = new LinkedList();
   }
 
-  update() {
+  updateSlots() {
     this.gunSlots.forEach((slot, idx) => {
       slot.gun = this.inventory.guns[idx];
     });
@@ -44,7 +44,7 @@ export class HUD {
       if(this.inventory.turrets[idx]) {
         slot.turret = this.inventory.turrets[idx];
       }
-    })
+    });
   }
 
   set hp(val) {

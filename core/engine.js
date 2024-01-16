@@ -363,7 +363,7 @@ class GameEngine {
       } else {
         this.inventoryManager.turrets[0].deploy(this.player.position);
       }
-      this.hud.update();
+      this.hud.updateSlots();
     }
 
     // Turret Ticks
@@ -383,12 +383,14 @@ class GameEngine {
     this.collisionMap.updateEntity(this.player);
     this.player.tick(this.gameTicks, this.input);
 
+    this.hud.hp = this.player.hp.percentage;
+
     ////////////// Collisions
 
     const wallCollisions = [];
 
     const candidatePairIterator = this.collisionMap.candidatePairs();
-    for(const [entity1, entity2] of candidatePairIterator) mutualCollide(wallCollisions, entity1, entity2);
+    for(const [entity1, entity2] of candidatePairIterator) mutualCollide(this.gameTicks, wallCollisions, entity1, entity2);
 
     wallCollisions.forEach(([entity, collisionPoint]) => {
       const collisionDelta = collisionPoint.delta(entity.position);
