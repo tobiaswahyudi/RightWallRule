@@ -32,9 +32,7 @@ export class CircleShapedSprite {
   boundingBoxCorners() {
     return [
       new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y - this.radius),
-      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y - this.radius),
-      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius),
-      new Vector2(this.anchorPosition.x - this.radius, this.anchorPosition.y + this.radius)
+      new Vector2(this.anchorPosition.x + this.radius, this.anchorPosition.y + this.radius)
     ];
   }
 
@@ -130,9 +128,7 @@ export class RectShapedSprite {
   boundingBoxCorners() {
     return [
       new Vector2(this.xStart, this.yStart),
-      new Vector2(this.xEnd, this.yStart),
-      new Vector2(this.xEnd, this.yEnd),
-      new Vector2(this.xStart, this.yEnd)
+      new Vector2(this.xEnd, this.yEnd)
     ];
   }
 

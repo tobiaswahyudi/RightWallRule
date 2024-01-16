@@ -7,6 +7,18 @@ export class CollisionHashMap {
     this.map = new Map();
   }
 
+  cornersToChunks(ulCorner, drCorner) {
+    const ulChunk = this.coordsToChunk(ulCorner);
+    const drChunk = this.coordsToChunk(drCorner);
+    const chunks = [];
+    for(let row = ulChunk.row; row <= drChunk.row; row++) {
+      for(let col = ulChunk.col; col <= drChunk.col; col++) {
+        chunks.push({row, col});
+      }
+    }
+    return chunks;
+  }
+
   coordsToChunk(pos) {
     return {
       col: Math.floor(pos.x / CONFIG.collisionMapChunkSize),
@@ -35,42 +47,17 @@ export class CollisionHashMap {
 
   registerEntity(entity) {
     const corners = entity.shape.boundingBoxCorners();
-    entity.shape.collisionCellCorners = Array(4);
-
-    corners.forEach((corner, idx) => {
-      const cornerChunk = this.coordsToChunk(corner);
-      entity.shape.collisionCellCorners[idx] = cornerChunk;
-      this.chunkAddEntity(cornerChunk, entity);
-    })
-
-    const ulChunk = entity.shape.collisionCellCorners[0];
-    const drChunk = entity.shape.collisionCellCorners[2];
-
-    for(let row = ulChunk.row; row <= drChunk.row; row++) {
-      for(let col = ulChunk.col; col <= drChunk.col; col++) {
-        this.chunkAddEntity({row, col}, entity);
-      }
-    }
+    this.cornersToChunks(...corners).forEach(chunk => this.chunkAddEntity(chunk, entity) );
+    entity.shape.collisionCellCorners = corners;
   }
 
   updateEntity(entity) {
-    const cornerChunks = entity.shape.boundingBoxCorners().map(this.coordsToChunk);
-    const oldChunks = entity.shape.collisionCellCorners;
-    oldChunks.forEach(chunk => this.chunkDeleteEntity(chunk, entity));
-    cornerChunks.forEach(chunk => this.chunkAddEntity(chunk, entity));
-
-    entity.shape.collisionCellCorners = cornerChunks;
+    this.deleteEntity(entity);
+    this.registerEntity(entity);
   }
 
   deleteEntity(entity) {
-    const ulChunk = entity.shape.collisionCellCorners[0];
-    const drChunk = entity.shape.collisionCellCorners[2];
-
-    for(let row = ulChunk.row; row <= drChunk.row; row++) {
-      for(let col = ulChunk.col; col <= drChunk.col; col++) {
-        this.chunkDeleteEntity({row, col}, entity);
-      }
-    }
+    this.cornersToChunks(...entity.shape.collisionCellCorners).forEach(chunk => this.chunkDeleteEntity(chunk, entity));
   }
 
     // In the case where both el1 and el2 are in multiple chunks, they may collide() multiple times.
