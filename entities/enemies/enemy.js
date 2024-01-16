@@ -1,19 +1,20 @@
+import gameEngine from "../../core/engine.js";
+import { EFFECT_LAYERS } from "../../effects/effect.js";
 import { Entity } from "../entity.js";
 
 export class Enemy extends Entity {
-  constructor(x, y, hp) {
+  constructor(x, y, hp, shadow) {
     super(x, y);
     this.hp = hp;
     this.maxHp = hp;
+    this.shadow = shadow;
     this.wave = null;
+    this.culled = false;
+    this.killed = false;
   }
 
-  get shouldRemove() {
-    return this.hp <= 0;
-  }
-
-  designateAsSentinel(sentinelAction) {
-    this.sentinelAction = sentinelAction;
+  onSpawn() {
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow, -1);
   }
 
   tick(ticks, player, towers) {
@@ -23,14 +24,37 @@ export class Enemy extends Entity {
   render(ticks) {
     console.error("this Enemy does not override tick()");
   }
+
+  cull() {
+    this.culled = true;
+    gameEngine.deleteEntity(this);
+    gameEngine.deleteEffect(this.shadow);
+  }
+
+  uncull() {
+    this.culled = false;
+    gameEngine.spawnEntity('enemy', this);
+    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow);
+  }
+
+  die() {
+    this.killed = true;
+    gameEngine.deleteEntity(this);
+    gameEngine.deleteEffect(this.shadow);
+    this.wave.remove(this);
+  }
 }
 
 export class EnemyWave {
-  constructor(enemies, ticks) {
-    this.enemies = enemies;
-    enemies.forEach(enemy => enemy.wave = this);
+  constructor(ticks) {
+    this.enemies = [];
     this.lastCulledTick = ticks;
     this.onscreen = false;
+  }
+
+  addEnemy(enemy) {
+    this.enemies.push(enemy);
+    enemy.wave = this;
   }
 
   get position() {

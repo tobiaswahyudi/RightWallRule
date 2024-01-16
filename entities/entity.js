@@ -15,6 +15,8 @@ export class Entity {
     this.velocity.add(this.position.delta(point).normalize().scale(weight));
   }
 
+  onSpawn() {}
+
   get rotation() {
     if(this.velocity.x == 0 && this.velocity.y == 0) return 0;
     return Math.atan2(this.velocity.y, this.velocity.x);

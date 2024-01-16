@@ -6,29 +6,30 @@ import { CircleEffect } from "../../effects/circleEffect.js";
 import gameEngine from "../../core/engine.js";
 import { CircularBuffer } from "../../utils/circularBuffer.js";
 
+const followMe = (position, xOffset, yOffset) => {
+  return (effect, ticks) => {
+    effect.position.x = position.x + xOffset;
+    effect.position.y = position.y + yOffset;
+  }
+}
+
 export class CrawlerEnemy extends Enemy {
   constructor(x, y) {
-    super(x, y, 20);
+    const shadow = new CircleEffect(0, 0, null, SIZES.enemyRadius, COLORS.shadowOnFloor);
+    super(x, y, 20, shadow);
+    this.shadow.animation = followMe(this.position, 6, 9);
 
     this.crawlFrequency = 0.8;
     this.crawlTickOffset = Math.random();
 
     this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, this.colorRange(0));
 
-    this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.enemyRadius, COLORS.shadowOnFloor);
     this.lastTickCollisionCount = 0;
     this.tickCollisionCounts = new CircularBuffer(CONFIG.FPS);
     this.tickCollisionCounts.push(0);
-
-    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow, -1);
   }
 
-  followMe(xOffset, yOffset) {
-    return (effect, ticks) => {
-      effect.position.x = this.position.x + xOffset;
-      effect.position.y = this.position.y + yOffset;
-    }
-  }
+  
 
   colorRange(ratio) {
     return `hsl(${15 + ratio * 2}, ${60 + ratio * 4}%, ${42 + ratio * 6}%)`;
@@ -52,18 +53,22 @@ export class CrawlerEnemy extends Enemy {
     this.shape.color = this.colorRange((n - 1) / (n + 3));
 
     if(this.hp <= 0) {
-      gameEngine.deleteEntity(this);
-      gameEngine.deleteEffect(this.shadow);
-      gameEngine.deleteEnemyFromWave(this);
+      this.die();
+      return;
     }
     this.tickCollisionCounts.push(this.lastTickCollisionCount);
     this.lastTickCollisionCount = 0;
 
     // Outside screen space
     if(!gameEngine.screenCells.has(myCell) && !gameEngine.edgeCells.has(myCell)) {
-      // Report outside screen space
-      return true;
+      this.cull();
     }
+  }
+
+  die() {
+    super.die();
+    // Look at Bullet.js
+    const direction = this.lastBulletDirection;
   }
 
   render(context) {

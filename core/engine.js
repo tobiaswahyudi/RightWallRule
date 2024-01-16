@@ -92,8 +92,7 @@ class GameEngine {
   spawnEntity(type, entity) {
     // Please shoot some enemies, I'm begging you
     if(type == "enemy" && this.entities[type].size > 300) {
-      this.deleteEffect(entity.shadow);
-      this.deleteEnemyFromWave(entity);
+      if(entity.spawned) entity.cull();
       return;
     }
 
@@ -105,10 +104,12 @@ class GameEngine {
     this.entities[type].add(entity);
 
     this.collisionMap.registerEntity(entity);
+
+    entity.onSpawn();
   }
 
   spawnEnemyWave(wave) {
-    this.onscreen = true;
+    wave.onscreen = false;
     this.entities.enemyWave.add(wave);
   }
 
@@ -119,13 +120,6 @@ class GameEngine {
     this.collisionMap.deleteEntity(entity);
 
     entity.spawned = false;
-  }
-
-  deleteEnemyFromWave(enemy) {
-    enemy.wave.remove(enemy);
-    if(enemy.wave.enemies.length == 0) {
-      this.entities.enemyWave.delete(enemy.wave);
-    }
   }
 
   // Spawns a new effect.
@@ -277,27 +271,18 @@ class GameEngine {
     
     // Enemy Headings
     this.entities.enemyWave.forEach(wave => {
-      if(wave.enemies.length == 0) {
-        this.entities.enemyWave.delete(wave);
-        return;
-      }
       if(wave.onscreen) {
-        // This should be an invariant, but there is a bug somewhere.
-        wave.enemies.forEach(enemy => {
-          if(!enemy.spawned) gameEngine.spawnEntity('enemy', enemy);
-        });
         let anyCulled = false;
         wave.enemies.forEach(enemy => {
           this.collisionMap.updateEntity(enemy);
-
-          const offscreen = enemy.tick(this.gameTicks, this.player, this.entities.tower);
-          if(offscreen) anyCulled = true;
+          enemy.tick(this.gameTicks, this.player, this.entities.tower);
+          if(enemy.culled) anyCulled = true;
         });
         if(anyCulled) {
+          // Cull entire wave.
           wave.onscreen = false;
           wave.lastCulledTick = this.gameTicks;
-
-          wave.enemies.forEach(enemy => gameEngine.deleteEntity(enemy));
+          wave.enemies.forEach(enemy => enemy.cull());
         }
       } else {
         const myGridRow = Math.floor(wave.position.y / SIZES.mazeCell);
@@ -351,10 +336,14 @@ class GameEngine {
             enemy.position.x = spawnPosition.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3);
             enemy.position.y = spawnPosition.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3);
             enemy.velocity = new Vector2(0, 0);
-            gameEngine.spawnEntity('enemy', enemy);
+            enemy.uncull();
           });
         }
       }
+    });
+
+    this.entities.enemyWave.forEach(wave => {
+      if(wave.enemies.length == 0) this.entities.enemyWave.delete(wave);
     });
 
     // Spawn new bullets

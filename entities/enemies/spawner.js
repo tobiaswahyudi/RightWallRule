@@ -48,14 +48,13 @@ export class Spawner extends Entity {
 
   spawnWave(position, ticks) {
     const quantity = 24 + normalSample() * 8;
-    const enemies = [];
+    const wave = new EnemyWave(ticks);
     for(let i = 1; i <= quantity; i++) {
-      enemies.push(new CrawlerEnemy(
+      wave.addEnemy(new CrawlerEnemy(
         position.x + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3),
         position.y + ((Math.random() - 0.5) * (SIZES.mazeCell - 2 * SIZES.wallWidth) / 3)
       ));
     }
-    const wave = new EnemyWave(enemies, ticks);
     gameEngine.spawnEnemyWave(wave);
   }
 
