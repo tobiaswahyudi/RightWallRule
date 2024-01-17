@@ -278,6 +278,10 @@ class GameEngine {
       if(wave.onscreen) {
         let anyCulled = false;
         wave.enemies.forEach(enemy => {
+          if(!enemy.spawned) {
+            // This shouldn't happen, but it does 
+            enemy.uncull();
+          }
           this.collisionMap.updateEntity(enemy);
           enemy.tick(this.gameTicks, this.player, this.entities.tower);
           if(enemy.culled) anyCulled = true;
