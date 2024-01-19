@@ -75,10 +75,16 @@ export class UIManager {
       returnFn();
     }
 
+    const hasEmptySlots = inventory.guns.some(x => !x);
+
     inventory.guns.forEach((gun, idx) => {
       const slot = new GunSlotDisplay(gunSlotsCtr, gun, true);
       slot.node.classList.add('hoverable');
       slot.node.onclick = () => {
+        if(gun && hasEmptySlots) {
+          const ruSure = confirm(`You have empty slots available. Are you sure you want to replace this gun?\nClick OK to confirm and replace ${gun.name}.`);
+          if(!ruSure) return;
+        }
         inventory.replaceGun(newGun, idx);
         cleanupAndClose();
       }
