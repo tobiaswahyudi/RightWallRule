@@ -37,6 +37,11 @@ export class Player extends Entity {
     if(movementDir.magnitude > 0) this.lastDirection = movementDir;
     if(shooting) this.lastDirection = aimingDir;
     this.hp.tick(ticks);
+
+    if(ticks % 6) {
+      gameEngine.canvas.canvas.style.transition = `filter 0.2s`;
+      gameEngine.canvas.canvas.style.filter = `saturate(${0.3 + (0.7 * this.hp.percentage / 100)}) contrast(${0.8 + (0.2 * this.hp.percentage / 100)})`;
+    }
   }
 
   render(context) {
@@ -57,12 +62,8 @@ export class Player extends Entity {
     if(other instanceof Enemy) {
       this.hp.takeDmg(0.1, ticks);
       if(this.hit) clearTimeout(this.hit);
-      gameEngine.canvas.canvas.style.filter = `saturate(0.2) contrast(1.2)`;
       gameEngine.canvas.canvas.style.transition = ``;
-      this.hit = setTimeout(() => {
-        gameEngine.canvas.canvas.style.filter = `saturate(1.0) contrast(1.0)`;
-        gameEngine.canvas.canvas.style.transition = `filter 0.2s`;
-      }, 50);
+      gameEngine.canvas.canvas.style.filter = `saturate(0.1) contrast(1.2)`;
     }
   }
 }
