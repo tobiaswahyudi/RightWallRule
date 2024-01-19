@@ -15,6 +15,7 @@ class RawInputManager {
       ["KeyA", "KeyD"],
     ]
     this.mousePosition = new Vector2();
+    this.mousePressed = false;
   }
 
   maintainExclusions(keyCode) {
@@ -42,11 +43,11 @@ class RawInputManager {
   }
 
   mouseDown(event) {
-    this.mouseDown = true;
+    this.mousePressed = true;
   }
 
   mouseUp(event) {
-    this.mouseDown = false;
+    this.mousePressed = false;
   }
 
   setupListeners(window) {
@@ -91,7 +92,7 @@ export class GameInputManager {
   }
 
   get shooting() {
-    return this.rawInput.mouseDown;
+    return this.rawInput.mousePressed;
   }
 
   get shootDir() {
