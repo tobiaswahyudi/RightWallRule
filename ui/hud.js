@@ -26,6 +26,11 @@ export class HUD {
     this.turretsContainer = document.getElementById('turrets-container');
     this.hpbar = document.getElementById('hpbar-inner');
 
+    this.xpBar = document.getElementById('xp-bar');
+    this.levelLabel = document.getElementById('current-level');
+    this.level = 0;
+    this.levelLabel.innerText = this.level;
+
     this.gunSlots = this.inventory.guns.map(gun => new GunSlotDisplay(this.gunsContainer, gun, false));
     this.turretSlots = this.inventory.turrets.map((turret, idx) => new TurretSlotDisplay(this.turretsContainer, turret, false, idx));
 
@@ -49,6 +54,15 @@ export class HUD {
 
   set hp(val) {
     this.hpbar.style.width = `${val}%`;
+  }
+
+  set xp(val) {
+    this.xpBar.style.top = `${100 - val}%`;
+  }
+
+  levelUp() {
+    this.level++;
+    this.levelLabel.innerText = this.level;
   }
 
   tick(ticks) {

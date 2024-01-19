@@ -215,6 +215,19 @@ class GameEngine {
       this.inventoryManager.cycleGuns();
     }
 
+    if(this.inventoryManager.levelUpCheck()) {
+      this.inventoryManager.levelUp();
+      this.hud.levelUp();
+      this.paused = true;
+      this.uiManager.showUpgradeDialog(this.inventoryManager, () => {
+        this.paused = false;
+      })
+    }
+    if(this.lastXp != this.inventoryManager.xp) {
+      this.hud.xp = this.inventoryManager.xpPercentage;
+      this.lastXp = this.inventoryManager.xp;
+    }
+
     this.hud.tick(this.gameTicks);
 
     // Pathfinding

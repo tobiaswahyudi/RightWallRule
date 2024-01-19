@@ -1,9 +1,11 @@
-// Dead simple
 export class InventoryManager {
   constructor() {
     this.guns = [null, null, null];
     this.turrets = [null, null];
     this.gunIndex = 0;
+
+    this.xp = 0;
+    this.levelUpXp = 10;
 
     this.hud = null;
   }
@@ -31,5 +33,18 @@ export class InventoryManager {
 
   get selectedGun() {
     return this.guns[this.gunIndex];
+  }
+
+  levelUpCheck() {
+    return this.levelUpXp == this.xp;
+  }
+
+  levelUp() {
+    this.xp = 0;
+    this.levelUpXp = Math.round(this.levelUpXp * 1.4);
+  }
+
+  get xpPercentage() {
+    return this.xp / this.levelUpXp * 100;
   }
 }

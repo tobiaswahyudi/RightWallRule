@@ -14,26 +14,24 @@ const followMe = (position, xOffset, yOffset) => {
   }
 }
 
+const CRAWLER_HP = 20;
+
 export class CrawlerEnemy extends Enemy {
   constructor(x, y) {
     const shadow = new CircleEffect(0, 0, null, SIZES.enemyRadius, COLORS.shadowOnFloor);
-    super(x, y, 20, shadow);
+    super(x, y, CRAWLER_HP, shadow);
     this.shadow.animation = followMe(this.position, 6, 9);
 
     this.crawlFrequency = 0.8;
     this.crawlTickOffset = Math.random();
 
     this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, this.colorRange(0));
-
-    this.lastTickCollisionCount = 0;
-    this.tickCollisionCounts = new CircularBuffer(CONFIG.FPS);
-    this.tickCollisionCounts.push(0);
   }
 
   
 
-  colorRange(ratio) {
-    return `hsl(${15 + ratio * 2}, ${60 + ratio * 4}%, ${42 + ratio * 6}%)`;
+  colorRange(ratio, brightnessAdjust = 0) {
+    return `hsl(${15 + ratio * 2}, ${60 + ratio * 4}%, ${Math.max(0, 42 + ratio * 6 + brightnessAdjust)}%)`;
   }
 
   tick(ticks, player, towers) {
@@ -49,17 +47,13 @@ export class CrawlerEnemy extends Enemy {
     sinSq *= sinSq;
     this.velocity.scale(sinSq);
 
-    const n = this.tickCollisionCounts.reduce((a,b) => a + b)/this.tickCollisionCounts.length;
-
-    this.shape.color = this.colorRange((n - 1) / (n + 3));
+    const n = this.hp / CRAWLER_HP;
+    this.shape.color = this.colorRange(n);
 
     if(this.hp <= 0) {
       this.die();
       return;
     }
-    this.tickCollisionCounts.push(this.lastTickCollisionCount);
-    this.lastTickCollisionCount = 0;
-
     // Outside screen space
     if(!gameEngine.screenCells.has(myCell) && !gameEngine.edgeCells.has(myCell)) {
       this.cull();
@@ -70,7 +64,12 @@ export class CrawlerEnemy extends Enemy {
     super.die();
     // Look at Bullet.js
     const direction = this.lastBulletDirection;
-    VFXPoof(EFFECT_LAYERS.above, this.position, 10, 20, this.shape.color, 30, 80, 100, -direction.thetaDeg - 20, -direction.thetaDeg + 20);
+
+    const n = this.hp / CRAWLER_HP;
+    this.shape.color = this.colorRange(n, -5);
+
+    VFXPoof(EFFECT_LAYERS.above, this.position, 5, 20, this.shape.color, 30, 100, 120, -direction.thetaDeg - 20, -direction.thetaDeg + 20);
+    gameEngine.inventoryManager.xp++;
   }
 
   render(context) {
@@ -79,6 +78,5 @@ export class CrawlerEnemy extends Enemy {
 
   collide(other, collisionPoint) {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.enemy);
-    if(other instanceof Enemy) this.lastTickCollisionCount++;
   }
 }
