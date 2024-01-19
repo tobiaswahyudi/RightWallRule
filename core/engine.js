@@ -292,19 +292,26 @@ class GameEngine {
       if(wave.onscreen) {
         let anyCulled = false;
         wave.enemies.forEach(enemy => {
-          if(!enemy.spawned) {
-            // This shouldn't happen, but it does 
-            enemy.uncull();
+          // Sometimes within an onscreen wave, some enemies are not culled but also not spawned.
+          // This is due to the 300 onscreen enemy limit.
+          // To accommodate this, we put two checks:
+
+          // If this enemy is not spawned, attempt it. This works if waves get culled or enemies get killed.
+          if(!enemy.spawned) enemy.uncull();
+          // If the enemy was spawned, only then update it and such.
+          if(enemy.spawned) {
+            this.collisionMap.updateEntity(enemy);
+            enemy.tick(this.gameTicks, this.player, this.entities.tower);
+            if(enemy.culled) anyCulled = true;
           }
-          this.collisionMap.updateEntity(enemy);
-          enemy.tick(this.gameTicks, this.player, this.entities.tower);
-          if(enemy.culled) anyCulled = true;
         });
         if(anyCulled) {
           // Cull entire wave.
           wave.onscreen = false;
           wave.lastCulledTick = this.gameTicks;
-          wave.enemies.forEach(enemy => enemy.cull());
+          wave.enemies.forEach(enemy => {
+            if(enemy.spawned) enemy.cull();
+          });
         }
       } else {
         const myGridRow = Math.floor(wave.position.y / SIZES.mazeCell);
