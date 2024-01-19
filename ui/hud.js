@@ -42,12 +42,12 @@ export class HUD {
 
   updateSlots() {
     this.gunSlots.forEach((slot, idx) => {
-      slot.gun = this.inventory.guns[idx];
+      slot.val = this.inventory.guns[idx];
     });
 
     this.turretSlots.forEach((slot, idx) => {
       if(this.inventory.turrets[idx]) {
-        slot.turret = this.inventory.turrets[idx];
+        slot.val = this.inventory.turrets[idx];
       }
     });
   }

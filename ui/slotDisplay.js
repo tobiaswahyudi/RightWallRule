@@ -10,7 +10,7 @@ export class GunSlotDisplay {
     this.extended = extended;
 
     container.appendChild(this.node);
-    if(gun) this.gun = gun;
+    if(gun) this.val = gun;
   }
 
   createElements() {
@@ -34,7 +34,7 @@ export class GunSlotDisplay {
     this.stats = null;
   }
 
-  set gun(val) {
+  set val(val) {
     if(!this._gun && val) {
       this._gun = val;
       this.createElements();
@@ -67,7 +67,7 @@ export class TurretSlotDisplay {
     if(idx == -1) keyTag.style.display = "none";
 
     container.appendChild(this.node);
-    if(turret) this.turret = turret;
+    if(turret) this.val = turret;
   }
 
   createElements() {
@@ -91,7 +91,7 @@ export class TurretSlotDisplay {
     nodes.forEach(node => this.node.appendChild(node));
   }
 
-  set turret(val) {
+  set val(val) {
     if(!this._turret) {
       this._turret = val;
       this.createElements();
