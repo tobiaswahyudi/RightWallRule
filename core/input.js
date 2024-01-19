@@ -14,7 +14,7 @@ class RawInputManager {
       ["KeyW", "KeyS"],
       ["KeyA", "KeyD"],
     ]
-    this.mousePosition = {x: 0, y: 0};
+    this.mousePosition = new Vector2();
   }
 
   maintainExclusions(keyCode) {
@@ -45,16 +45,20 @@ class RawInputManager {
     this.mouseDown = true;
   }
 
+  mouseUp(event) {
+    this.mouseDown = false;
+  }
+
   setupListeners(window) {
     window.onkeydown = this.keyDown.bind(this);
     window.onkeyup = this.keyUp.bind(this);
     window.onmousemove = this.mouseMove.bind(this);
     window.onmousedown = this.mouseDown.bind(this);
+    window.onmouseup = this.mouseUp.bind(this);
   }
 
   tick() {
     this.newlyPressedKeys.clear();
-    this.mouseDown = false;
   }
 }
 
@@ -62,8 +66,10 @@ class RawInputManager {
  * Manages key bindings.
  */
 export class GameInputManager {
-  constructor() {
+  constructor(screenWidth, screenHeight) {
     this.rawInput = new RawInputManager();
+    const screenSize = new Vector2(window.innerWidth, window.innerHeight);
+    this.screenCenter = screenSize.scale(0.5);
   }
 
   setupListeners(window) {
@@ -85,35 +91,14 @@ export class GameInputManager {
   }
 
   get shooting() {
-    return this.rawInput.pressedKeys.has("ArrowUp") ||
-      this.rawInput.pressedKeys.has("ArrowDown") ||
-      this.rawInput.pressedKeys.has("ArrowLeft") ||
-      this.rawInput.pressedKeys.has("ArrowRight");
+    return this.rawInput.mouseDown;
   }
 
   get shootDir() {
-    const dir = new Vector2(0,0);
-    if(this.rawInput.pressedKeys.has("ArrowUp")) dir.y = -1;
-    if(this.rawInput.pressedKeys.has("ArrowDown")) dir.y = 1;
-    if(this.rawInput.pressedKeys.has("ArrowLeft")) dir.x = -1;
-    if(this.rawInput.pressedKeys.has("ArrowRight")) dir.x = 1;
-
-    if(dir.x != 0 && dir.y != 0) {
-      dir.scale(1/Math.sqrt(2));
-    }
-
-    return dir;
+    return this.rawInput.mousePosition.delta(this.screenCenter).normalize();
   }
 
   tick() {
     this.rawInput.tick();
-  }
-
-  get mousePosition() {
-    return this.rawInput.mousePosition;
-  }
-
-  get mouseDown() {
-    return this.rawInput.mouseDown;
   }
 }

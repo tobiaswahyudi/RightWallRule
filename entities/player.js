@@ -32,10 +32,10 @@ export class Player extends Entity {
     }
   }
 
-  tick(ticks, input) {
-    this.velocity = input.movement.scale(SPEEDS.player);
-    if(input.movement.magnitude > 0) this.lastDirection = input.movement;
-    if(gameEngine.input.shooting) this.lastDirection = gameEngine.input.shootDir;
+  tick(ticks, movementDir, aimingDir, shooting) {
+    this.velocity = movementDir.scale(SPEEDS.player);
+    if(movementDir.magnitude > 0) this.lastDirection = movementDir;
+    if(shooting) this.lastDirection = aimingDir;
     this.hp.tick(ticks);
   }
 

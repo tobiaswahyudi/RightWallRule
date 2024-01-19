@@ -59,7 +59,7 @@ class GameEngine {
 
     this.playerGridSquareLastTick = null;
 
-    this.input = new GameInputManager();
+    this.input = new GameInputManager(this.width, this.height);
     this.gameTicks = 0;
 
     this.inventoryManager = new InventoryManager();
@@ -371,16 +371,6 @@ class GameEngine {
       }
     });
 
-    // Spawn new bullets
-    if(this.input.shooting) {
-      const bullets = this.inventoryManager.selectedGun.shoot(
-        this.gameTicks,
-        this.input.shootDir.scale(SIZES.playerRadius).add(this.player.position),
-        this.input.shootDir
-      );
-      bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
-    }
-
     // Spawn new turrets
     if(this.input.rawInput.newlyPressedKeys.has('Digit1')) {
       if(this.inventoryManager.turrets[0].deployed) {
@@ -404,9 +394,20 @@ class GameEngine {
       bullet.tick(this.gameTicks);
     });
 
+    
+    // Spawn new bullets
+    if(this.input.shooting) {
+      const bullets = this.inventoryManager.selectedGun.shoot(
+        this.gameTicks,
+        this.input.shootDir.scale(SIZES.playerRadius).add(this.player.position),
+        this.input.shootDir
+      );
+      bullets.forEach(bullet => this.spawnEntity("bullet", bullet));
+    }
+
     // Player Headings
     this.collisionMap.updateEntity(this.player);
-    this.player.tick(this.gameTicks, this.input);
+    this.player.tick(this.gameTicks, this.input.movement, this.input.shootDir, this.input.shooting);
 
     this.hud.hp = this.player.hp.percentage;
 
