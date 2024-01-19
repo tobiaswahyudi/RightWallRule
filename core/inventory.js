@@ -36,7 +36,7 @@ export class InventoryManager {
   }
 
   levelUpCheck() {
-    return this.levelUpXp == this.xp;
+    return this.levelUpXp <= this.xp;
   }
 
   levelUp() {

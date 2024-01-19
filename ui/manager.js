@@ -45,7 +45,6 @@ export class UIManager {
     const buttons = this.openChestDialog.children[1].children;
 
     buttons[0].onclick = () => { this.showNewGunDialog(inventory, returnFn) }
-    buttons[1].onclick = () => { this.showUpgradeDialog(inventory, returnFn) }
     this.state = 'openChestDialog';
   }
 
