@@ -38,6 +38,12 @@ export class CrawlerEnemy extends Enemy {
     const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
     const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
 
+    if(myGridRow < 0 || myGridRow >= CONFIG.mazeGridSize || myGridCol < 0 || myGridCol >= CONFIG.mazeGridSize) {
+      // Not sure when this happens. Pretty sure it's a culling bug.
+      this.die();
+      return;
+    }
+
     const myCell = gameEngine.maze.grid[myGridRow][myGridCol];
 
     const target = myCell.pathTarget;
