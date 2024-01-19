@@ -42,7 +42,7 @@
     </div>
   </div>
   <div id="messages" class="v-flex"></div>
-  <div id="modal-backdrop" class="hidden"></div>
+  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
   <div id="ded" class="hidden">
     <span id="pepsi">UR DED</span>
     <button class="h3-button hoverable"><h3>Try again</h3></button>
@@ -80,7 +80,7 @@
         <img src="./img/newgun.png">
       </button>
       <button class="chest-option hoverable">
-        <h3>Crossbreed<br>a new turret</h3>
+        <h3>Hybridize<br>a new turret</h3>
         <img src="./img/newturret.png">
       </button>
     </div>
@@ -96,10 +96,36 @@
       <button id="discard-new-gun" class="h3-button hoverable"><h3>Discard the new gun</h3></button>
     </div>
   </dialog>
+  <dialog id="hybridize-select" class="hidden">
+    <h1>Hybridize a new turret</h1>
+    <h2>Select 1 gun and 1 turret to cross:</h2>
+    <div id="hybridize-diagram" class="v-flex">
+      <div class="h-flex">
+        <div class="dialog-slots-container h-flex" id="cross-gun-slot"></div>
+        <img src="img/hybridize.png" style="width: 12rem; height: 12rem; margin-top: 8rem;">
+        <div class="dialog-slots-container h-flex" id="cross-turret-slot"></div>
+      </div>
+    </div>
+    <div class="dialog-slots-container h-flex" id="cross-new-slot" style="padding-right: 1rem;"></div>
+    <div class="h-flex" style="padding-right: 1rem;">
+      <button class="h3-button hoverable"><h3>Ok let's go!</h3></button>
+    </div>
+  </dialog>
+  <dialog id="hybridize-confirm" class="hidden">
+    <h1>The crossbred turret sprouted!</h1>
+    <div id="the-new-turret" class="h-flex dialog-slots-container">
+    </div>
+    <h2>Choose a slot to replace</h2>
+    <div class="dialog-slots-container h-flex" id="replace-turret-slots"></div>
+    <h2>-or-</h2>
+    <div class="h-flex">
+      <button id="discard-new-turret" class="h3-button hoverable"><h3>Discard the new turret</h3></button>
+    </div>
+  </dialog>
   <dialog id="upgrade-fertilize" class="hidden">
     <h1>A sack of ethereal fertilizer!</h1>
     <h2>Choose a gun or turret to upgrade:</h2>
-    <div class="dialog-slots-container h-flex" id="upgrade-gun-slots"></div>
+    <div class="dialog-slots-container gun-slots h-flex" id="upgrade-gun-slots"></div>
     <div class="dialog-slots-container h-flex" id="upgrade-turret-slots"></div>
   </dialog>
   <dialog id="upgrade-done" class="hidden">

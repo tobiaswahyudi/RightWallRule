@@ -1,4 +1,4 @@
-export function coinFlip(prob) {
+export function coinFlip(prob = 0.5) {
   return Math.random() < prob;
 }
 

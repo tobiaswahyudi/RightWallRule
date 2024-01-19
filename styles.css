@@ -12,6 +12,7 @@ html, body, canvas {
   width: 100vw;
   height: 100vh;
   font-size: 14px;
+  overflow: hidden;
 
 }
 
@@ -70,6 +71,10 @@ h3 {
 }
 
 .hoverable:hover {
+  filter: invert(1);
+}
+
+div.hoverable:hover > img {
   filter: invert(1);
 }
 
@@ -290,10 +295,10 @@ h5.gun-stat {
 }
 
 .turret-slot {
-  flex: 0 0 1rem;
-  width: 18rem;
-  min-width: 18rem;
-  min-height: 12rem;
+  flex: 0 0 1em;
+  width: 18em;
+  min-width: 18em;
+  min-height: 12em;
   height: 1px;
 
   outline: 2px solid white;
@@ -315,27 +320,27 @@ h5.gun-stat {
 }
 
 .turret-img {
-  margin: 0 1.17rem 2rem;
+  margin: 0 1.17em 2em;
   width: 2.66em;
   height: 2.66em;
   image-rendering: pixelated;
 }
 
 .turret-base-img {
-  margin: 0.66rem -4rem 0 1.33rem;
+  margin: 0.66em -4em 0 1.33em;
   width: 2.66em;
   height: 5.33em;
   image-rendering: pixelated;
 }
 
 .turret-deployment-status {
-  margin: 0 0.66rem 0.66rem 0.66rem;
+  margin: 0 0.66em 0.66em 0.66em;
 }
 
 .turret-hpbar-outer {
-  flex: 0 0 0.5rem;
+  flex: 0 0 0.5em;
   width: 11em;  
-  margin: 0 0 0.66rem 0.66rem;
+  margin: 0 0 0.66em 0.66em;
   background-color: #FFAAAACC;
 }
 
@@ -359,6 +364,7 @@ button {
 }
 
 dialog {
+  position: relative;
   display: block;
   top: 50%;
   transform: translateY(-50%);
@@ -368,10 +374,12 @@ dialog {
   border-radius: 8px;
 }
 
-#modal-backdrop {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
+.modal-backdrop {
+  width: 200vw;
+  height: 200vh;
+  position: fixed;
+  top: -50vh;
+  left: -50vw;
   background-color: #00000066;
 }
 
@@ -386,11 +394,25 @@ dialog {
   padding-left: 10px;
 }
 
+.dialog-slots-container {
+  padding-left: 1rem;
+}
+
 .dialog-slots-container > .gun-slot, .dialog-slots-container > .turret-slot {
   align-self: stretch;
 }
 
-#upgrade-gun-slots {
+.dialog-slots-container > .selected {
+  outline-width: 7px;
+  outline-offset: -2px;
+  outline-color: gold;
+}
+
+.dialog-slots-container > .selected:hover {
+  outline-color: rgb(0, 40, 255);
+}
+
+.gun-slots {
   margin-bottom: 2em;
 }
 
@@ -430,4 +452,52 @@ dialog {
   max-height: calc( 405px + 10em );
   height: calc( 405px + 10em );
   align-items: center;
+}
+
+.hybridize-select-subdialog {
+  position: absolute;
+  background: #91a978;
+  border: 4px solid #778b60;
+  border-radius: 8px;
+  padding: 1rem 0;
+  box-shadow: 9px 12px 8px 2px #0000005e;
+}
+
+.hybridize-select-subdialog:after
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 0 20px 20px;
+    border-color: #91a978 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-left: -20px;
+    top: -20px;
+    left: 50%;
+}
+
+.hybridize-select-subdialog:before
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 0 23px 23px;
+    border-color: #778b60 transparent;
+    display: block;
+    width: 0;
+    z-index: 0;
+    margin-left: -23px;
+    top: -27px;
+    left: 50%;
+}
+
+#the-new-turret.dialog-slots-container > .gun-slot, #the-new-turret.dialog-slots-container > .turret-slot {
+  align-self: unset !important;
+}
+
+@keyframes throb {
+  from {opacity: 0.8;}
+  to {opacity: 0.4;}
 }

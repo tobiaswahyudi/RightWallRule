@@ -1,4 +1,5 @@
-import { createRandomGun } from "../guns/gun.js";
+import { createRandomGun, crossbreedGuns } from "../guns/gun.js";
+import { Turret } from "../turrets/turret.js";
 import { GunSlotDisplay, TurretSlotDisplay } from "./slotDisplay.js";
 
 function hideElement(element) {
@@ -17,6 +18,8 @@ export class UIManager {
     this.newGunDialog = hideElement(document.getElementById('new-gun'));
     this.upgradeDialog = hideElement(document.getElementById('upgrade-fertilize'));
     this.upgradeDoneDialog = hideElement(document.getElementById('upgrade-done'));
+    this.hybridizeSelect = hideElement(document.getElementById('hybridize-select'));
+    this.hybridizeConfirm = hideElement(document.getElementById('hybridize-confirm'));
   }
 
   set state(val) {
@@ -57,6 +60,7 @@ export class UIManager {
     const buttons = this.openChestDialog.children[1].children;
 
     buttons[0].onclick = () => { this.showNewGunDialog(inventory, returnFn) }
+    buttons[1].onclick = () => { this.showHybridizeDialog(inventory, returnFn) }
     this.state = 'openChestDialog';
   }
 
@@ -163,5 +167,130 @@ export class UIManager {
     };
 
     this.state = 'upgradeDoneDialog';
+  }
+
+  showHybridizeDialog(inventory, returnFn) {
+    const gunSlot = new GunSlotDisplay(document.getElementById('cross-gun-slot'), null, true);
+    gunSlot.node.classList.add('hoverable');
+    const turretSlot = new TurretSlotDisplay(document.getElementById('cross-turret-slot'), null, true);
+    turretSlot.node.classList.add('hoverable');
+    const newTurretSlot = new TurretSlotDisplay(document.getElementById('cross-new-slot'), null, true);
+    newTurretSlot.node.classList.add('disabled');
+    const nextButton = this.hybridizeSelect.children[4].children[0];
+    nextButton.classList.add('disabled');
+    nextButton.classList.remove('hoverable');
+
+    const selections = [null, null];
+
+    const cleanupAndNext = () => {
+      gunSlot.node.remove();
+      turretSlot.node.remove();
+      newTurretSlot.node.remove();
+      if(selectionSubdialog) selectionSubdialog.remove();
+      this.showHybridizeConfirmDialog(inventory, selections, returnFn);
+    }
+
+    const updateButton = () => {
+      if(selections[0] && selections[1]) {
+        nextButton.classList.remove('disabled');
+        nextButton.classList.add('hoverable');
+        nextButton.onclick = () => cleanupAndNext(selections, inventory, returnFn);
+        newTurretSlot.node.style.animation = "throb 0.55s ease-in-out infinite alternate-reverse";
+        newTurretSlot.node.innerHTML = `<h1 style="color: white; font-family: 'JetBrains Mono', monospace; margin: 0;">???</h1>`;
+      }
+    }
+
+    let subdialogBackdrop = null;
+    let selectionSubdialog = null;
+    const openSubdialog = (selectionSlot, isGun) => () => {
+      const doc = new DOMParser().parseFromString(`
+        <div class="modal-backdrop"></div>
+        <div class="hybridize-select-subdialog">
+          <div class="dialog-slots-container h-flex" id="this-one"></div>
+        </div>
+      `, 'text/html');
+      const subdialogSlots = doc.getElementById('this-one');
+
+      const slotCtor = isGun ? (...args) => new GunSlotDisplay(...args) : (...args) => new TurretSlotDisplay(...args);
+      const inventorySlots = isGun ? inventory.guns : inventory.turrets;
+      inventorySlots.forEach(thing => {
+        const slot = slotCtor(subdialogSlots, thing, true);
+        if(thing) {
+          slot.node.classList.add('hoverable');
+          slot.node.onclick = () => {
+            selections[(isGun ? 0 : 1)] = thing;
+            selectionSlot.val = thing;
+            updateButton();
+            selectionSubdialog.remove();
+            subdialogBackdrop.remove();
+          }
+        } else {
+          slot.node.classList.add('disabled');
+        }
+      });
+
+      subdialogBackdrop = doc.body.children[0];
+      selectionSubdialog = doc.body.children[1];
+
+      this.hybridizeSelect.appendChild(subdialogBackdrop);
+      this.hybridizeSelect.appendChild(selectionSubdialog);
+      selectionSubdialog.style.top = `${selectionSlot.node.offsetTop + selectionSlot.node.scrollHeight - 20}px`;
+      selectionSubdialog.style.left = `${selectionSlot.node.offsetLeft + selectionSlot.node.scrollWidth/2 - selectionSubdialog.scrollWidth / 2}px`;
+      subdialogBackdrop.onclick = () => {
+        selectionSubdialog.remove();
+        subdialogBackdrop.remove();
+      }
+    }
+
+    gunSlot.node.onclick = openSubdialog(gunSlot, true);
+    turretSlot.node.onclick = openSubdialog(turretSlot, false);
+    this.state = 'hybridizeSelect';
+  }
+
+  showHybridizeConfirmDialog(inventory, selections, returnFn) {
+    const parentGun = selections[0];
+    const parentTurret = selections[1];
+    const newTurret = new Turret(crossbreedGuns(parentGun, parentTurret.gun), parentTurret.stats);
+
+
+    const newTurretCtr = document.getElementById('the-new-turret');
+    
+    const parentGunSlot = new GunSlotDisplay(newTurretCtr, parentGun, true);
+    newTurretCtr.innerHTML += `<h1 style="display: inline; margin: 0 1rem 0 0;">⇒</h1>`;
+    const newTurretSlot = new TurretSlotDisplay(newTurretCtr, newTurret, true);
+    newTurretCtr.innerHTML += `<h1 style="display: inline; margin: 0 1rem 0 0;">⇐</h1>`;
+    const parentTurretSlot = new TurretSlotDisplay(newTurretCtr, parentTurret, true);
+    
+    newTurretCtr.children[0].style.fontSize = "0.8rem";
+    newTurretCtr.children[4].style.fontSize = "0.8rem";
+
+    const turretSlotsCtr = document.getElementById('replace-turret-slots');
+
+    const cleanupAndClose = () => {
+      [...newTurretCtr.children].forEach(c => c.remove());
+      [...turretSlotsCtr.children].forEach(c => c.remove());
+      this.state = null;
+      returnFn();
+    }
+
+    const hasEmptySlots = inventory.turrets.some(x => !x);
+
+    inventory.turrets.forEach((turret, idx) => {
+      const slot = new TurretSlotDisplay(turretSlotsCtr, turret, true);
+      slot.node.classList.add('hoverable');
+      slot.node.onclick = () => {
+        if(turret && hasEmptySlots) {
+          const ruSure = confirm(`You have empty slots available. Are you sure you want to replace this turret?\nClick OK to confirm and replace ${turret.gun.name}.`);
+          if(!ruSure) return;
+        }
+        inventory.replaceTurret(newTurret, idx);
+        cleanupAndClose();
+      }
+    })
+
+    const discardBtn = document.getElementById('discard-new-turret');
+    discardBtn.onclick = cleanupAndClose;
+
+    this.state = 'hybridizeConfirm';
   }
 }

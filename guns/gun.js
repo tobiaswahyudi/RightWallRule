@@ -1,7 +1,7 @@
 import { CONFIG } from "../config.js";
 import { Bullet } from "../entities/bullet.js";
 import { ImageSrc } from "../utils/image.js";
-import { normalSample } from "../utils/random.js";
+import { coinFlip, normalSample } from "../utils/random.js";
 
 const MULTISHOT_SPREAD = 2;
 
@@ -68,7 +68,7 @@ export class GunStats {
     return cpy;
   }
 
-  upgrade(additiveFactor, multiplicativeFactor = 1) {
+  upgrade(additiveFactor, multiplicativeFactor = 10) {
     const targetGoodness = Math.min(this.goodness + additiveFactor, this.goodness * multiplicativeFactor);
     const goodnessRatio = targetGoodness / this.goodness;
     const randomRatios = Array(3).fill(0).map(x => 1/Math.random() - 1);
@@ -117,5 +117,27 @@ export function createRandomGun() {
     "./img/guns/placeholder.png",
     "#55FF00",
     randomGunStatsFromGoodness(targetGoodness)
+  );
+}
+
+export function crossbreedGuns(gun1, gun2) {
+  const name = "Bred Sub";
+  const imgSrc = coinFlip() ? gun1.imgSrc : gun2.imgSrc;
+  const color = coinFlip() ? gun1.color : gun2.color;
+
+  const stats = new GunStats(
+    coinFlip() ? gun1.stats.bulletCount : gun2.stats.bulletCount,
+    coinFlip() ? gun1.stats.fireRate : gun2.stats.fireRate,
+    coinFlip() ? gun1.stats.bulletSpeed : gun2.stats.bulletSpeed,
+    coinFlip() ? gun1.stats.damage : gun2.stats.damage,
+    coinFlip() ? gun1.stats.spread : gun2.stats.spread
+  );
+  stats.upgrade(50, 1.2);
+  
+  return new Gun(
+    name,
+    imgSrc,
+    color,
+    stats
   );
 }

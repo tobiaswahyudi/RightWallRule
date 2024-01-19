@@ -381,6 +381,14 @@ class GameEngine {
       }
       this.hud.updateSlots();
     }
+    if(this.input.rawInput.newlyPressedKeys.has('Digit2') && this.inventoryManager.turrets[1]) {
+      if(this.inventoryManager.turrets[1].deployed) {
+        this.inventoryManager.turrets[1].undeploy();
+      } else {
+        this.inventoryManager.turrets[1].deploy(this.player.position);
+      }
+      this.hud.updateSlots();
+    }
 
     // Turret Ticks
     this.entities.turret.forEach(turret => {
