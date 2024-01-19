@@ -174,7 +174,7 @@ class GameEngine {
       this.render(this.gameTicks);
     } else {
       this.context.fillStyle = "#000000";
-      this.context.fillRect(this.width - 100, 0, 100, 54);
+      this.context.fillRect(this.width - 120, 0, 120, 72);
 
       if(this.input.rawInput.newlyPressedKeys.has('Escape') && this.uiManager._state == "pauseDialog") {
         this.paused = false;
@@ -190,6 +190,7 @@ class GameEngine {
     this.context.fillText(this.perf.fps.toFixed(0) + ' FPS', this.width - 15, 15 * CONFIG.pixelation);
     this.context.fillText(this.perf.tickAvg.toFixed(2) + ' ms/t', this.width - 15, 33 * CONFIG.pixelation);
     this.context.fillText(this.perf.maxTps.toFixed(0) + ' Max', this.width - 15, 51 * CONFIG.pixelation);
+    this.context.fillText(this.entities.enemy.size + ' enemies', this.width - 15, 69 * CONFIG.pixelation);
 
     this.input.tick();
 
