@@ -29,6 +29,7 @@ class GameEngine {
     this.height = window.innerHeight;
 
     this.paused = false;
+    this.gameover = false;
     this.uiManager = new UIManager();
 
     this.maze = new Maze(0.64);
@@ -172,7 +173,7 @@ class GameEngine {
       this.gameTick();
       ////////////// Render game
       this.render(this.gameTicks);
-    } else {
+    } else if(!this.gameover) {
       this.context.fillStyle = "#000000";
       this.context.fillRect(this.width - 120, 0, 120, 72);
 
@@ -410,6 +411,11 @@ class GameEngine {
     this.player.tick(this.gameTicks, this.input.movement, this.input.shootDir, this.input.shooting);
 
     this.hud.hp = this.player.hp.percentage;
+    if(this.player.hp.hp <= 0) {
+      this.gameover = true;
+      this.paused = true;
+      this.uiManager.showGameOver();
+    }
 
     ////////////// Collisions
 

@@ -5,6 +5,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@1,600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,800;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <!-- <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"> -->
   <script type="module" src="./startGame.js"></script>
@@ -41,15 +42,20 @@
     </div>
   </div>
   <div id="messages" class="v-flex"></div>
-  <div id="modal-backdrop" style="display: none;"></div>
-  <dialog id="pause-game" style="display: none;">
+  <div id="modal-backdrop" class="hidden"></div>
+  <div id="ded" class="hidden">
+    <span id="pepsi">UR DED</span>
+    <button class="h3-button hoverable"><h3>Try again</h3></button>
+    <button class="h3-button hoverable"><h3>Ragequit</h3></button>
+  </div>
+  <dialog id="pause-game" class="hidden">
     <h1>Game Paused</h1>
     <button class="h3-button hoverable"><h3>Resume</h3></button>
     <button class="h3-button hoverable"><h3>Options</h3></button>
     <button class="h3-button hoverable"><h3>Controls</h3></button>
     <button class="h3-button hoverable"><h3>Restart Game</h3></button>
   </dialog>
-  <dialog id="controls" style="display: none;">
+  <dialog id="controls" class="hidden">
     <h1>Controls</h1>
     <div class="v-flex" id="controls-diagram">
       <img src="./img/controls1.png">
@@ -66,7 +72,7 @@
       <button class="h3-button hoverable back-to-pause"><h3>Ok, got it</h3></button>
     </div>
   </dialog>
-  <dialog id="open-chest" style="display: none;">
+  <dialog id="open-chest" class="hidden">
     <h1>A box full of<br>magical potting supplies!</h1>
     <div class="h-flex">
       <button class="chest-option hoverable">
@@ -79,7 +85,7 @@
       </button>
     </div>
   </dialog>
-  <dialog id="new-gun" style="display: none;">
+  <dialog id="new-gun" class="hidden">
     <h1>You found a new gun!</h1>
     <div id="the-new-gun" class="h-flex">
     </div>
@@ -90,13 +96,13 @@
       <button id="discard-new-gun" class="h3-button hoverable"><h3>Discard the new gun</h3></button>
     </div>
   </dialog>
-  <dialog id="upgrade-fertilize" style="display: none;">
+  <dialog id="upgrade-fertilize" class="hidden">
     <h1>A sack of ethereal fertilizer!</h1>
     <h2>Choose a gun or turret to upgrade:</h2>
     <div class="dialog-slots-container h-flex" id="upgrade-gun-slots"></div>
     <div class="dialog-slots-container h-flex" id="upgrade-turret-slots"></div>
   </dialog>
-  <dialog id="upgrade-done" style="display: none;">
+  <dialog id="upgrade-done" class="hidden">
     <h1>Your arsenal grows stronger!</h1>
     <div class="h-flex" id="upgrade-done-slots">
       <h1>&#x27a0;</h1>

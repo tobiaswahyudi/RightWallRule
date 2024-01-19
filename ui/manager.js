@@ -1,32 +1,44 @@
 import { createRandomGun } from "../guns/gun.js";
 import { GunSlotDisplay, TurretSlotDisplay } from "./slotDisplay.js";
 
+function hideElement(element) {
+  element.classList.add('hidden');
+  return element;
+}
+
 export class UIManager {
   constructor() {
     this._state = null;
-    this.backdrop = document.getElementById('modal-backdrop');
-    this.pauseDialog = document.getElementById('pause-game');
-    this.controlsDialog = document.getElementById('controls');
-    this.openChestDialog = document.getElementById('open-chest');
-    this.newGunDialog = document.getElementById('new-gun');
-    this.upgradeDialog = document.getElementById('upgrade-fertilize');
-    this.upgradeDoneDialog = document.getElementById('upgrade-done');
+    this.backdrop = hideElement(document.getElementById('modal-backdrop'));
+    this.gameOver = hideElement(document.getElementById('ded'));
+    this.pauseDialog = hideElement(document.getElementById('pause-game'));
+    this.controlsDialog = hideElement(document.getElementById('controls'));
+    this.openChestDialog = hideElement(document.getElementById('open-chest'));
+    this.newGunDialog = hideElement(document.getElementById('new-gun'));
+    this.upgradeDialog = hideElement(document.getElementById('upgrade-fertilize'));
+    this.upgradeDoneDialog = hideElement(document.getElementById('upgrade-done'));
   }
 
   set state(val) {
     if(this._state) {
-      this[this._state].style.display = "none";
-      this.backdrop.style.display = "none";
+      this[this._state].classList.add('hidden');
+      this.backdrop.classList.add('hidden');
     }
     this._state = val;
     if(val) {
-      this.backdrop.style.display = "block";
-      this[this._state].style.display = "block";
+      this.backdrop.classList.remove('hidden');
+      this[this._state].classList.remove('hidden');
     }
   }
 
   closeDialog() {
     this.state = null;
+  }
+
+  showGameOver() {
+    this.state = 'gameOver';
+    this.gameOver.children[1].onclick = () => {window.location.reload()};
+    this.gameOver.children[2].onclick = () => {window.close()};
   }
 
   showPauseDialog(unpause) {
