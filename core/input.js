@@ -51,6 +51,7 @@ class RawInputManager {
   }
 
   setupListeners(window) {
+    document.addEventListener('contextmenu', event => event.preventDefault());
     window.onkeydown = this.keyDown.bind(this);
     window.onkeyup = this.keyUp.bind(this);
     window.onmousemove = this.mouseMove.bind(this);
