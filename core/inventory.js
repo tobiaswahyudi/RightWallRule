@@ -27,6 +27,7 @@ export class InventoryManager {
   }
 
   replaceTurret(turret, slotIdx) {
+    if(this.turrets[slotIdx] && this.turrets[slotIdx].deployed) this.turrets[slotIdx].undeploy();
     this.turrets[slotIdx] = turret;
     if(this.hud) this.hud.updateSlots();
   }
