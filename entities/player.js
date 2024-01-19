@@ -54,6 +54,15 @@ export class Player extends Entity {
 
   collide(other, collisionPoint, ticks) {
     other.repelFrom(collisionPoint, WEIGHTS.repulsion.player);
-    if(other instanceof Enemy) this.hp.takeDmg(0.1, ticks);
+    if(other instanceof Enemy) {
+      this.hp.takeDmg(0.1, ticks);
+      if(this.hit) clearTimeout(this.hit);
+      gameEngine.canvas.canvas.style.filter = `saturate(0.2) contrast(1.2)`;
+      gameEngine.canvas.canvas.style.transition = ``;
+      this.hit = setTimeout(() => {
+        gameEngine.canvas.canvas.style.filter = `saturate(1.0) contrast(1.0)`;
+        gameEngine.canvas.canvas.style.transition = `filter 0.2s`;
+      }, 50);
+    }
   }
 }

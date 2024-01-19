@@ -17,6 +17,8 @@ html, body, canvas {
 
 canvas {
   image-rendering: pixelated;
+  filter: saturate(1.0) contrast(1.0);
+  transition: filter 0.2s;
 }
 
 h1 {
