@@ -26,7 +26,7 @@ export class Enemy extends Entity {
   }
 
   cull() {
-    if(this.culled) return;
+    if(this.culled || !this.spawned) return;
     this.culled = true;
     gameEngine.deleteEntity(this);
     gameEngine.deleteEffect(this.shadow);
@@ -35,7 +35,7 @@ export class Enemy extends Entity {
   uncull() {
     this.culled = false;
     gameEngine.spawnEntity('enemy', this);
-    gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow);
+    if(this.spawned) gameEngine.spawnEffect(EFFECT_LAYERS.under, this.shadow);
   }
 
   die() {
