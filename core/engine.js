@@ -12,7 +12,7 @@ import { UIManager } from "../ui/manager.js";
 import { HUD } from "../ui/hud.js";
 import { InventoryManager } from "./inventory.js";
 import { Gun, GunStats } from "../guns/gun.js";
-import { Turret, TurretStats } from "../turrets/turret.js";
+import { TURRET_STATUS, Turret, TurretStats } from "../turrets/turret.js";
 import { Vector2 } from "../utils/vector2.js";
 
 /**************************************
@@ -374,20 +374,22 @@ class GameEngine {
 
     // Spawn new turrets
     if(this.input.rawInput.newlyPressedKeys.has('Digit1')) {
-      if(this.inventoryManager.turrets[0].deployed) {
+      if(!this.inventoryManager.turrets[0].deployed) {
+        this.inventoryManager.turrets[0].deploy(this.player.position, this.gameTicks);
+        this.inventoryManager.turrets[0].notifyTurretStatusChange(this.gameTicks);
+      } else if(this.inventoryManager.turrets[0].status == TURRET_STATUS.recallable) {
         this.inventoryManager.turrets[0].undeploy();
-      } else {
-        this.inventoryManager.turrets[0].deploy(this.player.position);
+        this.inventoryManager.turrets[0].notifyTurretStatusChange(this.gameTicks);
       }
-      this.hud.updateSlots();
     }
     if(this.input.rawInput.newlyPressedKeys.has('Digit2') && this.inventoryManager.turrets[1]) {
-      if(this.inventoryManager.turrets[1].deployed) {
+      if(!this.inventoryManager.turrets[1].deployed) {
+        this.inventoryManager.turrets[1].deploy(this.player.position, this.gameTicks);
+        this.inventoryManager.turrets[1].notifyTurretStatusChange(this.gameTicks);
+      } else if(this.inventoryManager.turrets[1].status == TURRET_STATUS.recallable) {
         this.inventoryManager.turrets[1].undeploy();
-      } else {
-        this.inventoryManager.turrets[1].deploy(this.player.position);
+        this.inventoryManager.turrets[1].notifyTurretStatusChange(this.gameTicks);
       }
-      this.hud.updateSlots();
     }
 
     // Turret Ticks

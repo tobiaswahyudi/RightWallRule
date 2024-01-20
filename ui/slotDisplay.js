@@ -1,5 +1,14 @@
 import { GunStatsDisplay } from "./gunStats.js";
 
+const TURRET_STATUS_LABELS = {
+  rooting: 'Taking root for ${TIME}s',
+  notDeployed: 'Not Deployed',
+  recallDelay: 'Recallable in ${TIME}s',
+  recallable: 'Press ${IDX} to recall!',
+};
+
+const TURRET_STATUS_LABEL_TIME_REPLACE = '${TIME}';
+const TURRET_STATUS_LABEL_IDX_REPLACE = '${IDX}';
 export class GunSlotDisplay {
   constructor(container, gun, extended) {
     this._gun = null;
@@ -57,11 +66,13 @@ export class TurretSlotDisplay {
     this.node.classList.add('turret-slot');
     this.node.classList.add('h-flex');
     this.stats = null;
+    this.deploymentStatusNode = null;
     this.extended = extended;
 
     const keyTag = document.createElement('div');
     keyTag.classList.add('key-tag');
     keyTag.innerText = idx + 1;
+    this.idx = idx;
     this.node.appendChild(keyTag);
     // Still append the keyTag, otherwise indexing node.children gets finicky
     if(idx == -1) keyTag.style.display = "none";
@@ -87,8 +98,9 @@ export class TurretSlotDisplay {
     this.img = slotDoc.getElementsByTagName('img')[0];
     this.name = slotDoc.getElementsByTagName('h5')[0];
     this.stats = new GunStatsDisplay(slotDoc.getElementsByClassName('gun-info')[0], this._turret.gun.stats, this.extended);
-    
     nodes.forEach(node => this.node.appendChild(node));
+
+    this.deploymentStatusNode = this.node.children[3].children[2];
   }
 
   set val(val) {
@@ -96,12 +108,20 @@ export class TurretSlotDisplay {
       this._turret = val;
       this.createElements();
     }
+    this._turret = val;
+    this._turret.notifyTurretStatusChange = this.notifyTurretStatusChange.bind(this);
     this.node.children[1].src = "./img/guns/turret_base.png";
     this.node.children[2].src = val.gun.imgSrc;
     this.node.children[3].children[0].innerText = val.gun.name + '\nTurret';
-
-    this.node.children[3].children[2].innerText = val.deployed ? `Recallable in 0:30` : "Not Deployed";
-
     this.stats.gunStats = val.gun.stats;
+
+    this.notifyTurretStatusChange();
+  }
+
+  notifyTurretStatusChange() {
+    const statusTime = this._turret._lastStatusTime;
+    this.deploymentStatusNode.innerText = TURRET_STATUS_LABELS[this._turret.status]
+      .replace(TURRET_STATUS_LABEL_TIME_REPLACE, statusTime)
+      .replace(TURRET_STATUS_LABEL_IDX_REPLACE, this.idx + 1);
   }
 }
