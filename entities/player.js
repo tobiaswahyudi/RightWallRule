@@ -13,7 +13,7 @@ export class Player extends Entity {
   constructor(gameEngine) {
     super(0, 0);
 
-    this.hp = new HPManager(100, CONFIG.FPS * 2, 0.05);
+    this.hp = new HPManager(50, CONFIG.FPS * 2, 0.05);
 
     this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
 
