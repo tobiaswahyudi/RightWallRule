@@ -14,6 +14,7 @@ import { InventoryManager } from "./inventory.js";
 import { Gun, GunStats } from "../guns/gun.js";
 import { TURRET_STATUS, Turret, TurretStats } from "../turrets/turret.js";
 import { Vector2 } from "../utils/vector2.js";
+import { initializeOptions } from "./options.js";
 
 /**************************************
  * Game Engine Class
@@ -34,7 +35,8 @@ class GameEngine {
 
     this.maze = new Maze(0.64);
 
-    this.options = {};
+    initializeOptions();
+
     this.entities = {
       wall: new Set(),
       enemy: new Set(),

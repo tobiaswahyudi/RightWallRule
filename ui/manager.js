@@ -1,3 +1,4 @@
+import { OPTIONS, getOption, setOption } from "../core/options.js";
 import { createRandomGun, crossbreedGuns } from "../guns/gun.js";
 import { Turret } from "../turrets/turret.js";
 import { GunSlotDisplay, TurretSlotDisplay } from "./slotDisplay.js";
@@ -13,6 +14,7 @@ export class UIManager {
     this.backdrop = hideElement(document.getElementById('modal-backdrop'));
     this.gameOver = hideElement(document.getElementById('ded'));
     this.pauseDialog = hideElement(document.getElementById('pause-game'));
+    this.optionsDialog = hideElement(document.getElementById('options'));
     this.controlsDialog = hideElement(document.getElementById('controls'));
     this.openChestDialog = hideElement(document.getElementById('open-chest'));
     this.newGunDialog = hideElement(document.getElementById('new-gun'));
@@ -47,8 +49,29 @@ export class UIManager {
   showPauseDialog(unpause) {
     this.state = 'pauseDialog';
     this.pauseDialog.children[1].onclick = unpause;
+    this.pauseDialog.children[2].onclick = () => this.showOptionsDialog(unpause);
     this.pauseDialog.children[3].onclick = () => this.showControlsDialog();
     this.pauseDialog.children[4].onclick = () => {window.location.reload()};
+  }
+
+  showOptionsDialog(unpause) {
+    this.state = 'optionsDialog';
+
+    [...this.optionsDialog.children].slice(-1)[0].onclick = () => this.showPauseDialog(unpause);
+
+    // UI SIZE
+    const uiSize = this.optionsDialog.children[1].children[1];
+    const uiSizeValue = uiSize.children[1];
+    uiSizeValue.innerText = getOption(OPTIONS.UI.fontSize);
+    const updateUISize = (delta) => () => {
+      const currentOption = getOption(OPTIONS.UI.fontSize);
+      const sizeVal = currentOption + delta;
+      setOption(OPTIONS.UI.fontSize, sizeVal);
+      uiSizeValue.innerText = sizeVal;
+      document.children[0].style.fontSize = `${sizeVal}px`;
+    }
+    uiSize.children[0].onclick = updateUISize(-1);
+    uiSize.children[2].onclick = updateUISize(+1);
   }
 
   showControlsDialog() {

@@ -5,15 +5,17 @@
   user-select: none;
 }
 
+html {
+  font-size: 12px;
+}
+
 html, body, canvas {
   position: absolute;
   margin: 0;
   padding: 0;
   width: 100vw;
   height: 100vh;
-  font-size: 14px;
   overflow: hidden;
-
 }
 
 canvas {
@@ -444,6 +446,10 @@ dialog {
 #pause-game > button {
   width: 100%;
   margin-bottom: 1em;
+}
+
+#options {
+  overflow-y: scroll;
 }
 
 #controls-diagram {

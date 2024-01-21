@@ -55,11 +55,25 @@
     <button class="h3-button hoverable"><h3>Controls</h3></button>
     <button class="h3-button hoverable"><h3>Restart Game</h3></button>
   </dialog>
+  <dialog id="options" class="hidden">
+    <h1>Options</h1>
+    <div class="h-flex">
+      <h3 class="option-label">UI Size</h3>
+      <div class="option-value h-flex">
+        <button class="value-increment">-</button>
+        <h3 id="option-ui-size-value">12</h3>
+        <button class="value-increment">+</button>
+      </div>
+    </div>
+    <div class="h-flex">
+      <button class="h3-button hoverable back-to-pause"><h3>Yeah that looks ok</h3></button>
+    </div>
+  </dialog>
   <dialog id="controls" class="hidden">
     <h1>Controls</h1>
     <div class="v-flex" id="controls-diagram">
       <img src="./img/controls1.png">
-      <h3>WASD to move and Arrow Keys to shoot</h3>
+      <h3>WASD to move and Mouse to shoot</h3>
       <img src="./img/controls2.png">
       <h3>Press E to cycle between guns</h3>
       <div class="spacer"></div>
