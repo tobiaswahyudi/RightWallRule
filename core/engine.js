@@ -15,6 +15,7 @@ import { Gun, GunStats } from "../guns/gun.js";
 import { TURRET_STATUS, Turret, TurretStats } from "../turrets/turret.js";
 import { Vector2 } from "../utils/vector2.js";
 import { initializeOptions } from "./options.js";
+import { getMazeRowCol } from "../utils/rowcol.js";
 
 /**************************************
  * Game Engine Class
@@ -236,8 +237,7 @@ class GameEngine {
 
     // Pathfinding
     
-    const playerGridRow = Math.floor(this.player.position.y / SIZES.mazeCell);
-    const playerGridCol = Math.floor(this.player.position.x / SIZES.mazeCell);
+    const [playerGridRow, playerGridCol] = getMazeRowCol(this.player.position);
     const playerGridSquare = this.maze.grid[playerGridRow][playerGridCol];
 
     if(playerGridSquare != this.playerGridSquareLastTick) {
@@ -317,8 +317,7 @@ class GameEngine {
           });
         }
       } else {
-        const myGridRow = Math.floor(wave.position.y / SIZES.mazeCell);
-        const myGridCol = Math.floor(wave.position.x / SIZES.mazeCell);
+        const [myGridRow, myGridCol] = getMazeRowCol(wave.position);
 
         let myCell = this.maze.grid[myGridRow][myGridCol];
         let spawnPosition = null;

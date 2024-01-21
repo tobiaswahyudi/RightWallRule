@@ -10,6 +10,7 @@ import { EFFECT_LAYERS } from "../effects/effect.js";
 import { AbstractEffect } from "../effects/abstractEffect.js";
 import { VFXFlare } from "../effects/vfx/flare.js";
 import { computeChestToPlayerPaths, dirIndexGap } from "../maze/pathfinding.js";
+import { getMazeRowCol } from "../utils/rowcol.js";
 
 const CHEST_PATH_GAP = 10;
 
@@ -17,8 +18,7 @@ export class Chest extends Entity {
   constructor(x, y, idx) {
     super(x, y);
 
-    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
-    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
+    const [myGridRow, myGridCol] = getMazeRowCol(this.position);
 
     this.cell = gameEngine.maze.grid[myGridRow][myGridCol];
 

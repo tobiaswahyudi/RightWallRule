@@ -6,6 +6,7 @@ import { CircleEffect } from "../../effects/circleEffect.js";
 import gameEngine from "../../core/engine.js";
 import { CircularBuffer } from "../../utils/circularBuffer.js";
 import { VFXPoof } from "../../effects/vfx/poof.js";
+import { getMazeRowCol } from "../../utils/rowcol.js";
 
 const followMe = (position, xOffset, yOffset) => {
   return (effect, ticks) => {
@@ -35,8 +36,7 @@ export class CrawlerEnemy extends Enemy {
   }
 
   tick(ticks, player, towers) {
-    const myGridRow = Math.floor(this.position.y / SIZES.mazeCell);
-    const myGridCol = Math.floor(this.position.x / SIZES.mazeCell);
+    const [myGridRow, myGridCol] = getMazeRowCol(this.position);
 
     if(myGridRow < 0 || myGridRow >= CONFIG.mazeGridSize || myGridCol < 0 || myGridCol >= CONFIG.mazeGridSize) {
       // Not sure when this happens. Pretty sure it's a culling bug.

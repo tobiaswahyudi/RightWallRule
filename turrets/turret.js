@@ -3,6 +3,7 @@ import gameEngine from "../core/engine.js";
 import { Entity } from "../entities/entity.js";
 import { CircleShapedSprite } from "../entities/shapes.js";
 import { indexifyRowCol } from "../maze/maze.js";
+import { getMazeRowCol } from "../utils/rowcol.js";
 import { Vector2 } from "../utils/vector2.js";
 
 export const TURRET_TARGETING_TENDENCY = {
@@ -69,8 +70,9 @@ export class Turret extends Entity {
     this.adjacentCells.clear();
     this.nearbyEnemies.clear();
 
-    this.gridRow = Math.floor(this.position.y / SIZES.mazeCell);
-    this.gridCol = Math.floor(this.position.x / SIZES.mazeCell);
+    const [myGridRow, myGridCol] = getMazeRowCol(this.position);
+    this.gridRow = myGridRow;
+    this.gridCol = myGridCol;
 
     this.adjacentCells.clear();
     this.adjacentCells.add(indexifyRowCol(this.gridRow, this.gridCol));
@@ -120,9 +122,8 @@ export class Turret extends Entity {
     if(ticks % (CONFIG.FPS / 2) == 0) {
       this.nearbyEnemies.clear();
       gameEngine.entities.enemy.forEach(enemy => {
-        const gridRow = Math.floor(enemy.position.y / SIZES.mazeCell);
-        const gridCol = Math.floor(enemy.position.x / SIZES.mazeCell);
-
+        const [gridRow, gridCol] = getMazeRowCol(enemy.position);
+        
         if(this.adjacentCells.has(indexifyRowCol(gridRow, gridCol))) {
           this.nearbyEnemies.add(enemy);
         }
