@@ -16,6 +16,7 @@ import { TURRET_STATUS, Turret, TurretStats } from "../turrets/turret.js";
 import { Vector2 } from "../utils/vector2.js";
 import { initializeOptions } from "./options.js";
 import { getMazeRowCol } from "../utils/rowcol.js";
+import { BigBlobBoss } from "../bosses/bigblob.js";
 
 /**************************************
  * Game Engine Class
@@ -86,6 +87,8 @@ class GameEngine {
     this.realTicks = 0;
 
     this.claimedChests = -1;
+
+    this.boss = null;
   }
   
   /**************************************
@@ -183,6 +186,7 @@ class GameEngine {
       if(this.input.rawInput.newlyPressedKeys.has('Escape') && this.uiManager._state == "pauseDialog") {
         this.paused = false;
         this.uiManager.closeDialog();
+        this.boss = new BigBlobBoss(SIZES.mazeCell / 2, SIZES.mazeCell / 2);
       }
     }
     
@@ -421,12 +425,14 @@ class GameEngine {
     this.collisionMap.updateEntity(this.player);
     this.player.tick(this.gameTicks, this.input.movement, this.input.shootDir, this.input.shooting);
 
-    this.hud.hp = this.player.hp.percentage;
+    this.hud.hp = this.player.hp.ratio * 100;
     if(this.player.hp.hp <= 0) {
       this.gameover = true;
       this.paused = true;
       this.uiManager.showGameOver();
     }
+
+    if(this.boss) this.boss.tick(this.gameTicks);
 
     ////////////// Collisions
 
@@ -500,6 +506,9 @@ class GameEngine {
 
     // Turret
     this.entities.turret.forEach(turret => turret.render(this.context));
+
+    // Boss
+    if(this.boss) this.boss.render(this.context);
 
     // Above Effects
     this.effects.above.forEach(effect => effect.render(this.context));

@@ -31,6 +31,11 @@ export class GridCell {
     this.wallCount = 0;
 
     this.neighbors = [];
+
+    this.distanceToPlayer = 0;
+    this.nextCell = null;
+    this.nextCellDir = null;
+    this.pathTarget = null;
   }
 }
 

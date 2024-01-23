@@ -40,7 +40,7 @@ export class Player extends Entity {
 
     if(ticks % 6) {
       gameEngine.canvas.canvas.style.transition = `filter 0.2s`;
-      gameEngine.canvas.canvas.style.filter = `saturate(${0.3 + (0.7 * this.hp.percentage / 100)}) contrast(${0.8 + (0.2 * this.hp.percentage / 100)})`;
+      gameEngine.canvas.canvas.style.filter = `saturate(${0.3 + (0.7 * this.hp.ratio)}) contrast(${0.8 + (0.2 * this.hp.ratio)})`;
     }
   }
 

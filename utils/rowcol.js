@@ -1,4 +1,4 @@
-import { SIZES } from "../config";
+import { SIZES } from "../config.js";
 
 export function getMazeRowCol(position) {
   const myGridRow = Math.floor(position.y / SIZES.mazeCell);

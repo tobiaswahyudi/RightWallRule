@@ -44,3 +44,6 @@ gameEngine.maze.deadEnds.slice(11, 13).forEach((cell, idx) => {
 gameEngine.start(document.getElementById('the-canvas'), window);
 
 window.game = gameEngine;
+
+game.player.position.x = SIZES.mazeCell / 2;
+game.player.position.y = SIZES.mazeCell / 2;

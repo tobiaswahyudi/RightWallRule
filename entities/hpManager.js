@@ -19,7 +19,7 @@ export class HPManager {
     }
   }
 
-  get percentage() {
-    return this.hp / this.maxHp * 100;
+  get ratio() {
+    return this.hp / this.maxHp;
   }
 }

@@ -1,4 +1,5 @@
 import { MinHeap } from "../utils/priorityQueue.js";
+import { Vector2 } from "../utils/vector2.js";
 
 /**************************************
  * pathfinding.js
@@ -18,6 +19,27 @@ function nextCCWDir(dir, gap = 1) {
 
 export function dirIndexGap(inDir, outDir) {
   return (dirIndex(inDir) - dirIndex(outDir) + 3) % 4;
+}
+
+export const INDEX_GAP = {
+  LeftTurn: 0,
+  TurnBack: 1,
+  RightTurn: 2,
+  Ahead: 3
+};
+
+export function makeElbow(fromPoint, toPoint, inDir, outDir) {
+  // Just wanna know whether in line or not
+  if(dirIndexGap(inDir, outDir) == INDEX_GAP.Ahead) return [toPoint];
+  // If not in line, it's easy:
+  let inAxis = (inDir == 'N' || inDir == 'S') ? 'x' : 'y';
+  let outAxis = (inAxis == 'x') ? 'y' : 'x';
+
+  const corner = new Vector2(0, 0);
+  corner[inAxis] = fromPoint[inAxis];
+  corner[outAxis] = toPoint[outAxis];
+
+  return [corner, toPoint];
 }
 
 // me.neighbors[i] = [nbor,dir] means that nbor[dir] = me.
