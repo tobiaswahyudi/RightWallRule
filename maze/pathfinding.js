@@ -13,7 +13,13 @@ export function dirIndex(dir) {
   return DIRECTIONS.indexOf(dir);
 }
 
-function nextCCWDir(dir, gap = 1) {
+export const DIRECTION_OFFSET = {
+  CCW: 1,
+  Ahead: 2,
+  CW: 3
+};
+
+export function offsetDir(dir, gap = DIRECTION_OFFSET.CCW) {
   return DIRECTIONS[(dirIndex(dir) + gap) % 4];
 }
 
@@ -21,7 +27,7 @@ export function dirIndexGap(inDir, outDir) {
   return (dirIndex(inDir) - dirIndex(outDir) + 3) % 4;
 }
 
-export const INDEX_GAP = {
+export const DIR_INDEX_GAP = {
   LeftTurn: 0,
   TurnBack: 1,
   RightTurn: 2,
@@ -30,8 +36,10 @@ export const INDEX_GAP = {
 
 export function makeElbow(fromPoint, toPoint, inDir, outDir) {
   // Just wanna know whether in line or not
-  if(dirIndexGap(inDir, outDir) == INDEX_GAP.Ahead) return [toPoint];
-  // If not in line, it's easy:
+  if(dirIndexGap(inDir, outDir) == DIR_INDEX_GAP.Ahead) return [fromPoint, toPoint];
+  // Inner corner: just take one point
+  if(fromPoint.x == toPoint.x && fromPoint.y == toPoint.y) return [fromPoint];
+  // Outer corner:
   let inAxis = (inDir == 'N' || inDir == 'S') ? 'x' : 'y';
   let outAxis = (inAxis == 'x') ? 'y' : 'x';
 
@@ -39,7 +47,7 @@ export function makeElbow(fromPoint, toPoint, inDir, outDir) {
   corner[inAxis] = fromPoint[inAxis];
   corner[outAxis] = toPoint[outAxis];
 
-  return [corner, toPoint];
+  return [fromPoint, corner, toPoint];
 }
 
 // me.neighbors[i] = [nbor,dir] means that nbor[dir] = me.
@@ -96,14 +104,14 @@ export function computeNavDistancesToPlayer(grid, player, playerGridCell) {
 export function computeChestToPlayerPaths(chests) {
   for(const chest of chests) {
     let accumulator = [chest];
-    let inDir = nextCCWDir(chest.cell.nextCellDir, 2);
+    let inDir = offsetDir(chest.cell.nextCellDir, 2);
     let curCell = chest.cell.nextCell;
 
     while(curCell) {
       curCell.chestPathsByDir[dirIndexGap(inDir, curCell.nextCellDir)] = accumulator;
       curCell.chestPaths = curCell.chestPathsByDir.flat();
       accumulator = curCell.chestPaths;
-      inDir = nextCCWDir(curCell.nextCellDir, 2);
+      inDir = offsetDir(curCell.nextCellDir, 2);
       curCell = curCell.nextCell;
     }
   }

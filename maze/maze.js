@@ -36,6 +36,13 @@ export class GridCell {
     this.nextCell = null;
     this.nextCellDir = null;
     this.pathTarget = null;
+
+    this.corners = {
+      NW: false,
+      NE: false,
+      SW: false,
+      SE: false
+    };
   }
 }
 
@@ -290,6 +297,36 @@ export class Maze {
           this.grid[row][col+1].W = true;
         }
         if(this.grid[row][col].wallCount == 3) this.deadEnds.push(this.grid[row][col]); 
+      }
+    }
+
+    // Probably collapsible with the above loop; but this reads better
+    for(let row = 0; row < CONFIG.mazeGridSize; row++) {
+      for(let col = 0; col < CONFIG.mazeGridSize; col++) {
+        if(row == 0) {
+          this.grid[row][col].corners.NE = true;
+        } else {
+          this.grid[row][col].corners.NE = this.grid[row - 1][col].corners.SE;
+        }
+        if(col == 0) {
+          this.grid[row][col].corners.NW = true;
+          this.grid[row][col].corners.SW = true;
+        } else {
+          this.grid[row][col].corners.NW = this.grid[row][col - 1].corners.NE;
+          this.grid[row][col].corners.SW = this.grid[row][col - 1].corners.SE;
+        }
+        let SE = this.grid[row][col].E || this.grid[row][col].S;
+        if(row == CONFIG.mazeGridSize - 1) {
+          SE = true;
+        } else {
+          SE |= this.grid[row + 1][col].E;
+        }
+        if(col == CONFIG.mazeGridSize - 1) {
+          SE = true;
+        } else {
+          SE |= this.grid[row][col + 1].S;
+        }
+        this.grid[row][col].corners.SE = SE;
       }
     }
     generateNavigationGraph(this.grid);
