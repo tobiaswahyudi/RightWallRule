@@ -13,6 +13,13 @@ export function dirIndex(dir) {
   return DIRECTIONS.indexOf(dir);
 }
 
+export const DIR_VECTORS = {
+  N: new Vector2(0, -1),
+  S: new Vector2(0, 1),
+  E: new Vector2(1, 0),
+  W: new Vector2(-1, 0)
+};
+
 export const DIRECTION_OFFSET = {
   CCW: 1,
   Ahead: 2,

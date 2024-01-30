@@ -1,6 +1,6 @@
 import { COLORS, CONFIG, SIZES } from '../config.js';
 import gameEngine from '../core/engine.js';
-import { DIRECTION_OFFSET, DIR_INDEX_GAP, dirIndexGap, makeElbow, offsetDir } from '../maze/pathfinding.js';
+import { DIRECTION_OFFSET, DIR_INDEX_GAP, DIR_VECTORS, dirIndexGap, makeElbow, offsetDir } from '../maze/pathfinding.js';
 import { getMazeRowCol } from '../utils/rowcol.js';
 import { Vector2 } from '../utils/vector2.js';
 import { Boss } from './boss.js';
@@ -11,8 +11,8 @@ const SQUARE_HALFSIZE =  SIZES.mazeCell / 2  - SIZES.wallWidth;
 const BULGE_FULL_RADIUS = SQUARE_HALFSIZE * Math.SQRT2;
 
 const CRAWL_FREQUENCY = 0.6;
-const CRAWL_SPEED = 1;
-const BUTT_CRAWL_SPEED = 1.5;
+const CRAWL_SPEED = 3;
+const BUTT_CRAWL_SPEED = 3;
 
 const OFFSETS = {
   SW: new Vector2(-SQUARE_HALFSIZE, +SQUARE_HALFSIZE),
@@ -88,6 +88,7 @@ export class BigBlobBoss extends Boss {
     if(totalDist >= this.length) {
       if(this.butt.delta(this.buttTargetCell.center).magnitude < BUTT_CRAWL_SPEED) {
         this.buttDirection = this.buttCell.nextCellDir || 'N';
+        this.butt = this.buttTargetCell.center.copy;
         if(this.buttCell.nextCell) {
           this.buttTargetCell = this.buttCell.nextCell;
         } else {
@@ -107,6 +108,7 @@ export class BigBlobBoss extends Boss {
     }
 
     if(this.position.delta(this.target).magnitude < CRAWL_SPEED) {
+      this.position = this.target.copy;
       if(this.currentCell.nextCell) {
         this.target = this.currentCell.nextCell.center;
       } else {
@@ -202,8 +204,8 @@ export class BigBlobBoss extends Boss {
           cellEndLeft = cell.center.copy.add(OFFSETS.SW);
           cellEndRight = cell.center.copy.add(OFFSETS.NW);
           nextDelta = new Vector2(-2 * SIZES.wallWidth, 0);
-          leftBackCorner = 'SW';
-          rightBackCorner = 'NW';
+          leftBackCorner = 'SE';
+          rightBackCorner = 'NE';
           leftWall = 'S';
           rightWall = 'N';
           break;
@@ -260,8 +262,6 @@ export class BigBlobBoss extends Boss {
       cellStartRight = cellEndRight.copy.add(nextDelta);
     }
 
-    // const headFromWallDistance = 
-
     switch (lastDir) {
       case('N'): {
         cellEndLeft = new Vector2(this.currentCell.center.x - SQUARE_HALFSIZE, this.position.y - SQUARE_HALFSIZE);
@@ -293,10 +293,16 @@ export class BigBlobBoss extends Boss {
       }
     }
 
-    if(this.position.delta(this.target).magnitude < 2 * SQUARE_HALFSIZE) {
+    const headFromTargetDistance = this.position.delta(this.target).magnitude;
+    let headFromWallDistance = SIZES.mazeCell;
+
+    if(targetCell[lastDir]) {
+      // Might hit wall? what's the distance?
+      headFromWallDistance = headFromTargetDistance;
+    }
+    if(headFromTargetDistance < 2 * SQUARE_HALFSIZE) {
       leftPoints.push(cellStartLeft);
       rightPoints.push(cellStartRight);
-
       if(!targetCell[leftWall]) {
         leftBulge = new BigBlobBulge([cell], cellStartLeft, cellEndLeft, WALL_TO_OFFSETS[leftWall][0], WALL_TO_OFFSETS[leftWall][1]);  
         leftPoints.push(leftBulge);
@@ -307,8 +313,27 @@ export class BigBlobBoss extends Boss {
       }
     }
 
+    let headArc = `A ${BULGE_FULL_RADIUS} ${BULGE_FULL_RADIUS} 0 0 0 ${cellEndLeft.x}, ${cellEndLeft.y}`;
+    
+    
+    // Compute head flattening
+    const deltaRadial = Math.max(0, (SQUARE_HALFSIZE * (Math.SQRT2 - 1)) - headFromWallDistance);
+    if(deltaRadial > 0) {
+      const radius = SQUARE_HALFSIZE * Math.SQRT2;
+      const deltaPerp = Math.sqrt(2 * deltaRadial * radius - (deltaRadial * deltaRadial));
+
+      const leftFlatPoint = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE + headFromWallDistance)).add(DIR_VECTORS[leftWall].copy.scale(deltaPerp));
+      const rightFlatPoint = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE + headFromWallDistance)).add(DIR_VECTORS[rightWall].copy.scale(deltaPerp));
+
+      const arcRadius = BULGE_FULL_RADIUS * (1 - (deltaPerp / SQUARE_HALFSIZE));
+
+      headArc = `A ${arcRadius} ${arcRadius} 0 0 0 ${rightFlatPoint.x}, ${rightFlatPoint.y}
+      L ${leftFlatPoint.x}, ${leftFlatPoint.y}
+      A ${arcRadius} ${arcRadius} 0 0 0 ${cellEndLeft.x}, ${cellEndLeft.y}`;
+    } 
+
     const pathString = `M ${cellEndRight.x}, ${cellEndRight.y}
-    A ${BULGE_FULL_RADIUS} ${BULGE_FULL_RADIUS} 0 0 0 ${cellEndLeft.x}, ${cellEndLeft.y}
+    ${headArc}
     ${leftPoints.reverse().map(thing => {
       if(thing instanceof BigBlobBulge) return `L ${thing.p2.x}, ${thing.p2.y} C ${thing.p2control.x}, ${thing.p2control.y}, ${thing.p1control.x}, ${thing.p1control.y} ${thing.p1.x}, ${thing.p1.y}`
       else return `L ${thing.x}, ${thing.y}`
@@ -324,6 +349,10 @@ export class BigBlobBoss extends Boss {
     context.fillStyle = COLORS.enemy;
     context.fill(bigboy);
 
+    context.lineWidth = 4;
+    context.strokeStyle = '#4E2945';
+    context.stroke(bigboy);
+
     context.fillStyle = 'red';
 
     context.beginPath();
@@ -333,6 +362,12 @@ export class BigBlobBoss extends Boss {
       0, 0, 360
     );
     context.fill();
+
+    context.beginPath();
+    context.strokeStyle = '#05FF05';
+    const headCell = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE));
+    const wallLine = headCell.copy.add(DIR_VECTORS[lastDir].copy.scale(headFromWallDistance));
+    context.stroke(new Path2D(`M ${headCell.x}, ${headCell.y} L ${wallLine.x}, ${wallLine.y}`));
 
     context.fillStyle = '#ff000066';
     leftPoints.forEach(pt => {
