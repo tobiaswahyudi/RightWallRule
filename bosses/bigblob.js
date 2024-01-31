@@ -32,6 +32,39 @@ function bezierControlDistance(segments) {
   return 4/3*Math.tan(Math.PI / (2 * segments));
 }
 
+class BigBlobEnd {
+  constructor(p1, p2, bulgeDir, distanceToWall) {
+    this.p1 = p1.copy;
+    this.p2 = p2.copy;
+    this.bulgeDir = bulgeDir;
+    this.bulgeDistance = Math.min((SQUARE_HALFSIZE * (Math.SQRT2 - 1)), distanceToWall);
+  }
+
+  pathString() {
+    // Compute head flattening
+    const deltaRadial = Math.max(0, (SQUARE_HALFSIZE * (Math.SQRT2 - 1)) - this.bulgeDistance);
+    
+    const deltaPerp = Math.sqrt(2 * deltaRadial * BULGE_FULL_RADIUS - (deltaRadial * deltaRadial));
+
+    const bulgeCenter = this.p1.copy
+    .add(this.p2)
+    .scale(0.5)
+    .add(DIR_VECTORS[this.bulgeDir].copy.scale(this.bulgeDistance));
+
+    const leftFlatPoint = bulgeCenter.copy.add(DIR_VECTORS[offsetDir(this.bulgeDir, DIRECTION_OFFSET.CCW)].copy.scale(deltaPerp));
+    const rightFlatPoint = bulgeCenter.copy.add(DIR_VECTORS[offsetDir(this.bulgeDir, DIRECTION_OFFSET.CW)].copy.scale(deltaPerp));
+
+    const arcRadius = BULGE_FULL_RADIUS * (1 - (deltaPerp / SQUARE_HALFSIZE));
+
+    return `
+L ${this.p2.x}, ${this.p2.y}
+  A ${arcRadius} ${arcRadius} 0 0 0 ${rightFlatPoint.x}, ${rightFlatPoint.y}
+  L ${leftFlatPoint.x}, ${leftFlatPoint.y}
+  A ${arcRadius} ${arcRadius} 0 0 0 ${this.p1.x}, ${this.p1.y}
+`;
+  }
+}
+
 class BigBlobBulge {
   constructor(cells, p1, p2, p1Offset, p2Offset) {
     this.cells = new Set(cells);
@@ -40,6 +73,14 @@ class BigBlobBulge {
     const cellScale = p1.delta(p2).magnitude/(2 * SQUARE_HALFSIZE);
     this.p1control = p1.copy.add(p2Offset.copy.scale(bezierControlDistance(4) * cellScale));
     this.p2control = p2.copy.add(p1Offset.copy.scale(bezierControlDistance(4) * cellScale));
+  }
+
+  pathString(onLeft) {
+    if(onLeft) {
+      return `L ${this.p2.x}, ${this.p2.y} C ${this.p2control.x}, ${this.p2control.y}, ${this.p1control.x}, ${this.p1control.y} ${this.p1.x}, ${this.p1.y}`;
+    } else {
+      return `L ${this.p1.x}, ${this.p1.y} C ${this.p1control.x}, ${this.p1control.y}, ${this.p2control.x}, ${this.p2control.y} ${this.p2.x}, ${this.p2.y}`;
+    }
   }
 }
 
@@ -164,6 +205,8 @@ export class BigBlobBoss extends Boss {
     let cellEndRight = null;
     let leftWall = false;
     let rightWall = false;
+
+    let buttBulge = null;
     
     while(cell && cell != targetCell) {
       let nextDelta = null;
@@ -213,8 +256,15 @@ export class BigBlobBoss extends Boss {
       }
 
       if(cell == this.buttEndCell) {
-        const buttBulge = new BigBlobBulge([cell], cellStartLeft, cellStartRight, OFFSETS[leftBackCorner], OFFSETS[rightBackCorner]);
-        rightPoints.push(buttBulge);
+        const buttDir = offsetDir(cell.nextCellDir, DIRECTION_OFFSET.Ahead);
+        const buttFromTargetDistance = this.butt.delta(this.buttEndCell.center).magnitude;
+        let buttFromWallDistance = SIZES.mazeCell;
+
+        if(this.buttEndCell[buttDir]) {
+          // Might hit wall? what's the distance?
+          buttFromWallDistance = buttFromTargetDistance;
+        }
+        buttBulge = new BigBlobEnd(cellStartRight, cellStartLeft, buttDir, buttFromWallDistance);
         if(this.butt.delta(this.buttEndCell.center).magnitude < 2 * SQUARE_HALFSIZE) {
           if(!cell[leftWall]) {
             leftBulge = new BigBlobBulge([cell], cellStartLeft, cellEndLeft, WALL_TO_OFFSETS[leftWall][0], WALL_TO_OFFSETS[leftWall][1]);
@@ -313,36 +363,20 @@ export class BigBlobBoss extends Boss {
       }
     }
 
-    let headArc = `A ${BULGE_FULL_RADIUS} ${BULGE_FULL_RADIUS} 0 0 0 ${cellEndLeft.x}, ${cellEndLeft.y}`;
-    
-    
-    // Compute head flattening
-    const deltaRadial = Math.max(0, (SQUARE_HALFSIZE * (Math.SQRT2 - 1)) - headFromWallDistance);
-    if(deltaRadial > 0) {
-      const radius = SQUARE_HALFSIZE * Math.SQRT2;
-      const deltaPerp = Math.sqrt(2 * deltaRadial * radius - (deltaRadial * deltaRadial));
+    const headBulge = new BigBlobEnd(cellEndLeft, cellEndRight, lastDir, headFromWallDistance);
 
-      const leftFlatPoint = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE + headFromWallDistance)).add(DIR_VECTORS[leftWall].copy.scale(deltaPerp));
-      const rightFlatPoint = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE + headFromWallDistance)).add(DIR_VECTORS[rightWall].copy.scale(deltaPerp));
-
-      const arcRadius = BULGE_FULL_RADIUS * (1 - (deltaPerp / SQUARE_HALFSIZE));
-
-      headArc = `A ${arcRadius} ${arcRadius} 0 0 0 ${rightFlatPoint.x}, ${rightFlatPoint.y}
-      L ${leftFlatPoint.x}, ${leftFlatPoint.y}
-      A ${arcRadius} ${arcRadius} 0 0 0 ${cellEndLeft.x}, ${cellEndLeft.y}`;
-    } 
-
-    const pathString = `M ${cellEndRight.x}, ${cellEndRight.y}
-    ${headArc}
-    ${leftPoints.reverse().map(thing => {
-      if(thing instanceof BigBlobBulge) return `L ${thing.p2.x}, ${thing.p2.y} C ${thing.p2control.x}, ${thing.p2control.y}, ${thing.p1control.x}, ${thing.p1control.y} ${thing.p1.x}, ${thing.p1.y}`
-      else return `L ${thing.x}, ${thing.y}`
-    }).join('\n')}
-    ${rightPoints.map(thing => {
-      if(thing instanceof BigBlobBulge) return `L ${thing.p1.x}, ${thing.p1.y} C ${thing.p1control.x}, ${thing.p1control.y}, ${thing.p2control.x}, ${thing.p2control.y} ${thing.p2.x}, ${thing.p2.y}`
-      else return `L ${thing.x}, ${thing.y}`
-    }).join('\n')}
-    L ${cellEndRight.x}, ${cellEndRight.y}
+    const pathString = `M ${headBulge.p2.x}, ${headBulge.p2.y}
+${headBulge.pathString()}
+${leftPoints.reverse()
+  .map(thing => (thing instanceof BigBlobBulge) ? thing.pathString(true) : `L ${thing.x}, ${thing.y}`)
+  .join('\n')
+}
+${buttBulge.pathString()}
+${rightPoints
+  .map(thing => (thing instanceof BigBlobBulge) ? thing.pathString(false) : `L ${thing.x}, ${thing.y}`)
+  .join('\n')
+}
+L ${cellEndRight.x}, ${cellEndRight.y}
     z`;
     const bigboy = new Path2D(pathString);
 
@@ -362,12 +396,6 @@ export class BigBlobBoss extends Boss {
       0, 0, 360
     );
     context.fill();
-
-    context.beginPath();
-    context.strokeStyle = '#05FF05';
-    const headCell = this.position.copy.add(DIR_VECTORS[lastDir].copy.scale(SQUARE_HALFSIZE));
-    const wallLine = headCell.copy.add(DIR_VECTORS[lastDir].copy.scale(headFromWallDistance));
-    context.stroke(new Path2D(`M ${headCell.x}, ${headCell.y} L ${wallLine.x}, ${wallLine.y}`));
 
     context.fillStyle = '#ff000066';
     leftPoints.forEach(pt => {
