@@ -46,9 +46,9 @@ export class CollisionHashMap {
   }
 
   registerEntity(entity) {
-    const corners = entity.shape.boundingBoxCorners();
+    const corners = entity.hitbox.boundingBoxCorners();
     this.cornersToChunks(...corners).forEach(chunk => this.chunkAddEntity(chunk, entity) );
-    entity.shape.collisionCellCorners = corners;
+    entity.hitbox.collisionCellCorners = corners;
   }
 
   updateEntity(entity) {
@@ -57,7 +57,7 @@ export class CollisionHashMap {
   }
 
   deleteEntity(entity) {
-    this.cornersToChunks(...entity.shape.collisionCellCorners).forEach(chunk => this.chunkDeleteEntity(chunk, entity));
+    this.cornersToChunks(...entity.hitbox.collisionCellCorners).forEach(chunk => this.chunkDeleteEntity(chunk, entity));
   }
 
     // In the case where both el1 and el2 are in multiple chunks, they may collide() multiple times.

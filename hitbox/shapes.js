@@ -4,12 +4,12 @@ import { Vector2 } from "../utils/vector2.js";
  * SHAPES
  * 
  * Used for checking hitboxes.
- * For now we're rendering pr1imitive shapes, so these are also used for rendering.
+ * For now we're rendering primitive shapes, so these are also used for rendering.
  * We may use sprites later.
  **************************************/
 
 // A sprite with a circle shaped hitbox.
-export class CircleShapedSprite {
+export class CircleHitbox {
   // Takes a reference to the entity's position, radius, and color.
   constructor(anchorPosition, radius, color) {
     this.anchorPosition = anchorPosition;
@@ -37,14 +37,14 @@ export class CircleShapedSprite {
   }
 
   collisionCheck(other) {
-    if(other instanceof CircleShapedSprite) {
+    if(other instanceof CircleHitbox) {
       // Circle-to-circle collision check
       const distance = other.anchorPosition.delta(this.anchorPosition).magnitude;
       if(distance < (this.radius + other.radius))
         return other.anchorPosition.delta(this.anchorPosition)
           .scale(this.radius / (this.radius + other.radius))
           .add(this.anchorPosition);
-    } else if(other instanceof RectShapedSprite) {
+    } else if(other instanceof RectHitbox) {
       // Annoying!
       // Circle-to-rectangle collision check. There are two cases here.
       if(other.xStart < this.anchorPosition.x && this.anchorPosition.x < other.xEnd) {
@@ -105,7 +105,7 @@ export class CircleShapedSprite {
 }
 
 // A sprite with a rectangle shaped hitbox.
-export class RectShapedSprite {
+export class RectHitbox {
   constructor(xStart, xEnd, yStart, yEnd, color) {
     this.xStart = xStart;
     this.xEnd = xEnd;
@@ -133,10 +133,10 @@ export class RectShapedSprite {
   }
 
   collisionCheck(other) {
-    if(other instanceof CircleShapedSprite) {
+    if(other instanceof CircleHitbox) {
       // Rect-to-circle collision check
       return other.collisionCheck(this);
-    } else if(other instanceof RectShapedSprite) {
+    } else if(other instanceof RectHitbox) {
       // Rectangle-to-rectangle collision check.
       if(other.xEnd < this.xStart) return false; // On left
       if(this.xEnd < other.xStart) return false; // On right

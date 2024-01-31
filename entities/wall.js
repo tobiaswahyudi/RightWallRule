@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { COLORS, SIZES, } from "../config.js";
-import { RectShapedSprite } from "./shapes.js";
+import { RectHitbox } from "../hitbox/shapes.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { AbstractEffect } from "../effects/abstractEffect.js";
 import gameEngine from "../core/engine.js";
@@ -14,7 +14,7 @@ export class Wall extends Entity {
     this.yStart = yStart;
     this.yEnd = yEnd;
 
-    this.shape = new RectShapedSprite(
+    this.hitbox = new RectHitbox(
       this.xStart - SIZES.wallWidth,
       this.xEnd + SIZES.wallWidth,
       this.yStart - SIZES.wallWidth,
@@ -39,7 +39,7 @@ export class Wall extends Entity {
   move() {}
 
   render(context) {
-    this.shape.render(context);
+    this.hitbox.render(context);
   }
 
   collide(other, collisionPoint) {}

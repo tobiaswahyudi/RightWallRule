@@ -1,6 +1,6 @@
 import { CrawlerEnemy } from "./crawler.js";
 import { CONFIG, SIZES, SPEEDS } from "../../config.js";
-import { CircleShapedSprite } from "./../shapes.js";
+import { CircleHitbox } from "./../../hitbox/shapes.js";
 import gameEngine from "../../core/engine.js";
 import { Entity } from "../entity.js";
 import { normalSample } from "../../utils/random.js";
@@ -30,7 +30,7 @@ export class Spawner extends Entity {
       Z
     `);
 
-    this.shape = new CircleShapedSprite(this.position, 15, "#000044");
+    this.hitbox = new CircleHitbox(this.position, 15, "#000044");
   }
 
   tick(ticks) {
@@ -67,6 +67,6 @@ export class Spawner extends Entity {
     const path = new Path2D();
     path.addPath(this.spiralPath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(-ticks).scale(0.85 + 0.15 * Math.sin(ticks / 20)));
     context.fill(path);
-    this.shape.render(context);
+    this.hitbox.render(context);
   }
 }

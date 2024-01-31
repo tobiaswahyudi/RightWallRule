@@ -1,7 +1,7 @@
 import { CONFIG, SIZES, WEIGHTS } from "../config.js";
 import gameEngine from "../core/engine.js";
 import { Entity } from "../entities/entity.js";
-import { CircleShapedSprite } from "../entities/shapes.js";
+import { CircleHitbox } from "../hitbox/shapes.js";
 import { indexifyRowCol } from "../maze/maze.js";
 import { getMazeRowCol } from "../utils/rowcol.js";
 import { Vector2 } from "../utils/vector2.js";
@@ -51,7 +51,7 @@ export class Turret extends Entity {
 
     this.targetDirection = new Vector2(1, 0);
 
-    this.shape = new CircleShapedSprite(this.position, 15, "rgb(180, 110, 75)");
+    this.hitbox = new CircleHitbox(this.position, 15, "rgb(180, 110, 75)");
   }
 
   get deployed() {
@@ -150,7 +150,7 @@ export class Turret extends Entity {
 
   render(context) {
     if(!this.deployed) throw new Error("Attempting to render not-deployed turret");
-    this.shape.render(context);
+    this.hitbox.render(context);
     
     context.save();
     context.translate(this.position.x, this.position.y);

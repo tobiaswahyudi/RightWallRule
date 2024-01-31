@@ -1,5 +1,5 @@
 import { Entity } from "./entity.js";
-import { RectShapedSprite } from "./shapes.js";
+import { RectHitbox } from "../hitbox/shapes.js";
 
 import gameEngine from "../core/engine.js";
 import { Player } from "./player.js";
@@ -43,7 +43,7 @@ export class Chest extends Entity {
     `);
 
   this.pathColor = (opacity) => `hsla(${36 * idx} 100% 60% / ${opacity})`;
-    this.shape = new RectShapedSprite(x - 10, x + 10, y - 10, y + 10, this.pathColor(1));
+    this.hitbox = new RectHitbox(x - 10, x + 10, y - 10, y + 10, this.pathColor(1));
     this.effect = new AbstractEffect(x, y);
     gameEngine.spawnEffect(EFFECT_LAYERS.under, this.effect, -1);
 
@@ -144,7 +144,7 @@ export class Chest extends Entity {
     const whiteStar = new Path2D();
     whiteStar.addPath(this.shinePath, new DOMMatrix().translate(this.position.x, this.position.y).rotate(ticks / 2.1).scale(0.85 + 0.15 * Math.sin(ticks / 30)));
     context.fill(whiteStar);
-    this.shape.render(context);
+    this.hitbox.render(context);
   }
 
   collide(rhs) {

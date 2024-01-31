@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { Enemy } from "./enemies/enemy.js";
-import { CircleShapedSprite } from "./shapes.js";
+import { CircleHitbox } from "../hitbox/shapes.js";
 import { SIZES, COLORS, WEIGHTS, SPEEDS } from "../config.js";
 import gameEngine from "../core/engine.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
@@ -14,7 +14,7 @@ export class Bullet extends Entity {
     this.stats = gunStats;
 
     this.color = color;
-    this.shape = new CircleShapedSprite(this.position, SIZES.bulletRadius * this.stats.damage, color);
+    this.hitbox = new CircleHitbox(this.position, SIZES.bulletRadius * this.stats.damage, color);
 
     this.hit = false;
   }
@@ -38,7 +38,7 @@ export class Bullet extends Entity {
   }
 
   render(context) {
-    this.shape.render(context);
+    this.hitbox.render(context);
   }
 
   collide(other, collisionPoint) {

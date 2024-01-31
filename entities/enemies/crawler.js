@@ -1,6 +1,6 @@
 import { Enemy } from "./enemy.js";
 import { CONFIG, COLORS, SIZES, WEIGHTS, SPEEDS } from "../../config.js";
-import { CircleShapedSprite } from "../shapes.js";
+import { CircleHitbox } from "../../hitbox/shapes.js";
 import { EFFECT_LAYERS } from "../../effects/effect.js";
 import { CircleEffect } from "../../effects/circleEffect.js";
 import gameEngine from "../../core/engine.js";
@@ -26,7 +26,7 @@ export class CrawlerEnemy extends Enemy {
     this.crawlFrequency = 0.8;
     this.crawlTickOffset = Math.random();
 
-    this.shape = new CircleShapedSprite(this.position, SIZES.enemyRadius, this.colorRange(0));
+    this.hitbox = new CircleHitbox(this.position, SIZES.enemyRadius, this.colorRange(0));
   }
 
   
@@ -54,7 +54,7 @@ export class CrawlerEnemy extends Enemy {
     this.velocity.scale(sinSq);
 
     const n = this.hp / CRAWLER_HP;
-    this.shape.color = this.colorRange(n);
+    this.hitbox.color = this.colorRange(n);
 
     if(this.hp <= 0) {
       this.die();
@@ -72,14 +72,14 @@ export class CrawlerEnemy extends Enemy {
     const direction = this.lastBulletDirection;
 
     const n = this.hp / CRAWLER_HP;
-    this.shape.color = this.colorRange(n, -5);
+    this.hitbox.color = this.colorRange(n, -5);
 
-    VFXPoof(EFFECT_LAYERS.above, this.position, 5, 20, this.shape.color, 30, 100, 120, -direction.thetaDeg - 20, -direction.thetaDeg + 20);
+    VFXPoof(EFFECT_LAYERS.above, this.position, 5, 20, this.hitbox.color, 30, 100, 120, -direction.thetaDeg - 20, -direction.thetaDeg + 20);
     gameEngine.inventoryManager.xp++;
   }
 
   render(context) {
-    this.shape.render(context);
+    this.hitbox.render(context);
   }
 
   collide(other, collisionPoint) {

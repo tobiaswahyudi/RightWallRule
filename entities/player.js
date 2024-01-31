@@ -1,6 +1,6 @@
 import { Entity } from "./entity.js";
 import { COLORS, SIZES, WEIGHTS, SPEEDS, CONFIG } from "../config.js";
-import { CircleShapedSprite } from "./shapes.js";
+import { CircleHitbox } from "../hitbox/shapes.js";
 import { EFFECT_LAYERS } from "../effects/effect.js";
 import { CircleEffect } from "../effects/circleEffect.js";
 import { Vector2 } from "../utils/vector2.js";
@@ -15,7 +15,7 @@ export class Player extends Entity {
 
     this.hp = new HPManager(50, CONFIG.FPS * 2, 0.05);
 
-    this.shape = new CircleShapedSprite(this.position, SIZES.playerRadius, COLORS.player);
+    this.hitbox = new CircleHitbox(this.position, SIZES.playerRadius, COLORS.player);
 
     this.shadow = new CircleEffect(0, 0, this.followMe(6, 9), SIZES.playerRadius, COLORS.shadowOnFloor);
 
@@ -45,7 +45,7 @@ export class Player extends Entity {
   }
 
   render(context) {
-    // this.shape.render(context);
+    // this.hitbox.render(context);
     context.drawImage(this.image, this.position.x - 27, this.position.y - 27);
     context.save();
     context.translate(this.position.x, this.position.y);
