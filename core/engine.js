@@ -2,7 +2,6 @@ import { PerfCounter } from "./perf.js";
 import { Maze } from "../maze/maze.js";
 import { SIZES, CONFIG, COLORS, SPEEDS } from "../config.js";
 import { CollisionHashMap } from "../utils/collisionHashMap.js";
-import { ScaledCanvas } from "./canvas.js";
 import { computeChestToPlayerPaths, computeNavDistancesToPlayer } from "../maze/pathfinding.js";
 import { Player } from "../entities/player.js";
 import { GameInputManager } from "./input.js";
@@ -146,8 +145,11 @@ class GameEngine {
    * Sets up canvas and stuff, then kicks off the tick loop.
    **************************************/
   start(canvas, window) {
-    this.canvas = new ScaledCanvas(canvas, CONFIG.pixelation);
+    this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
+
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
     
     this.width = window.innerWidth;
     this.height = window.innerHeight;

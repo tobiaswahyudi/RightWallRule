@@ -39,8 +39,8 @@ export class Player extends Entity {
     this.hp.tick(ticks);
 
     if(ticks % 6) {
-      gameEngine.canvas.canvas.style.transition = `filter 0.2s`;
-      gameEngine.canvas.canvas.style.filter = `saturate(${0.3 + (0.7 * this.hp.ratio)}) contrast(${0.8 + (0.2 * this.hp.ratio)})`;
+      gameEngine.canvas.style.transition = `filter 0.2s`;
+      gameEngine.canvas.style.filter = `saturate(${0.3 + (0.7 * this.hp.ratio)}) contrast(${0.8 + (0.2 * this.hp.ratio)})`;
     }
   }
 
@@ -62,8 +62,8 @@ export class Player extends Entity {
     if(other instanceof Enemy) {
       this.hp.takeDmg(0.1, ticks);
       if(this.hit) clearTimeout(this.hit);
-      gameEngine.canvas.canvas.style.transition = ``;
-      gameEngine.canvas.canvas.style.filter = `saturate(0.1) contrast(1.2)`;
+      gameEngine.canvas.style.transition = ``;
+      gameEngine.canvas.style.filter = `saturate(0.1) contrast(1.2)`;
     }
   }
 }
