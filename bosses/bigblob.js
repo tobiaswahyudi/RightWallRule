@@ -380,11 +380,11 @@ L ${cellEndRight.x}, ${cellEndRight.y}
     z`;
     const bigboy = new Path2D(pathString);
 
-    context.fillStyle = COLORS.enemy;
+    context.fillStyle = "#9C528B99";
     context.fill(bigboy);
 
     context.lineWidth = 4;
-    context.strokeStyle = '#4E2945';
+    context.strokeStyle = "#4E2945";
     context.stroke(bigboy);
   }
 
