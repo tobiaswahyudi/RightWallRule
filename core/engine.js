@@ -18,6 +18,40 @@ import { getMazeRowCol } from "../utils/rowcol.js";
 import { BigBlobBoss } from "../bosses/bigblob.js";
 
 /**************************************
+ * Camera Class
+ **************************************/
+
+class Camera {
+  constructor(canvas) {
+    this.target = new Vector2(0, 0);
+    this.scale = 1;
+    this._pixelation = 1;
+
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas = canvas;
+    this.pixelation = 1;
+  }
+
+  set pixelation(val) {
+    this._pixelation = val;
+    this.canvas.width = this.width/this._pixelation;
+    this.canvas.height = this.height/this._pixelation;
+  }
+
+  get pixelation() { return this._pixelation; }
+
+  get screenWidth() {
+    return Math.floor(this.width / this._pixelation);
+  }
+
+  applyTransform(context) {
+    context.scale(this.scale / this._pixelation, this.scale / this._pixelation);
+    context.translate(((this.width)/(2*this.scale)) - this.target.x, ((this.height)/(2*this.scale)) - this.target.y);
+  }
+}
+
+/**************************************
  * Game Engine Class
  **************************************/
 class GameEngine {
@@ -25,6 +59,7 @@ class GameEngine {
     this.perf = new PerfCounter();
 
     this.canvas = null;
+    this.camera = null;
     this.context = null;
 
     this.width = window.innerWidth;
@@ -34,7 +69,7 @@ class GameEngine {
     this.gameover = false;
     this.uiManager = new UIManager();
 
-    this.maze = new Maze(0.64);
+    this.maze = new Maze(0.64); 
 
     initializeOptions();
 
@@ -148,8 +183,8 @@ class GameEngine {
     this.canvas = canvas;
     this.context = this.canvas.getContext('2d');
 
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.camera = new Camera(this.canvas);
+    this.camera.target = this.player.position;
     
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -183,7 +218,7 @@ class GameEngine {
       this.render(this.gameTicks);
     } else if(!this.gameover) {
       this.context.fillStyle = "#000000";
-      this.context.fillRect(this.width - 120, 0, 120, 72);
+      this.context.fillRect(this.camera.screenWidth - 120, 0, 120, 72);
 
       if(this.input.rawInput.newlyPressedKeys.has('Escape') && this.uiManager._state == "pauseDialog") {
         this.paused = false;
@@ -197,10 +232,10 @@ class GameEngine {
     this.context.font = "15px Arial";
     this.context.fillStyle = "#00FF00";
     this.context.textAlign = "right";
-    this.context.fillText(this.perf.fps.toFixed(0) + ' FPS', this.width - 15, 15 * CONFIG.pixelation);
-    this.context.fillText(this.perf.tickAvg.toFixed(2) + ' ms/t', this.width - 15, 33 * CONFIG.pixelation);
-    this.context.fillText(this.perf.maxTps.toFixed(0) + ' Max', this.width - 15, 51 * CONFIG.pixelation);
-    this.context.fillText(this.entities.enemy.size + ' enemies', this.width - 15, 69 * CONFIG.pixelation);
+    this.context.fillText(this.perf.fps.toFixed(0) + ' FPS', this.camera.screenWidth - 3, 15);
+    this.context.fillText(this.perf.tickAvg.toFixed(2) + ' ms/t', this.camera.screenWidth - 3, 33);
+    this.context.fillText(this.perf.maxTps.toFixed(0) + ' Max', this.camera.screenWidth - 3, 51);
+    this.context.fillText(this.entities.enemy.size + ' enemies', this.camera.screenWidth - 3, 69);
 
     this.input.tick();
 
@@ -483,7 +518,7 @@ class GameEngine {
 
     // Set up transform
     this.context.fillRect(0, 0, this.width, this.height);
-    this.context.translate(this.width/2 - this.player.position.x, this.height/2 - this.player.position.y);
+    this.camera.applyTransform(this.context);
 
     // Under Effects
     this.effects.under.forEach(effect => effect.render(this.context));
