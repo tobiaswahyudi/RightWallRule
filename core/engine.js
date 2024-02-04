@@ -69,7 +69,7 @@ class GameEngine {
     this.gameover = false;
     this.uiManager = new UIManager();
 
-    this.maze = new Maze(0.64); 
+    this.maze = new Maze(0.64);
 
     initializeOptions();
 
@@ -225,6 +225,19 @@ class GameEngine {
         this.uiManager.closeDialog();
         this.boss = new BigBlobBoss(SIZES.mazeCell / 2, SIZES.mazeCell / 2);
       }
+    }
+
+    if(this.input.rawInput.newlyPressedKeys.has('KeyC')) {
+      this.camera.pixelation += 1;
+    }
+    if(this.input.rawInput.newlyPressedKeys.has('KeyV')) {
+      this.camera.pixelation -= 1;
+    }
+    if(this.input.rawInput.pressedKeys.has('KeyZ')) {
+      this.camera.scale += 0.01;
+    }
+    if(this.input.rawInput.pressedKeys.has('KeyX')) {
+      this.camera.scale -= 0.01;
     }
     
     this.context.resetTransform();
